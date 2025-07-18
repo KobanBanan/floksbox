@@ -1,0 +1,25 @@
+{
+  "name": "floksbox",
+  "version": "1.0.0",
+  "description": "Современный веб-сайт для компании Floksbox",
+  "scripts": {
+    "dev": "cd frontend && npm run dev",
+    "build": "cd frontend && npm run build",
+    "preview": "cd frontend && npm run preview",
+    "install": "cd frontend && npm install",
+    "lint": "cd frontend && npm run lint",
+    "type-check": "cd frontend && npm run type-check"
+  },
+  "keywords": [
+    "vue",
+    "nuxt",
+    "floksbox",
+    "website"
+  ],
+  "author": "Floksbox Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+} 
