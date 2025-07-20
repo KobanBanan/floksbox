@@ -1,0 +1,45 @@
+// Цвета согласно ТЗ
+$color-primary: #47009f;
+$color-black: #000000;
+$color-white: #ffffff;
+$color-background: #f8f9fa;
+
+// Переходы и анимации
+$transition-slow: 1s ease;        // Для изменения цвета текста
+$transition-fast: 0.1s ease;      // Для появления фонов
+$transition-medium: 0.3s ease;    // Для общих анимаций
+$transition-crossfade: 2s ease-in-out; // Для слайдера
+
+// Размеры
+$menu-item-width: 340px;
+$menu-item-height: 210px;
+$menu-gap: 15px;
+$header-padding: 20px 40px;
+$nav-gap: 40px;
+
+// Скругления
+$border-radius-small: 5px;
+$border-radius-medium: 8px;
+$border-radius-large: 10px;
+
+// Прозрачности
+$opacity-logo-hover: 0.05;
+$opacity-love-inactive: 0.87;
+$opacity-love-active: 1;
+
+// Размеры экранов
+$breakpoint-mobile: 480px;
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1200px;
+$breakpoint-large: 1440px;
+
+// Z-index
+$z-header: 10;
+$z-slider-indicators: 3;
+$z-footer-overlay: 2;
+
+// Шрифты
+$font-family-primary: 'Roboto', Arial, sans-serif;
+$font-weight-normal: 400;
+$font-weight-bold: 700;
+$font-size-menu-text: 23px; 
