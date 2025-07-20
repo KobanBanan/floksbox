@@ -35,8 +35,8 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 
 const banners = [
-  { src: '/assets/banner1.png', alt: 'Баннер 1' },
-  { src: '/assets/banner2.png', alt: 'Баннер 2' }
+      { src: '/assets/images/banner1.png', alt: 'Баннер 1' },
+    { src: '/assets/images/banner2.png', alt: 'Баннер 2' }
 ]
 
 const currentSlide = ref(0)

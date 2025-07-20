@@ -62,7 +62,7 @@
           <p>Комплексные решения упаковки для любых задач и масштабов</p>
         </div>
         <div class="card-image">
-          <img src="/assets/gmanman3.jpg" alt="Упаковочные материалы" />
+          <img src="/assets/images/gmanman3.jpg" alt="Упаковочные материалы" />
         </div>
       </div>
     </div>
@@ -76,10 +76,10 @@ const currentProductionSlide = ref(0)
 let slideInterval = null
 
 const productionSlides = [
-  { image: '/assets/controlkillslove1.jpg', alt: 'Производственное помещение 1' },
-  { image: '/assets/controlkillslove2.jpg', alt: 'Производственное помещение 2' },
-  { image: '/assets/controlkillslove3.jpg', alt: 'Производственное помещение 3' },
-  { image: '/assets/controlkillslove4.jpg', alt: 'Производственное помещение 4' }
+  { image: '/assets/images/controlkillslove1.jpg', alt: 'Производственное помещение 1' },
+  { image: '/assets/images/controlkillslove2.jpg', alt: 'Производственное помещение 2' },
+  { image: '/assets/images/controlkillslove3.jpg', alt: 'Производственное помещение 3' },
+  { image: '/assets/images/controlkillslove4.jpg', alt: 'Производственное помещение 4' }
 ]
 
 const nextSlide = () => {

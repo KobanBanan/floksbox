@@ -17,7 +17,7 @@
       <!-- Наложение footer.png поверх карты -->
       <div class="footer-overlay">
         <img 
-          src="/assets/footer.png" 
+                      src="/assets/images/footer.png" 
           alt="Footer" 
           class="footer-image"
         />

@@ -3,7 +3,7 @@
     <!-- Video Background -->
     <div class="video-background">
       <video autoplay muted loop playsinline>
-        <source src="/assets/tudasuda.mp4" type="video/mp4">
+        <source src="/assets/images/tudasuda.mp4" type="video/mp4">
       </video>
     </div>
     
@@ -11,7 +11,7 @@
       <!-- Логотип с изображением -->
       <div class="logo">
         <a href="/" class="logo-link">
-          <img src="/assets/floksbox лого.png" alt="Floksbox" class="logo-image" />
+          <img src="/assets/images/floksbox лого.png" alt="Floksbox" class="logo-image" />
         </a>
       </div>
       
