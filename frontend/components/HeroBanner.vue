@@ -20,11 +20,11 @@ import { ref, onMounted, onUnmounted } from 'vue'
 
 const banners = [
   {
-    image: '/assets/images/banner1.png',
+    image: '/assets/hero/banner1.png',
     alt: 'Упакуем ваш бизнес - Баннер 1'
   },
   {
-    image: '/assets/images/banner2.png', 
+    image: '/assets/hero/banner2.png', 
     alt: 'Упакуем ваш бизнес - Баннер 2'
   }
 ]

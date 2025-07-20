@@ -16,7 +16,7 @@
             <!-- Изображение товара -->
             <div class="product-image-container">
               <img 
-                :src="hoveredItems[index] ? '/assets/images/but_on.png' : '/assets/images/but_off.png'" 
+                :src="hoveredItems[index] ? '/assets/ui/but_on.png' : '/assets/ui/but_off.png'" 
                 :alt="item.name"
                 class="product-image"
                 :class="{ 'lifted': hoveredItems[index] }"
@@ -86,7 +86,7 @@ const setHover = (index, isHovered) => {
   width: 100%;
   height: 100%;
   position: relative;
-  background-image: url('/assets/images/back.png');
+  background-image: url('/assets/ui/back.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

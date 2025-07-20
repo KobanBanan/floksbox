@@ -13,7 +13,7 @@
           @mouseleave="setHovered(false)"
         >
           <img 
-            src="/assets/images/gmanman1.jpg" 
+            src="/assets/production/gmanman1.jpg" 
             alt="Производство упаковки" 
             class="love-image"
             :class="{ 'active': isHovered }"

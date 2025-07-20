@@ -10,7 +10,7 @@
       <!-- Логотип -->
       <div class="logo">
         <NuxtLink to="/" class="logo-link">
-          <img src="/assets/images/floksbox лого.png" alt="Floksbox" class="logo-image" />
+          <img src="/assets/logo/floksbox лого.png" alt="Floksbox" class="logo-image" />
         </NuxtLink>
       </div>
       
