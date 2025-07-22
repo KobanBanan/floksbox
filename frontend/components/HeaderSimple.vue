@@ -47,9 +47,65 @@
           <a href="#" class="social-link">🔍</a>
         </div>
       </div>
+      <button class="request-btn" @click="showModal = true">Оставить заявку</button>
     </div>
   </header>
+
+  <!-- Модальное окно заявки -->
+  <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">
+    <div class="modal-content">
+      <form class="request-form" @submit.prevent="submitRequest">
+        <label>
+          <span>Ваше имя</span>
+          <input type="text" v-model="form.name" required />
+        </label>
+        <label>
+          <span>Ваш телефон</span>
+          <input type="tel" v-model="form.phone" required @input="onPhoneInput" placeholder="+7 (___) ___-__-__" maxlength="18" />
+        </label>
+        <label>
+          <span>Email</span>
+          <input type="email" v-model="form.email" required />
+        </label>
+        <label>
+          <span>Опишите ваш запрос</span>
+          <textarea v-model="form.message" required></textarea>
+        </label>
+        <button type="submit" class="submit-btn">Отправить</button>
+      </form>
+      <button class="close-btn" @click="showModal = false">×</button>
+    </div>
+  </div>
 </template>
+
+<script setup>
+import { ref } from 'vue'
+const showModal = ref(false)
+const form = ref({ name: '', phone: '', email: '', message: '' })
+
+function formatPhone(value) {
+  // Оставляем только цифры
+  let digits = value.replace(/\D/g, '')
+  if (digits.startsWith('8')) digits = '7' + digits.slice(1)
+  if (!digits.startsWith('7')) digits = '7' + digits
+  let result = '+7'
+  if (digits.length > 1) result += ' (' + digits.slice(1, 4)
+  if (digits.length >= 4) result += ') ' + digits.slice(4, 7)
+  if (digits.length >= 7) result += '-' + digits.slice(7, 9)
+  if (digits.length >= 9) result += '-' + digits.slice(9, 11)
+  return result
+}
+
+function onPhoneInput(e) {
+  form.value.phone = formatPhone(e.target.value)
+}
+
+function submitRequest() {
+  // Здесь будет логика отправки формы
+  showModal.value = false
+  form.value = { name: '', phone: '', email: '', message: '' }
+}
+</script>
 
 <style scoped>
 .header {
@@ -211,5 +267,105 @@
     padding: 8px 12px;
     font-size: 0.9rem;
   }
+}
+.request-btn {
+  margin-left: 30px;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: 0 2px 8px rgba(71,0,159,0.08);
+}
+.request-btn:hover {
+  background: linear-gradient(135deg, #47009f 0%, #764ba2 100%);
+  transform: translateY(-2px) scale(1.04);
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: #f8f9fa;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(71,0,159,0.18);
+  padding: 40px 36px 32px 36px;
+  min-width: 350px;
+  max-width: 95vw;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.request-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  width: 340px;
+  max-width: 80vw;
+}
+.request-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 1.2rem;
+  color: #222;
+  font-weight: 500;
+  gap: 7px;
+}
+.request-form input,
+.request-form textarea {
+  border: 1.5px solid #bdbdbd;
+  border-radius: 7px;
+  padding: 10px 12px;
+  font-size: 1.1rem;
+  font-family: inherit;
+  background: #fff;
+  resize: none;
+}
+.request-form textarea {
+  min-height: 90px;
+  max-height: 200px;
+}
+.submit-btn {
+  margin-top: 18px;
+  padding: 12px 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+.submit-btn:hover {
+  background: linear-gradient(135deg, #47009f 0%, #764ba2 100%);
+  transform: translateY(-2px) scale(1.04);
+}
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  background: none;
+  border: none;
+  font-size: 2.1rem;
+  color: #764ba2;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.close-btn:hover {
+  color: #47009f;
 }
 </style> 
