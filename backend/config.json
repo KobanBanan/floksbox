@@ -1,0 +1,13 @@
+{
+  "telegram": {
+    "bot_token": "YOUR_TELEGRAM_BOT_TOKEN",
+    "chat_id": "YOUR_TELEGRAM_CHAT_ID"
+  },
+  "email": {
+    "smtp_server": "smtp.gmail.com",
+    "smtp_port": 587,
+    "email": "your-email@gmail.com",
+    "password": "your-app-password",
+    "recipient": "recipient@gmail.com"
+  }
+} 
