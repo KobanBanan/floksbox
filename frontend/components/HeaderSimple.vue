@@ -2,9 +2,8 @@
   <header class="header">
     <!-- Video Background -->
     <div class="video-background">
-      <video autoplay muted loop playsinline>
-        <source src="/assets/hero/tudasuda.mp4" type="video/mp4">
-      </video>
+      <!-- Временная заглушка изображением пока нет видео -->
+      <img src="/assets/hero/banner1.png" alt="Background" class="background-image" />
     </div>
     
     <div class="header-content">
@@ -126,7 +125,8 @@ function submitRequest() {
   z-index: -1;
 }
 
-.video-background video {
+.video-background video,
+.video-background .background-image {
   width: 100%;
   height: 100%;
   object-fit: cover;

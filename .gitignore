@@ -13,6 +13,7 @@ dist/
 .env
 .env.local
 .env.*.local
+!.env.example
 
 # IDE
 .vscode/
@@ -64,9 +65,13 @@ frontend/.nuxt/
 frontend/dist/
 frontend/node_modules/
 frontend/.output/
+frontend/.data/
+frontend/.nitro/
+frontend/.cache/
+frontend/.fleet/
 
 # Video files (until we need them)
-*.mp4
+# *.mp4
 *.avi
 *.mov
 
