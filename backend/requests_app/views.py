@@ -22,20 +22,20 @@ def sent_request(request):
         phone = data.get('phone', '').strip()
         email = data.get('email', '').strip()
         message = data.get('message', '').strip()
-        
+
         # Валидация обязательных полей
         if not name:
             return Response({
                 'success': False,
                 'error': 'Поле "Имя" обязательно для заполнения'
             }, status=status.HTTP_400_BAD_REQUEST)
-        
+
         if not phone:
             return Response({
                 'success': False,
                 'error': 'Поле "Телефон" обязательно для заполнения'
             }, status=status.HTTP_400_BAD_REQUEST)
-        
+
         # Создаем заявку
         user_request = UserRequest.objects.create(
             name=name,
@@ -43,19 +43,19 @@ def sent_request(request):
             email=email if email else None,
             message=message if message else None
         )
-        
+
         # Отправляем уведомления
         notification_results = NotificationService.send_notifications(user_request)
-        
+
         logger.info(f"Создана заявка {user_request.id} от {name}")
-        
+
         return Response({
             'success': True,
             'message': 'Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.',
             'request_id': user_request.id,
             'notifications': notification_results
         }, status=status.HTTP_201_CREATED)
-        
+
     except Exception as e:
         logger.error(f"Ошибка при создании заявки: {e}")
         return Response({
@@ -71,4 +71,4 @@ def health_check(request):
     return Response({
         'status': 'ok',
         'message': 'FloksBox Backend API работает'
-    }) 
+    })

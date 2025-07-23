@@ -33,7 +33,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -79,7 +78,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'floksbox_backend.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -89,7 +87,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -109,7 +106,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -120,7 +116,6 @@ TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
@@ -155,4 +150,4 @@ CORS_ALLOW_CREDENTIALS = True
 
 # Custom settings for our application
 TELEGRAM_CONFIG = CONFIG['telegram']
-EMAIL_CONFIG = CONFIG['email'] 
+EMAIL_CONFIG = CONFIG['email']
