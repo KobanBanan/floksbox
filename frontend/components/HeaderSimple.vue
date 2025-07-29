@@ -37,8 +37,13 @@
       
       <!-- Контактная информация -->
       <div class="contacts">
-        <a href="tel:+74952345678" class="contact-phone">+7 (495) 234-56-78</a>
-        <a href="mailto:floksbox@mail.ru" class="contact-email">floksbox@mail.ru</a>
+        <div class="contact-info">
+          <div class="contact-phone">
+            <span class="contact-label">Контакты</span>
+            <a href="tel:+74952345678" class="phone-number">+7 (495) 234-56-78</a>
+          </div>
+          <a href="mailto:floksbox@mail.ru" class="contact-email">floksbox@mail.ru</a>
+        </div>
         <!-- Иконки соцсетей -->
         <div class="social-icons">
           <a href="#" class="social-link">📧</a>
@@ -53,24 +58,28 @@
   <!-- Модальное окно заявки -->
   <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">
     <div class="modal-content">
+      <div class="modal-header">
+        <h3>Остались вопросы? Мы ответим!</h3>
+        <p>Напишите нам, задайте вопрос по необходимой упаковке</p>
+      </div>
       <form class="request-form" @submit.prevent="submitRequest">
-        <label>
-          <span>Ваше имя</span>
-          <input type="text" v-model="form.name" required />
-        </label>
-        <label>
-          <span>Ваш телефон</span>
-          <input type="tel" v-model="form.phone" required @input="onPhoneInput" placeholder="+7 (___) ___-__-__" maxlength="18" />
-        </label>
-        <label>
-          <span>Email</span>
-          <input type="email" v-model="form.email" required />
-        </label>
-        <label>
-          <span>Опишите ваш запрос</span>
-          <textarea v-model="form.message" required></textarea>
-        </label>
-        <button type="submit" class="submit-btn">Отправить</button>
+        <div class="form-group">
+          <label for="modal-name">Ваше имя</label>
+          <input id="modal-name" type="text" v-model="form.name" required />
+        </div>
+        <div class="form-group">
+          <label for="modal-phone">Ваш номер телефона</label>
+          <input id="modal-phone" type="tel" v-model="form.phone" required @input="onPhoneInput" placeholder="+7 (___) ___-__-__" maxlength="18" />
+        </div>
+        <div class="form-group">
+          <label for="modal-email">Ваша почта</label>
+          <input id="modal-email" type="email" v-model="form.email" required />
+        </div>
+        <div class="form-group">
+          <label for="modal-message">Дополн. средства связи (TG, Whatsapp, VK)</label>
+          <textarea id="modal-message" v-model="form.message" required rows="4"></textarea>
+        </div>
+        <button type="submit" class="submit-btn">ОТПРАВИТЬ</button>
       </form>
       <button class="close-btn" @click="showModal = false">×</button>
     </div>
@@ -99,10 +108,32 @@ function onPhoneInput(e) {
   form.value.phone = formatPhone(e.target.value)
 }
 
-function submitRequest() {
-  // Здесь будет логика отправки формы
-  showModal.value = false
-  form.value = { name: '', phone: '', email: '', message: '' }
+const submitRequest = async () => {
+  try {
+    const response = await $fetch('http://127.0.0.1:8000/api/sent_request/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: form.value.name.trim(),
+        phone: form.value.phone.trim(),
+        email: form.value.email.trim() || null,
+        message: form.value.message.trim() || null
+      })
+    })
+    
+    if (response.success) {
+      alert('Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.')
+      showModal.value = false
+      form.value = { name: '', phone: '', email: '', message: '' }
+    } else {
+      throw new Error(response.error || 'Ошибка отправки заявки')
+    }
+  } catch (error) {
+    console.error('Error submitting form:', error)
+    alert('Произошла ошибка при отправке заявки. Попробуйте позже.')
+  }
 }
 </script>
 
@@ -207,18 +238,49 @@ function submitRequest() {
 /* Контакты */
 .contacts {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  gap: 15px;
 }
 
-.contact-phone,
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.contact-phone {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.contact-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.phone-number {
+  color: #000000;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.phone-number:hover {
+  color: #47009f;
+}
+
 .contact-email {
   color: #000000;
   text-decoration: none;
-  transition: color 1s ease;
+  font-size: 14px;
+  transition: color 0.3s ease;
 }
 
-.contact-phone:hover,
 .contact-email:hover {
   color: #47009f;
 }
@@ -252,6 +314,12 @@ function submitRequest() {
   }
   
   .contacts {
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .contact-info {
     align-items: center;
   }
 }
@@ -298,61 +366,90 @@ function submitRequest() {
   z-index: 1000;
 }
 .modal-content {
-  background: #f8f9fa;
-  border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(71,0,159,0.18);
-  padding: 40px 36px 32px 36px;
-  min-width: 350px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  padding: 40px;
+  min-width: 500px;
   max-width: 95vw;
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.modal-header h3 {
+  font-size: 28px;
+  font-weight: bold;
+  color: #6B4C93;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.modal-header p {
+  font-size: 16px;
+  color: #333;
+  margin: 0;
 }
 .request-form {
   display: flex;
   flex-direction: column;
-  gap: 22px;
-  width: 340px;
-  max-width: 80vw;
+  gap: 25px;
 }
-.request-form label {
+
+.form-group {
   display: flex;
   flex-direction: column;
-  font-size: 1.2rem;
-  color: #222;
+}
+
+.form-group label {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
   font-weight: 500;
-  gap: 7px;
 }
-.request-form input,
-.request-form textarea {
-  border: 1.5px solid #bdbdbd;
-  border-radius: 7px;
-  padding: 10px 12px;
-  font-size: 1.1rem;
+
+.form-group input,
+.form-group textarea {
+  padding: 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
   font-family: inherit;
-  background: #fff;
-  resize: none;
 }
-.request-form textarea {
-  min-height: 90px;
-  max-height: 200px;
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #6B4C93;
+}
+
+.form-group textarea {
+  resize: vertical;
 }
 .submit-btn {
-  margin-top: 18px;
-  padding: 12px 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
-  font-size: 1.1rem;
-  font-weight: 600;
+  background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+  color: #2e7d32;
   border: none;
+  padding: 18px 40px;
   border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
   cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 10px;
 }
-.submit-btn:hover {
-  background: linear-gradient(135deg, #47009f 0%, #764ba2 100%);
-  transform: translateY(-2px) scale(1.04);
+.submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #a5d6a7 0%, #81c784 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 .close-btn {
   position: absolute;

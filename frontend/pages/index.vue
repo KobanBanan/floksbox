@@ -15,6 +15,9 @@
     <!-- Production Section -->
     <ProductionSection />
     
+    <!-- Order Form -->
+    <OrderForm />
+    
     <!-- Footer с картой -->
     <FooterMap />
   </div>
@@ -26,6 +29,7 @@ import HeroBanner from '../components/HeroBanner.vue'
 import ProductGrid from '../components/ProductGrid.vue'
 import LoveSection from '../components/LoveSection.vue'
 import ProductionSection from '../components/ProductionSection.vue'
+import OrderForm from '../components/OrderForm.vue'
 import FooterMap from '../components/FooterMap.vue'
 
 useHead({

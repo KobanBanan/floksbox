@@ -26,14 +26,12 @@ class NotificationService:
             bot = Bot(token=bot_token)
 
             message = f"""🔔 Новая заявка с сайта FloksBox!
-
-👤 Имя: {user_request.name}
-📞 Телефон: {user_request.phone}
-📧 Email: {user_request.email or 'Не указан'}
-💬 Сообщение: {user_request.message or 'Не указано'}
-
-📅 Дата: {user_request.created_at.strftime('%d.%m.%Y %H:%M')}
-"""
+                    👤 Имя: {user_request.name}
+                    📞 Телефон: {user_request.phone}
+                    📧 Email: {user_request.email or 'Не указан'}
+                    💬 Сообщение: {user_request.message or 'Не указано'}
+                    
+                    📅 Дата: {user_request.created_at.strftime('%d.%m.%Y %H:%M')}"""
 
             await bot.send_message(chat_id=chat_id, text=message)
             logger.info(f"Telegram уведомление отправлено для заявки {user_request.id}")
@@ -59,18 +57,17 @@ class NotificationService:
             msg['Subject'] = f"Новая заявка с сайта FloksBox от {user_request.name}"
 
             body = f"""
-Поступила новая заявка с сайта FloksBox:
-
-Имя: {user_request.name}
-Телефон: {user_request.phone}
-Email: {user_request.email or 'Не указан'}
-Сообщение: {user_request.message or 'Не указано'}
-
-Дата создания: {user_request.created_at.strftime('%d.%m.%Y %H:%M')}
-
----
-Это автоматическое уведомление с сайта FloksBox.
-"""
+                    Поступила новая заявка с сайта FloksBox:
+                    
+                    Имя: {user_request.name}
+                    Телефон: {user_request.phone}
+                    Email: {user_request.email or 'Не указан'}
+                    Сообщение: {user_request.message or 'Не указано'}
+                    
+                    Дата создания: {user_request.created_at.strftime('%d.%m.%Y %H:%M')}
+                    
+                    ---
+                    Это автоматическое уведомление с сайта FloksBox."""
 
             msg.attach(MIMEText(body, 'plain', 'utf-8'))
 
