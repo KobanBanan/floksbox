@@ -15,6 +15,9 @@
     <!-- Production Section -->
     <ProductionSection />
     
+    <!-- Product Carousel -->
+    <ProductCarousel />
+    
     <!-- Order Form -->
     <OrderForm />
     
@@ -29,6 +32,7 @@ import HeroBanner from '../components/HeroBanner.vue'
 import ProductGrid from '../components/ProductGrid.vue'
 import LoveSection from '../components/LoveSection.vue'
 import ProductionSection from '../components/ProductionSection.vue'
+import ProductCarousel from '../components/ProductCarousel.vue'
 import OrderForm from '../components/OrderForm.vue'
 import FooterMap from '../components/FooterMap.vue'
 
