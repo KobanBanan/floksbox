@@ -37,12 +37,22 @@
       
       <!-- Контактная информация -->
       <div class="contacts">
-        <a href="tel:+1234567890" class="contact-phone">+7 (123) 456-78-90</a>
-        <a href="mailto:floksbox@mail.ru" class="contact-email">floksbox@mail.ru</a>
+        <a href="tel:+79602543323" class="contact-phone">+7 (960) 254-33-23</a>
+        <a href="mailto:info@floksbox.ru" class="contact-email">info@floksbox.ru</a>
       </div>
-      <button class="request-btn" @click="showModal = true">Оставить заявку</button>
+      <div class="action-buttons">
+        <button class="constructor-btn" @click="showConstructor = true">Конструктор</button>
+        <button class="request-btn" @click="showModal = true">Оставить заявку</button>
+      </div>
     </div>
   </header>
+
+  <!-- Модальное окно конструктора -->
+  <div v-if="showConstructor" class="modal-overlay" @click.self="showConstructor = false">
+    <div class="constructor-modal">
+      <BoxConstructor @close="showConstructor = false" />
+    </div>
+  </div>
 
   <!-- Модальное окно заявки -->
   <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">
@@ -69,7 +79,9 @@
 
 <script setup>
 import { ref } from 'vue'
+import BoxConstructor from './BoxConstructor.vue'
 const showModal = ref(false)
+const showConstructor = ref(false)
 const form = ref({ name: '', phone: '', message: '' })
 function submitRequest() {
   // Здесь будет логика отправки формы
@@ -105,25 +117,29 @@ function submitRequest() {
 .header-content {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 40px;
   padding: 20px 40px;
   position: relative;
   z-index: 1;
+  
+  .navigation {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .contacts {
+    margin-left: auto;
+  }
 }
 
 // Логотип
 .logo {
   .logo-link {
     display: block;
-    transition: opacity 1s ease;
-    
-    &:hover {
-      opacity: 0.05;
-    }
   }
   
   .logo-image {
-    height: 60px;
+    height: 42px;
     width: auto;
   }
 }
@@ -193,11 +209,15 @@ function submitRequest() {
   }
 }
 
-.request-btn {
+.action-buttons {
+  display: flex;
+  gap: 15px;
   margin-left: 30px;
+}
+
+.constructor-btn,
+.request-btn {
   padding: 12px 28px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
   font-size: 1.1rem;
   font-weight: 600;
   border: none;
@@ -206,6 +226,22 @@ function submitRequest() {
   transition: background 0.3s, transform 0.2s;
   box-shadow: 0 2px 8px rgba(71,0,159,0.08);
 }
+
+.constructor-btn {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: #fff;
+}
+
+.constructor-btn:hover {
+  background: linear-gradient(135deg, #218838 0%, #1ba085 100%);
+  transform: translateY(-2px) scale(1.04);
+}
+
+.request-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+
 .request-btn:hover {
   background: linear-gradient(135deg, #47009f 0%, #764ba2 100%);
   transform: translateY(-2px) scale(1.04);
@@ -310,5 +346,14 @@ function submitRequest() {
 }
 .close-btn:hover {
   color: #47009f;
+}
+
+.constructor-modal {
+  background: #fff;
+  border-radius: 20px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 </style> 

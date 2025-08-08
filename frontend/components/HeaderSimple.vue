@@ -1,11 +1,5 @@
 <template>
   <header class="header">
-    <!-- Video Background -->
-    <div class="video-background">
-      <!-- Временная заглушка изображением пока нет видео -->
-      <img src="/assets/hero/banner1.png" alt="Background" class="background-image" />
-    </div>
-    
     <div class="header-content">
       <!-- Логотип с изображением -->
       <div class="logo">
@@ -38,151 +32,76 @@
       <!-- Контактная информация -->
       <div class="contacts">
         <div class="contact-info">
-          <div class="contact-phone">
-            <span class="contact-label">Контакты</span>
-            <a href="tel:+74952345678" class="phone-number">+7 (495) 234-56-78</a>
+          <!-- Крупный номер телефона -->
+          <div class="phone-main">
+            <a href="tel:+79602543323" class="phone-large">+7(960)254 33 23</a>
           </div>
-          <a href="mailto:floksbox@mail.ru" class="contact-email">floksbox@mail.ru</a>
-        </div>
-        <!-- Иконки соцсетей -->
-        <div class="social-icons">
-          <a href="#" class="social-link">📧</a>
-          <a href="#" class="social-link">📱</a>
-          <a href="#" class="social-link">🔍</a>
+          <!-- Время работы -->
+          <div class="working-hours">
+            <span class="hours-text">каждый день с 9 до 19</span>
+          </div>
+          <!-- Иконки связи -->
+          <div class="contact-icons">
+            <a href="mailto:info@floksbox.ru" class="contact-icon" title="Email">
+              <span class="icon-email">📧</span>
+            </a>
+            <a href="https://t.me/floksbox" class="contact-icon" title="Telegram" target="_blank">
+              <span class="icon-telegram">📱</span>
+            </a>
+            <a href="https://wa.me/79602543323" class="contact-icon" title="WhatsApp" target="_blank">
+              <span class="icon-whatsapp">💬</span>
+            </a>
+          </div>
         </div>
       </div>
-      <button class="request-btn" @click="showModal = true">Оставить заявку</button>
-    </div>
-  </header>
 
-  <!-- Модальное окно заявки -->
-  <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Остались вопросы? Мы ответим!</h3>
-        <p>Напишите нам, задайте вопрос по необходимой упаковке</p>
-      </div>
-      <form class="request-form" @submit.prevent="submitRequest">
-        <div class="form-group">
-          <label for="modal-name">Ваше имя</label>
-          <input id="modal-name" type="text" v-model="form.name" required />
-        </div>
-        <div class="form-group">
-          <label for="modal-phone">Ваш номер телефона</label>
-          <input id="modal-phone" type="tel" v-model="form.phone" required @input="onPhoneInput" placeholder="+7 (___) ___-__-__" maxlength="18" />
-        </div>
-        <div class="form-group">
-          <label for="modal-email">Ваша почта</label>
-          <input id="modal-email" type="email" v-model="form.email" required />
-        </div>
-        <div class="form-group">
-          <label for="modal-message">Дополн. средства связи (TG, Whatsapp, VK)</label>
-          <textarea id="modal-message" v-model="form.message" required rows="4"></textarea>
-        </div>
-        <button type="submit" class="submit-btn">ОТПРАВИТЬ</button>
-      </form>
-      <button class="close-btn" @click="showModal = false">×</button>
+
     </div>
-  </div>
+
+
+  </header>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-const showModal = ref(false)
-const form = ref({ name: '', phone: '', email: '', message: '' })
-
-function formatPhone(value) {
-  // Оставляем только цифры
-  let digits = value.replace(/\D/g, '')
-  if (digits.startsWith('8')) digits = '7' + digits.slice(1)
-  if (!digits.startsWith('7')) digits = '7' + digits
-  let result = '+7'
-  if (digits.length > 1) result += ' (' + digits.slice(1, 4)
-  if (digits.length >= 4) result += ') ' + digits.slice(4, 7)
-  if (digits.length >= 7) result += '-' + digits.slice(7, 9)
-  if (digits.length >= 9) result += '-' + digits.slice(9, 11)
-  return result
-}
-
-function onPhoneInput(e) {
-  form.value.phone = formatPhone(e.target.value)
-}
-
-const submitRequest = async () => {
-  try {
-    const response = await $fetch('http://127.0.0.1:8000/api/sent_request/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: form.value.name.trim(),
-        phone: form.value.phone.trim(),
-        email: form.value.email.trim() || null,
-        message: form.value.message.trim() || null
-      })
-    })
-    
-    if (response.success) {
-      alert('Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.')
-      showModal.value = false
-      form.value = { name: '', phone: '', email: '', message: '' }
-    } else {
-      throw new Error(response.error || 'Ошибка отправки заявки')
-    }
-  } catch (error) {
-    console.error('Error submitting form:', error)
-    alert('Произошла ошибка при отправке заявки. Попробуйте позже.')
-  }
-}
+// Пустой скрипт, поскольку вся функциональность удалена
 </script>
 
 <style scoped>
 .header {
   background: white;
   border-bottom: 1px solid #e5e7eb;
-  padding: 20px 0;
+  padding: 20px 40px;
   position: relative;
   z-index: 10;
-  overflow: hidden;
-}
-
-.video-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-}
-
-.video-background video,
-.video-background .background-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.3;
 }
 
 .header-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 40px;
+  width: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   position: relative;
   z-index: 2;
 }
 
-/* Логотип */
-.logo .logo-link {
-  display: block;
-  transition: opacity 1s ease;
+.navigation {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 40px;
 }
 
-.logo .logo-link:hover {
-  opacity: 0.05;
+.contacts {
+  flex-shrink: 0;
+}
+
+/* Логотип */
+.logo {
+  flex-shrink: 0;
+}
+
+.logo .logo-link {
+  display: block;
 }
 
 .logo .logo-image {
@@ -194,7 +113,10 @@ const submitRequest = async () => {
 .navigation .nav-list {
   display: flex;
   list-style: none;
-  gap: 40px;
+  gap: 20px;
+  align-items: flex-end;
+  margin: 0;
+  padding: 0;
 }
 
 .navigation .nav-item {
@@ -238,67 +160,76 @@ const submitRequest = async () => {
 /* Контакты */
 .contacts {
   display: flex;
-  align-items: center;
-  gap: 15px;
+  align-items: flex-end;
 }
 
 .contact-info {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-}
-
-.contact-phone {
-  display: flex;
-  flex-direction: column;
   align-items: flex-end;
+  gap: 8px;
 }
 
-.contact-label {
+.phone-main {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.phone-large {
+  color: #000000;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 24px;
+  font-family: 'Montserrat', sans-serif;
+  transition: color 0.3s ease;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+
+.phone-large:hover {
+  color: #47009f;
+}
+
+.working-hours {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 2px;
+}
+
+.hours-text {
   font-size: 12px;
   color: #666;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-weight: 400;
+  text-align: right;
+  line-height: 1.2;
 }
 
-.phone-number {
-  color: #000000;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 16px;
-  transition: color 0.3s ease;
-}
-
-.phone-number:hover {
-  color: #47009f;
-}
-
-.contact-email {
-  color: #000000;
-  text-decoration: none;
-  font-size: 14px;
-  transition: color 0.3s ease;
-}
-
-.contact-email:hover {
-  color: #47009f;
-}
-
-.social-icons {
+.contact-icons {
   display: flex;
-  gap: 10px;
-  margin-top: 5px;
+  gap: 12px;
+  justify-content: flex-end;
 }
 
-.social-link {
-  font-size: 1.2rem;
+.contact-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(71, 0, 159, 0.1);
   text-decoration: none;
-  transition: transform 0.2s ease;
+  transition: all 0.3s ease;
 }
 
-.social-link:hover {
-  transform: scale(1.1);
+.contact-icon:hover {
+  background: rgba(71, 0, 159, 0.2);
+  transform: translateY(-2px);
+}
+
+.contact-icon span {
+  font-size: 16px;
+  line-height: 1;
 }
 
 /* Адаптивность */
@@ -307,20 +238,33 @@ const submitRequest = async () => {
     flex-direction: column;
     gap: 20px;
     padding: 15px 20px;
+    align-items: center;
+  }
+  
+  .navigation {
+    margin-left: 0;
+    justify-content: center;
   }
   
   .navigation .nav-list {
-    gap: 20px;
+    gap: 15px;
+    align-items: center;
   }
   
   .contacts {
     align-items: center;
-    flex-direction: column;
-    gap: 10px;
   }
   
   .contact-info {
     align-items: center;
+  }
+  
+  .phone-large {
+    font-size: 20px;
+  }
+  
+  .hours-text {
+    text-align: center;
   }
 }
 
@@ -328,141 +272,36 @@ const submitRequest = async () => {
   .navigation .nav-list {
     flex-wrap: wrap;
     justify-content: center;
-    gap: 15px;
+    gap: 12px;
   }
   
   .navigation .nav-link {
     padding: 8px 12px;
     font-size: 0.9rem;
   }
-}
-.request-btn {
-  margin-left: 30px;
-  padding: 12px 28px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
-  box-shadow: 0 2px 8px rgba(71,0,159,0.08);
-}
-.request-btn:hover {
-  background: linear-gradient(135deg, #47009f 0%, #764ba2 100%);
-  transform: translateY(-2px) scale(1.04);
-}
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0,0,0,0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-.modal-content {
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-  padding: 40px;
-  min-width: 500px;
-  max-width: 95vw;
-  position: relative;
-  max-height: 90vh;
-  overflow-y: auto;
+  
+  .phone-large {
+    font-size: 18px;
+  }
+  
+  .contact-icons {
+    gap: 8px;
+  }
+  
+  .contact-icon {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .contact-icon span {
+    font-size: 14px;
+  }
 }
 
-.modal-header {
-  text-align: center;
-  margin-bottom: 30px;
-}
 
-.modal-header h3 {
-  font-size: 28px;
-  font-weight: bold;
-  color: #6B4C93;
-  margin-bottom: 10px;
-  line-height: 1.2;
-}
 
-.modal-header p {
-  font-size: 16px;
-  color: #333;
-  margin: 0;
-}
-.request-form {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-}
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
 
-.form-group label {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 8px;
-  font-weight: 500;
-}
 
-.form-group input,
-.form-group textarea {
-  padding: 15px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 0.3s ease;
-  font-family: inherit;
-}
 
-.form-group input:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #6B4C93;
-}
-
-.form-group textarea {
-  resize: vertical;
-}
-.submit-btn {
-  background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
-  color: #2e7d32;
-  border: none;
-  padding: 18px 40px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-top: 10px;
-}
-.submit-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #a5d6a7 0%, #81c784 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-.close-btn {
-  position: absolute;
-  top: 12px;
-  right: 18px;
-  background: none;
-  border: none;
-  font-size: 2.1rem;
-  color: #764ba2;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-.close-btn:hover {
-  color: #47009f;
-}
 </style> 

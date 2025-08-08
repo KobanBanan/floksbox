@@ -8,6 +8,7 @@
           class="product-item"
           @mouseenter="setHover(index, true)"
           @mouseleave="setHover(index, false)"
+          @click="handleProductClick(item, index)"
         >
           <div class="product-card">
             <!-- Фон ячейки -->
@@ -31,15 +32,27 @@
         </div>
       </div>
     </div>
+
+    <!-- Модальное окно конструктора -->
+    <div v-if="showConstructor" class="modal-overlay" @click="showConstructor = false">
+      <div class="modal-content constructor-modal" @click.stop>
+        <div class="modal-header">
+          <h2>Конструктор круглых коробок</h2>
+          <button class="close-btn" @click="showConstructor = false">×</button>
+        </div>
+        <BoxConstructor @close="showConstructor = false" />
+      </div>
+    </div>
   </section>
 </template>
 
 <script setup>
 import { ref, reactive } from 'vue'
+import BoxConstructor from './BoxConstructor.vue'
 
 // 8 товаров для сетки 2x4
 const productItems = [
-  { name: 'товар' },
+  { name: 'круглая коробка' },
   { name: 'товар' },
   { name: 'товар' },
   { name: 'товар' },
@@ -51,9 +64,18 @@ const productItems = [
 
 // Состояние hover для каждого элемента
 const hoveredItems = reactive({})
+// Состояние модального окна конструктора
+const showConstructor = ref(false)
 
 const setHover = (index, isHovered) => {
   hoveredItems[index] = isHovered
+}
+
+const handleProductClick = (item, index) => {
+  if (item.name === 'круглая коробка') {
+    showConstructor.value = true
+  }
+  // Для других товаров можно добавить другую логику
 }
 </script>
 
@@ -216,6 +238,84 @@ const setHover = (index, isHovered) => {
   
   .product-grid-section {
     padding: 30px 15px;
+  }
+}
+
+/* Модальные окна */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 20px;
+  padding: 0;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.constructor-modal {
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 30px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #6b7280;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+/* Адаптивность модального окна */
+@media (max-width: 768px) {
+  .modal-content {
+    margin: 20px;
+    width: calc(100% - 40px);
+  }
+
+  .modal-header {
+    padding: 20px;
   }
 }
 </style> 

@@ -22,9 +22,12 @@
           class="footer-image"
         />
       </div>
+
     </div>
   </footer>
 </template>
+
+
 
 <style scoped>
 .footer {
