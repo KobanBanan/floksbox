@@ -107,18 +107,41 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
 }
 
 .menu-grid {
-  width: 60%;
+  width: 90%;
+  max-width: 1600px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(5, minmax(260px, 1fr));
+  grid-template-rows: repeat(2, 1fr);
+  gap: 10px;
   justify-items: center;
 }
 
 .menu-item {
   width: 100%;
-  max-width: 280px;
+  max-width: 340px;
   aspect-ratio: 340 / 210;
+}
+
+/* Позиционирование элементов нижнего ряда по центру */
+.menu-item:nth-child(6) {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.menu-item:nth-child(7) {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.menu-item:nth-child(8) {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.menu-item:nth-child(9) {
+  grid-column: 4;
+  grid-row: 2;
 }
 
 .item-frame {
@@ -148,13 +171,13 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
   }
 
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-4px);
   }
 }
 
 .item-image-container {
   position: absolute;
-  top: 8%;
+  top: 5%;
   left: 50%;
   transform: translateX(-50%);
   width: auto;
@@ -163,32 +186,37 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
 }
 
 .item-image {
-  width: 160px;
-  height: 160px;
+  width: 200px;
+  height: 200px;
   object-fit: contain;
   transition: transform 0.3s ease;
-  transform: translateY(-10px);
+  transform: translateY(-37px);
 
   &.lifted {
-    transform: translateY(-18px);
+    transform: translateY(-44px);
   }
 }
 
 .item-text {
   position: absolute;
-  bottom: 6px; /* выравнивание по низу */
+  bottom: 15px; /* поднимаем выше для наложения на изображение */
   left: 0;
   right: 0;
   transform: none;
-  z-index: 1; /* над фоном */
+  z-index: 2; /* над изображением */
   font-family: 'Days', sans-serif;
   font-weight: 400;
-  font-size: 10px;
+  font-size: 18px;
   line-height: 1.2;
   color: #000000;
   text-align: center;
   user-select: none;
   padding: 0 8px;
+  text-shadow: 0 0 2px rgba(255, 255, 255, 1), 
+               0 0 4px rgba(255, 255, 255, 0.9), 
+               0 0 8px rgba(255, 255, 255, 0.8),
+               0 0 12px rgba(255, 255, 255, 0.6),
+               0 0 16px rgba(255, 255, 255, 0.4);
 }
 
 /* Адаптивность */
@@ -198,20 +226,20 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
 
 @media (max-width: 1200px) {
   .menu-grid { 
-    width: 70%; 
-    grid-template-columns: repeat(4, 1fr); 
+    width: 95%; 
+    grid-template-columns: repeat(4, minmax(240px, 1fr)); 
     gap: 16px; 
   }
-  .menu-item { max-width: 240px; }
+  .menu-item { max-width: 320px; }
 }
 
 @media (max-width: 992px) {
   .menu-grid { 
-    width: 80%; 
-    grid-template-columns: repeat(3, 1fr); 
+    width: 95%; 
+    grid-template-columns: repeat(3, minmax(220px, 1fr)); 
     gap: 14px; 
   }
-  .menu-item { max-width: 220px; }
+  .menu-item { max-width: 280px; }
 }
 
 @media (max-width: 768px) {

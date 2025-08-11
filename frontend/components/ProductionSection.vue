@@ -24,48 +24,7 @@
       </div>
     </div>
     
-    <!-- Карточки записей -->
-    <div class="records-grid">
-      <div class="record-card large-card">
-        <div class="card-content blue-card">
-          <h3>Наше производство</h3>
-          <p>Современное оборудование и технологии для создания качественной упаковки</p>
-        </div>
-      </div>
-      
-      <div class="record-cards-column">
-        <div class="record-card small-card">
-          <div class="card-content purple-card">
-            <h3>Работаем ради вас</h3>
-            <p>Каждый заказ выполняем с особым вниманием к деталям</p>
-          </div>
-        </div>
-        
-        <div class="record-card small-card">
-          <div class="card-content green-card">
-            <h3>Почему стоит выбрать нас</h3>
-            <p>Опыт, качество и индивидуальный подход к каждому клиенту</p>
-          </div>
-        </div>
-        
-        <div class="record-card small-card">
-          <div class="card-content orange-card">
-            <h3>Мы гордимся нашей работой!</h3>
-            <p>Каждая коробка - это результат профессионального мастерства</p>
-          </div>
-        </div>
-      </div>
-      
-      <div class="record-card medium-card">
-        <div class="card-content beige-card">
-          <h3>Все для вашего бизнеса</h3>
-          <p>Комплексные решения упаковки для любых задач и масштабов</p>
-        </div>
-        <div class="card-image">
-          <img src="/assets/production/gmanman3.jpg" alt="Упаковочные материалы" />
-        </div>
-      </div>
-    </div>
+
   </section>
 </template>
 
@@ -187,119 +146,7 @@ onUnmounted(() => {
   right: 20px;
 }
 
-/* Сетка записей */
-.records-grid {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 3fr 1.5fr;
-  grid-template-rows: 450px;
-  gap: 15px;
-}
 
-.record-card {
-  border-radius: 20px;
-  overflow: hidden;
-  position: relative;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.record-card:hover {
-  transform: translateY(-5px);
-}
-
-.large-card {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.medium-card {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.small-card {
-  height: 100%;
-}
-
-.record-cards-column {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  height: 100%;
-}
-
-.record-cards-column .small-card {
-  flex: 1;
-}
-
-.card-content {
-  padding: 20px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.large-card .card-content {
-  flex: 1;
-}
-
-.medium-card .card-content {
-  flex: 1;
-}
-
-.card-content h3 {
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-  color: white;
-}
-
-.card-content p {
-  font-size: 0.9rem;
-  opacity: 0.9;
-  line-height: 1.4;
-}
-
-.card-image {
-  height: 150px;
-  overflow: hidden;
-}
-
-.card-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Цветовые схемы карточек */
-.blue-card {
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-}
-
-.purple-card {
-  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-}
-
-.green-card {
-  background: linear-gradient(135deg, #84cc16, #65a30d);
-}
-
-.orange-card {
-  background: linear-gradient(135deg, #f97316, #ea580c);
-}
-
-.beige-card {
-  background: linear-gradient(135deg, #f3f4f6, #d1d5db);
-  color: #333;
-}
-
-.beige-card h3 {
-  color: #333;
-}
 
 /* Адаптивность */
 @media (max-width: 768px) {
@@ -311,26 +158,7 @@ onUnmounted(() => {
     height: 250px;
   }
   
-  .records-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-    gap: 15px;
-  }
-  
-  .large-card,
-  .medium-card,
-  .small-card {
-    grid-row: span 1;
-    min-height: 200px;
-  }
-  
-  .record-cards-column {
-    grid-column: 1;
-  }
-  
-  .card-image {
-    height: 120px;
-  }
+
 }
 
 @media (max-width: 480px) {
@@ -348,20 +176,6 @@ onUnmounted(() => {
     right: 10px;
   }
   
-  .records-grid {
-    gap: 10px;
-  }
-  
-  .card-content {
-    padding: 15px;
-  }
-  
-  .card-content h3 {
-    font-size: 1rem;
-  }
-  
-  .card-content p {
-    font-size: 0.8rem;
-  }
+
 }
 </style> 

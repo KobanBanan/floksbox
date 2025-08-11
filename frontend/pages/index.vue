@@ -9,9 +9,6 @@
     <!-- Меню (заменяет старую сетку товаров) -->
     <MenuGrid />
     
-    <!-- Love Section -->
-    <LoveSection />
-    
     <!-- Production Section -->
     <ProductionSection />
     
@@ -30,7 +27,7 @@
 import HeaderSimple from '../components/HeaderSimple.vue'
 import HeroBanner from '../components/HeroBanner.vue'
 import MenuGrid from '../components/MenuGrid.vue'
-import LoveSection from '../components/LoveSection.vue'
+
 import ProductionSection from '../components/ProductionSection.vue'
 import ProductCarousel from '../components/ProductCarousel.vue'
 import OrderForm from '../components/OrderForm.vue'

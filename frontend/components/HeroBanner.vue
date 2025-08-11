@@ -1,15 +1,21 @@
 <template>
   <section class="hero-banner">
     <div class="hero-container">
-      <div 
-        v-for="(banner, index) in banners" 
+      <div
+        v-for="(banner, index) in banners"
         :key="index"
         class="hero-slide"
-        :class="{ 'active': index === currentSlide }"
+        :class="{ active: index === currentSlide }"
       >
-        <div class="banner-background">
-          <img :src="banner.image" :alt="banner.alt" class="banner-image" />
+        <div class="banner-background" :style="{ backgroundImage: `url(${banner.fon})` }"></div>
+        
+        <div class="banner-content">
+          <h1 class="banner-title">{{ banner.title }}</h1>
+          <p class="banner-description">{{ banner.description }}</p>
+          <a href="#" class="banner-button">{{ banner.cta }}</a>
         </div>
+
+        <img :src="banner.char" alt="Персонаж" class="banner-char" />
       </div>
     </div>
   </section>
@@ -18,14 +24,14 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 
+// Новый формат баннеров
 const banners = [
   {
-    image: '/assets/hero/banner1.png',
-    alt: 'Упакуем ваш бизнес - Баннер 1'
-  },
-  {
-    image: '/assets/hero/banner2.png', 
-    alt: 'Упакуем ваш бизнес - Баннер 2'
+    fon: '/assets/hero/fon1.png',
+    char: '/assets/hero/char1.png',
+    title: 'Упакуем ваш бизнес!',
+    description: 'Работаем на клиента',
+    cta: 'Узнать подробности'
   }
 ]
 
@@ -39,7 +45,7 @@ const nextSlide = () => {
 const startSlideShow = () => {
   slideInterval = setInterval(() => {
     nextSlide()
-  }, 6000) // 6 секунд
+  }, 6000)
 }
 
 onMounted(() => {
@@ -47,69 +53,110 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  if (slideInterval) {
-    clearInterval(slideInterval)
-  }
+  if (slideInterval) clearInterval(slideInterval)
 })
 </script>
 
 <style scoped>
 .hero-banner {
   position: relative;
-  width: 80%;
-  height: 100vh;
-  margin: -70px auto 0 auto;
-  overflow: hidden;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  overflow: visible; /* персонаж может выходить вверх */
+  margin-top: 100px; /* опускаем баннер ниже шапки */
 }
 
 .hero-container {
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: min(1300px, 100%);
+  height: 250px; /* фиксированная высота */
 }
 
 .hero-slide {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   opacity: 0;
-  transition: opacity 2s ease-in-out;
+  transition: opacity 1s ease-in-out;
 }
 
 .hero-slide.active {
   opacity: 1;
-  z-index: 2;
+  z-index: 1;
 }
 
 .banner-background {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: none;
 }
 
-.banner-image {
-  width: 100%;
+.banner-content {
+  position: relative;
+  z-index: 2;
+  width: 450px; /* область текста */
   height: 100%;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.banner-title {
+  font-family: 'Days', sans-serif;
+  font-size: 14px;
+  color: #111;
+  margin: 0 0 8px 0;
+}
+
+.banner-description {
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-weight: 500; /* Medium */
+  font-size: 9px;
+  color: #222;
+  margin: 0 0 14px 0;
+}
+
+.banner-button {
+  width: fit-content;
+  background: #60d394; /* зеленая кнопка */
+  color: #0b3d2e;
+  font-family: 'Montserrat', Arial, sans-serif;
+  font-weight: 700; /* Bold */
+  font-size: 12px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.banner-button:hover {
+  transform: translateY(-1px);
+  background: #4fc187;
+}
+
+.banner-char {
+  position: absolute;
+  right: 40px;
+  bottom: 0; /* по нижней границе баннера */
+  height: 320px; /* увеличиваем размер для правильной посадки */
   object-fit: contain;
-  object-position: center;
+  z-index: 2; /* над фоном, под шапкой */
+  pointer-events: none; /* не перекрывает клики по меню */
 }
 
-/* Адаптивность */
 @media (max-width: 768px) {
-  .hero-banner {
-    width: 90%;
-    height: 100vh;
-  }
+  .hero-container { width: 95%; }
+  .banner-content { width: 55%; padding: 16px; }
+  .banner-char { right: 10px; height: 300px; bottom: 0; }
 }
 
 @media (max-width: 480px) {
-  .hero-banner {
-    width: 95%;
-    height: 100vh;
-  }
+  .banner-content { width: 60%; }
+  .banner-title { font-size: 13px; }
+  .banner-description { font-size: 9px; }
+  .banner-button { font-size: 12px; padding: 6px 12px; }
 }
-</style> 
+</style>
