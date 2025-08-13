@@ -1,3 +1,14 @@
+// Импорт переменных
+@import './variables.scss';
+
+// Подключение шрифта Days
+@font-face {
+  font-family: 'Days';
+  src: url('/fonts/Days.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 // Глобальные стили
 * {
   margin: 0;

@@ -342,64 +342,64 @@ const closeError = () => {
 .order-form-section {
   background: url('/assets/task/task_d.png') center center no-repeat;
   background-size: cover;
-  padding: 60px 0; /* уменьшить отступы для экономии места */
-  min-height: 500px;
+  padding: 20px 0; /* уменьшено втрое с 60px */
+  min-height: 200px; /* уменьшено с 500px */
 }
 
 .container {
-  max-width: 1200px; /* вместо 86% */
+  max-width: 1200px; /* единая ширина для всех компонентов */
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 0 20px; /* внутренние отступы */
 }
 
 .form-wrapper {
   display: grid;
-  grid-template-columns: 1fr 1.3fr; /* форма должна быть шире текста */
-  gap: 80px; /* больше расстояние между колонками */
+  grid-template-columns: 1.5fr 1fr; /* текст теперь шире, форма уже */
+  gap: 30px; /* уменьшено с 80px */
   align-items: flex-start;
 }
 
 .form-header {
-  padding-right: 40px;
+  padding-right: 40px; /* возвращено к исходному размеру */
 }
 
 .form-header h2 {
   font-family: 'Days One', cursive;
-  font-size: 48px; /* увеличить с 30px */
+  font-size: 48px; /* возвращено к исходному размеру */
   font-weight: normal;
   color: #6B3F8C; /* Чуть темнее фиолетовый */
   line-height: 1.2;
-  margin-bottom: 20px;
+  margin-bottom: 20px; /* возвращено к исходному размеру */
 }
 
 .form-header p {
   font-family: 'Montserrat', sans-serif;
   font-weight: 300;
-  font-size: 12px;
+  font-size: 12px; /* возвращено к исходному размеру */
   color: #333;
-  margin-bottom: 15px;
+  margin-bottom: 15px; /* возвращено к исходному размеру */
   line-height: 1.4;
 }
 
 .response-info {
-  margin-top: 30px !important;
+  margin-top: 30px !important; /* возвращено к исходному размеру */
 }
 
 .contact-info {
-  margin-top: 20px !important;
+  margin-top: 20px !important; /* возвращено к исходному размеру */
 }
 
 .working-hours {
-  margin-top: 30px !important;
+  margin-top: 30px !important; /* возвращено к исходному размеру */
   font-weight: 400;
 }
 
 .phone {
   font-family: 'Montserrat', sans-serif;
-  font-size: 28px !important; /* увеличить */
+  font-size: 28px !important; /* возвращено к исходному размеру */
   font-weight: 600 !important;
   color: #6B3F8C !important;
-  margin-top: 30px !important;
+  margin-top: 30px !important; /* возвращено к исходному размеру */
   text-decoration: none;
   display: inline-block;
   transition: color 0.3s ease;
@@ -411,26 +411,26 @@ const closeError = () => {
 
 .form-container {
   background: white;
-  border-radius: 30px; /* Увеличить с 20px до 30px */
-  padding: 40px; /* уменьшить для экономии места */
+  border-radius: 12px; /* еще немного уменьшено */
+  padding: 12px; /* уменьшено с 15px */
   overflow: hidden;
   /* Добавить эффект свечения */
   box-shadow: 
-    0 0 0 3px rgba(255, 255, 255, 0.3), /* белая обводка */
-    0 0 30px rgba(196, 255, 97, 0.3), /* салатовое свечение */
-    0 10px 40px rgba(0, 0, 0, 0.08); /* обычная тень */
+    0 0 0 2px rgba(255, 255, 255, 0.3), /* белая обводка */
+    0 0 15px rgba(196, 255, 97, 0.3), /* салатовое свечение */
+    0 5px 20px rgba(0, 0, 0, 0.08); /* обычная тень */
   
   /* Альтернативный вариант с градиентной рамкой */
   position: relative;
   background: linear-gradient(white, white) padding-box,
               linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(196,255,97,0.2) 100%) border-box;
-  border: 3px solid transparent;
+  border: 2px solid transparent; /* уменьшено с 3px */
 }
 
 .order-form {
   display: flex;
   flex-direction: column;
-  gap: 20px; /* уменьшить расстояние между полями */
+  gap: 6px; /* еще немного уменьшено с 8px */
 }
 
 .form-group {
@@ -441,22 +441,27 @@ const closeError = () => {
 
 .form-group label {
   font-family: 'Montserrat', sans-serif;
-  font-size: 14px;
+  font-size: 10px; /* уменьшено с 14px */
   font-weight: 500; /* жирнее */
   color: #333;
-  margin-bottom: 10px;
+  margin-bottom: 3px; /* еще немного уменьшено с 4px */
 }
 
 .form-group input,
 .form-group textarea {
   font-family: 'Montserrat', sans-serif;
   font-weight: 300;
-  border-radius: 12px; /* Увеличить закругление */
+  border-radius: 6px; /* уменьшено с 12px */
   background: #FAFAFA;
   border: 1px solid #E8E8E8;
-  padding: 16px 20px;
-  font-size: 14px;
+  padding: 6px 10px; /* еще немного уменьшено с 8px 12px */
+  font-size: 10px; /* уменьшено с 14px */
   transition: border-color 0.3s ease;
+}
+
+.form-group textarea {
+  min-height: 60px; /* компактная высота для textarea */
+  resize: vertical; /* позволить изменять только высоту */
 }
 
 .form-group input:focus,
@@ -475,12 +480,12 @@ const closeError = () => {
   color: #ff4444;
   font-family: 'Montserrat', sans-serif;
   font-weight: 300;
-  font-size: 10px;
-  margin-top: 5px;
+  font-size: 8px; /* уменьшено с 10px */
+  margin-top: 2px; /* уменьшено с 5px */
 }
 
 .checkbox-group {
-  margin-top: 10px;
+  margin-top: 3px; /* еще немного уменьшено с 5px */
 }
 
 .checkbox-label {
@@ -489,7 +494,7 @@ const closeError = () => {
   cursor: pointer;
   font-family: 'Montserrat', sans-serif;
   font-weight: 300;
-  font-size: 10px;
+  font-size: 8px; /* уменьшено с 10px */
   line-height: 1.4;
 }
 
@@ -498,12 +503,12 @@ const closeError = () => {
 }
 
 .checkmark {
-  width: 18px;
-  height: 18px;
-  border: 2px solid #e0e0e0;
-  border-radius: 4px;
-  margin-right: 10px;
-  margin-top: 2px;
+  width: 12px; /* уменьшено с 18px */
+  height: 12px; /* уменьшено с 18px */
+  border: 1px solid #e0e0e0; /* уменьшено с 2px */
+  border-radius: 3px; /* уменьшено с 4px */
+  margin-right: 6px; /* уменьшено с 10px */
+  margin-top: 1px; /* уменьшено с 2px */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -519,7 +524,7 @@ const closeError = () => {
 .checkbox-label input[type="checkbox"]:checked + .checkmark::after {
   content: '✓';
   color: white;
-  font-size: 12px;
+  font-size: 8px; /* уменьшено с 12px */
   font-weight: bold;
 }
 
@@ -536,25 +541,25 @@ const closeError = () => {
 .submit-btn {
   background: #B8FF00 !important; /* Еще ярче салатовый */
   color: #333 !important;
-  border-radius: 12px; /* Добавить закругление */
+  border-radius: 6px; /* уменьшено с 12px */
   font-weight: 700;
-  box-shadow: 0 4px 15px rgba(184, 255, 0, 0.3); /* Салатовая тень */
-  padding: 18px 50px;
+  box-shadow: 0 2px 8px rgba(184, 255, 0, 0.3); /* уменьшено */
+  padding: 6px 16px; /* еще немного уменьшено с 8px 20px */
   width: 100%;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px; /* уменьшено с 1px */
   border: none;
   font-family: 'Montserrat', sans-serif;
-  font-size: 12px;
+  font-size: 10px; /* уменьшено с 12px */
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 20px;
+  margin-top: 6px; /* еще немного уменьшено с 8px */
 }
 
 .submit-btn:hover:not(:disabled) {
   background: #A8EF00 !important;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(184, 255, 0, 0.4);
+  transform: translateY(-1px); /* уменьшено с -2px */
+  box-shadow: 0 3px 10px rgba(184, 255, 0, 0.4); /* уменьшено */
 }
 
 .submit-btn:disabled {
@@ -581,12 +586,12 @@ const closeError = () => {
 
 .modal-content {
   background: white;
-  border-radius: 15px;
-  padding: 40px;
+  border-radius: 8px; /* уменьшено с 15px */
+  padding: 20px; /* уменьшено с 40px */
   text-align: center;
-  max-width: 400px;
-  margin: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  max-width: 250px; /* уменьшено с 400px */
+  margin: 10px; /* уменьшено с 20px */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* уменьшено */
 }
 
 .modal-content.error {
@@ -594,54 +599,55 @@ const closeError = () => {
 }
 
 .success-icon {
-  width: 60px;
-  height: 60px;
+  width: 30px; /* уменьшено с 60px */
+  height: 30px; /* уменьшено с 60px */
   border-radius: 50%;
   background: #4caf50;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
-  margin: 0 auto 20px;
+  font-size: 15px; /* уменьшено с 30px */
+  margin: 0 auto 10px; /* уменьшено с 20px */
 }
 
 .error-icon {
-  width: 60px;
-  height: 60px;
+  width: 30px; /* уменьшено с 60px */
+  height: 30px; /* уменьшено с 60px */
   border-radius: 50%;
   background: #ff4444;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
-  margin: 0 auto 20px;
+  font-size: 15px; /* уменьшено с 30px */
+  margin: 0 auto 10px; /* уменьшено с 20px */
 }
 
 .modal-content h3 {
-  margin-bottom: 15px;
+  margin-bottom: 8px; /* уменьшено с 15px */
   color: #333;
   font-family: 'Montserrat', sans-serif;
+  font-size: 14px; /* добавлен маленький размер */
 }
 
 .modal-content p {
-  margin-bottom: 25px;
+  margin-bottom: 12px; /* уменьшено с 25px */
   color: #666;
   line-height: 1.5;
   font-family: 'Montserrat', sans-serif;
-  font-size: 14px;
+  font-size: 10px; /* уменьшено с 14px */
 }
 
 .modal-btn {
   background: #6B4C93;
   color: white;
   border: none;
-  padding: 12px 30px;
-  border-radius: 8px;
+  padding: 6px 15px; /* уменьшено с 12px 30px */
+  border-radius: 4px; /* уменьшено с 8px */
   cursor: pointer;
   font-family: 'Montserrat', sans-serif;
-  font-size: 12px;
+  font-size: 10px; /* уменьшено с 12px */
   font-weight: 500;
   transition: background 0.3s ease;
 }
@@ -654,11 +660,12 @@ const closeError = () => {
 @media (max-width: 768px) {
   .container {
     max-width: 95%;
+    padding: 0 10px; /* добавлено */
   }
   
   .form-wrapper {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 15px; /* уменьшено с 40px */
   }
   
   .form-header {
@@ -667,30 +674,38 @@ const closeError = () => {
   }
   
   .form-header h2 {
-    font-size: 24px;
+    font-size: 24px; /* возвращено к среднему размеру для планшетов */
   }
   
   .form-container {
-    padding: 30px 20px;
+    padding: 12px 8px; /* уменьшено с 30px 20px */
   }
   
   .order-form-section {
-    padding: 40px 0;
+    padding: 15px 0; /* уменьшено с 40px */
   }
 }
 
 @media (max-width: 480px) {
   .form-header h2 {
-    font-size: 20px;
+    font-size: 20px; /* возвращено к нормальному размеру для мобильных */
   }
   
   .form-container {
-    padding: 25px 15px;
+    padding: 10px 6px; /* уменьшено с 25px 15px */
   }
   
   .modal-content {
-    margin: 10px;
-    padding: 30px 20px;
+    margin: 5px; /* уменьшено с 10px */
+    padding: 15px 10px; /* уменьшено с 30px 20px */
+  }
+  
+  .form-header p {
+    font-size: 11px; /* увеличено для читаемости */
+  }
+  
+  .phone {
+    font-size: 18px !important; /* увеличено для читаемости */
   }
 }
 </style> 

@@ -107,20 +107,21 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
 }
 
 .menu-grid {
-  width: 90%;
-  max-width: 1600px;
+  width: 100%;
+  max-width: 1200px; /* единая ширина */
   margin: 0 auto;
+  padding: 0 20px; /* внутренние отступы */
   display: grid;
-  grid-template-columns: repeat(5, minmax(260px, 1fr));
+  grid-template-columns: repeat(5, minmax(200px, 1fr)); /* адаптируем под меньшую ширину */
   grid-template-rows: repeat(2, 1fr);
-  gap: 10px;
+  gap: 50px 10px; /* еще больше увеличено с 30px до 50px */
   justify-items: center;
 }
 
 .menu-item {
   width: 100%;
-  max-width: 340px;
-  aspect-ratio: 340 / 210;
+  height: 250px; /* фиксированная высота для всех карточек */
+  max-width: 220px; /* фиксированная ширина для всех карточек */
 }
 
 /* Позиционирование элементов нижнего ряда по центру */
@@ -149,21 +150,28 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
   width: 100%;
   height: 100%;
   border-radius: 8px;
-  overflow: hidden;
+  overflow: visible; /* изменено с hidden чтобы текст мог быть вне */
   cursor: pointer;
   outline: none;
   transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  min-height: 250px; /* минимальная высота для одинаковости */
 
   &::before {
     content: '';
     position: absolute;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 200px; /* фиксированная высота для области фона */
     background-image: var(--bg-image);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     opacity: 0.9; /* 90% видимость по умолчанию */
     transition: opacity 0.2s ease;
+    border-radius: 8px 8px 0 0; /* скругление только сверху */
   }
 
   &:hover::before {
@@ -176,91 +184,130 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
 }
 
 .item-image-container {
-  position: absolute;
-  top: 5%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: auto;
-  height: auto;
+  position: relative;
+  height: 200px; /* фиксированная высота для области изображения */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 1; /* над фоном */
+  padding: 15px;
 }
 
 .item-image {
-  width: 200px;
-  height: 200px;
+  width: 150px; /* уменьшено для лучшего размещения */
+  height: 150px;
   object-fit: contain;
   transition: transform 0.3s ease;
-  transform: translateY(-37px);
 
   &.lifted {
-    transform: translateY(-44px);
+    transform: translateY(-5px); /* небольшой подъем при ховере */
   }
 }
 
 .item-text {
-  position: absolute;
-  bottom: 15px; /* поднимаем выше для наложения на изображение */
-  left: 0;
-  right: 0;
-  transform: none;
-  z-index: 2; /* над изображением */
+  position: relative;
+  background: rgba(255, 255, 255, 0.95); /* полупрозрачный белый фон */
+  margin: 0 0 0 0; /* убрали отрицательные отступы */
+  border-radius: 0 0 8px 8px; /* скругление только снизу */
+  z-index: 2;
   font-family: 'Days', sans-serif;
   font-weight: 400;
-  font-size: 18px;
+  font-size: 13px; /* слегка уменьшено для лучшего размещения */
   line-height: 1.2;
   color: #000000;
   text-align: center;
   user-select: none;
-  padding: 0 8px;
-  text-shadow: 0 0 2px rgba(255, 255, 255, 1), 
-               0 0 4px rgba(255, 255, 255, 0.9), 
-               0 0 8px rgba(255, 255, 255, 0.8),
-               0 0 12px rgba(255, 255, 255, 0.6),
-               0 0 16px rgba(255, 255, 255, 0.4);
+  padding: 12px 8px; /* увеличенные вертикальные отступы */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* легкая тень */
+  transition: all 0.3s ease;
+  height: 50px; /* фиксированная высота для текстовой области */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.active {
+    background: rgba(255, 255, 255, 1); /* полностью белый при ховере */
+    transform: translateY(-2px);
+  }
 }
 
 /* Адаптивность */
 @media (max-width: 1440px) {
-  .menu-item { max-width: 260px; }
+  .menu-item { 
+    max-width: 200px; 
+    height: 230px; /* слегка уменьшено для больших экранов */
+  }
+  .item-frame { min-height: 230px; }
+  .item-image-container { height: 180px; }
 }
 
 @media (max-width: 1200px) {
   .menu-grid { 
     width: 95%; 
-    grid-template-columns: repeat(4, minmax(240px, 1fr)); 
-    gap: 16px; 
+    grid-template-columns: repeat(4, minmax(200px, 1fr)); 
+    gap: 40px 16px; /* еще больше увеличено с 25px до 40px */
   }
-  .menu-item { max-width: 320px; }
+  .menu-item { 
+    max-width: 180px; 
+    height: 210px; 
+  }
+  .item-frame { min-height: 210px; }
+  .item-image-container { height: 160px; }
 }
 
 @media (max-width: 992px) {
   .menu-grid { 
     width: 95%; 
-    grid-template-columns: repeat(3, minmax(220px, 1fr)); 
-    gap: 14px; 
+    grid-template-columns: repeat(3, minmax(180px, 1fr)); 
+    gap: 35px 14px; /* еще больше увеличено с 22px до 35px */
   }
-  .menu-item { max-width: 280px; }
+  .menu-item { 
+    max-width: 200px; 
+    height: 220px; 
+  }
+  .item-frame { min-height: 220px; }
+  .item-image-container { height: 170px; }
 }
 
 @media (max-width: 768px) {
   .menu-grid { 
     width: 90%; 
     grid-template-columns: repeat(2, 1fr); 
-    gap: 12px; 
+    gap: 30px 12px; /* еще больше увеличено с 20px до 30px */
   }
-  .menu-item { max-width: 200px; }
-  .item-image { width: 120px; height: 120px; }
-  .item-text { font-size: 10px; }
+  .menu-item { 
+    max-width: 160px; 
+    height: 180px; 
+  }
+  .item-frame { min-height: 180px; }
+  .item-image-container { height: 130px; }
+  .item-image { width: 80px; height: 80px; } /* адаптировано под новую структуру */
+  .item-text { 
+    font-size: 10px; /* уменьшено для лучшего размещения */
+    height: 50px;
+    padding: 8px 4px;
+  }
 }
 
 @media (max-width: 480px) {
   .menu-grid { 
     width: 95%; 
     grid-template-columns: 1fr; 
-    gap: 15px; 
+    gap: 25px; /* еще больше увеличено с 18px до 25px */
   }
   .menu-section { padding: 20px 0; }
-  .menu-item { max-width: 300px; }
-  .item-text { font-size: 11px; }
+  .menu-item { 
+    max-width: 250px; 
+    height: 200px;
+    margin: 0 auto; /* центрирование для одноколоночного макета */
+  }
+  .item-frame { min-height: 200px; }
+  .item-image-container { height: 150px; }
+  .item-image { width: 100px; height: 100px; } /* больше для одноколоночного макета */
+  .item-text { 
+    font-size: 11px; /* увеличено для лучшей читаемости */
+    height: 50px;
+    padding: 10px 8px;
+  }
 }
 </style>

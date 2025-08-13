@@ -69,8 +69,10 @@ onUnmounted(() => {
 
 .hero-container {
   position: relative;
-  width: min(1300px, 100%);
-  height: 250px; /* фиксированная высота */
+  max-width: 1200px; /* единая ширина */
+  margin: 0 auto; /* центрирование */
+  width: 100%;
+  height: 400px; /* увеличенная высота для больших элементов */
 }
 
 .hero-slide {
@@ -96,7 +98,7 @@ onUnmounted(() => {
 .banner-content {
   position: relative;
   z-index: 2;
-  width: 450px; /* область текста */
+  width: 600px; /* увеличиваем область текста для размещения заголовка в одну строку */
   height: 100%;
   padding: 20px 24px;
   display: flex;
@@ -106,57 +108,63 @@ onUnmounted(() => {
 
 .banner-title {
   font-family: 'Days', sans-serif;
-  font-size: 14px;
-  color: #111;
+  font-size: 56px;
+  color: #cbff07;
   margin: 0 0 8px 0;
+  white-space: nowrap;
 }
 
 .banner-description {
   font-family: 'Montserrat', Arial, sans-serif;
   font-weight: 500; /* Medium */
-  font-size: 9px;
-  color: #222;
+  font-size: 27px;
+  color: #ffffff;
   margin: 0 0 14px 0;
 }
 
 .banner-button {
   width: fit-content;
-  background: #60d394; /* зеленая кнопка */
+  background: #cbff07; /* ярко-зеленая кнопка */
   color: #0b3d2e;
   font-family: 'Montserrat', Arial, sans-serif;
   font-weight: 700; /* Bold */
-  font-size: 12px;
+  font-size: 36px;
   padding: 8px 16px;
-  border-radius: 8px;
+  border-radius: 24px;
   text-decoration: none;
   transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
 .banner-button:hover {
   transform: translateY(-1px);
-  background: #4fc187;
+  background: #a8d905;
 }
 
 .banner-char {
   position: absolute;
   right: 40px;
   bottom: 0; /* по нижней границе баннера */
-  height: 320px; /* увеличиваем размер для правильной посадки */
+  height: 480px; /* увеличиваем размер для соответствия большим элементам */
   object-fit: contain;
   z-index: 2; /* над фоном, под шапкой */
   pointer-events: none; /* не перекрывает клики по меню */
 }
 
 @media (max-width: 768px) {
-  .hero-container { width: 95%; }
+  .hero-container { width: 95%; height: 320px; }
   .banner-content { width: 55%; padding: 16px; }
-  .banner-char { right: 10px; height: 300px; bottom: 0; }
+  .banner-char { right: 10px; height: 380px; bottom: 0; }
+  .banner-title { font-size: 44px; }
+  .banner-description { font-size: 20px; }
+  .banner-button { font-size: 28px; padding: 6px 12px; border-radius: 18px; }
 }
 
 @media (max-width: 480px) {
+  .hero-container { height: 280px; }
   .banner-content { width: 60%; }
-  .banner-title { font-size: 13px; }
-  .banner-description { font-size: 9px; }
-  .banner-button { font-size: 12px; padding: 6px 12px; }
+  .banner-char { height: 320px; }
+  .banner-title { font-size: 32px; }
+  .banner-description { font-size: 16px; }
+  .banner-button { font-size: 20px; padding: 4px 8px; border-radius: 12px; }
 }
 </style>

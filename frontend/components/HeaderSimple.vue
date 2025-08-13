@@ -70,13 +70,15 @@
 .header {
   background: white;
   border-bottom: 1px solid #e5e7eb;
-  padding: 20px 40px;
+  padding: 20px 0;
   position: relative;
   z-index: 10;
 }
 
 .header-content {
-  width: 100%;
+  max-width: 1200px; /* единая ширина */
+  margin: 0 auto; /* центрирование */
+  padding: 0 40px; /* внутренние отступы */
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -237,7 +239,7 @@
   .header-content {
     flex-direction: column;
     gap: 20px;
-    padding: 15px 20px;
+    padding: 0 20px; /* обновлено для консистентности */
     align-items: center;
   }
   

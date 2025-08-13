@@ -77,8 +77,9 @@ onUnmounted(() => {
 
 /* Производственный слайдер */
 .production-slider {
-  max-width: 1200px;
+  max-width: 1200px; /* единая ширина */
   margin: 0 auto 60px auto;
+  padding: 0 20px; /* внутренние отступы */
 }
 
 .slider-container {
