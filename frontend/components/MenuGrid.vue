@@ -112,51 +112,35 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
   margin: 0 auto;
   padding: 0 20px; /* внутренние отступы */
   display: grid;
-  grid-template-columns: repeat(5, minmax(200px, 1fr)); /* адаптируем под меньшую ширину */
-  grid-template-rows: repeat(2, 1fr);
-  gap: 50px 10px; /* еще больше увеличено с 30px до 50px */
+  grid-template-columns: repeat(3, 180px); /* 3 колонки по 180px каждая */
+  grid-template-rows: repeat(3, 1fr); /* 3 ряда для сетки 3x3 */
+  gap: 40px 100px; /* 40px между горизонтальными рядами, 100px между вертикальными столбцами */
   justify-items: center;
+  justify-content: center;
 }
 
 .menu-item {
   width: 100%;
-  height: 250px; /* фиксированная высота для всех карточек */
-  max-width: 220px; /* фиксированная ширина для всех карточек */
+  height: 220px; /* уменьшенная высота для более компактного вида */
+  max-width: 180px; /* ширина 180px */
 }
 
-/* Позиционирование элементов нижнего ряда по центру */
-.menu-item:nth-child(6) {
-  grid-column: 1;
-  grid-row: 2;
-}
-
-.menu-item:nth-child(7) {
-  grid-column: 2;
-  grid-row: 2;
-}
-
-.menu-item:nth-child(8) {
-  grid-column: 3;
-  grid-row: 2;
-}
-
-.menu-item:nth-child(9) {
-  grid-column: 4;
-  grid-row: 2;
-}
+/* Элементы автоматически располагаются в сетке 3x3 */
 
 .item-frame {
   position: relative;
   width: 100%;
   height: 100%;
   border-radius: 8px;
-  overflow: visible; /* изменено с hidden чтобы текст мог быть вне */
+  overflow: visible;
   cursor: pointer;
   outline: none;
   transition: transform 0.3s ease;
   display: flex;
   flex-direction: column;
-  min-height: 250px; /* минимальная высота для одинаковости */
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 220px;
 
   &::before {
     content: '';
@@ -164,18 +148,19 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
     top: 0;
     left: 0;
     right: 0;
-    height: 200px; /* фиксированная высота для области фона */
+    height: 170px;
     background-image: var(--bg-image);
-    background-size: cover;
+    background-size: 100% 100%;
     background-position: center;
     background-repeat: no-repeat;
-    opacity: 0.9; /* 90% видимость по умолчанию */
+    opacity: 0.9;
     transition: opacity 0.2s ease;
-    border-radius: 8px 8px 0 0; /* скругление только сверху */
+    border-radius: 8px 8px 0 0;
+    z-index: 0; /* фон должен быть ниже */
   }
 
   &:hover::before {
-    opacity: 1; /* 100% при наведении */
+    opacity: 1;
   }
 
   &:hover {
@@ -185,31 +170,32 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
 
 .item-image-container {
   position: relative;
-  height: 200px; /* фиксированная высота для области изображения */
+  height: 170px;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1; /* над фоном */
+  z-index: 1;
   padding: 15px;
+  flex-shrink: 0; /* не позволяем сжиматься */
 }
 
 .item-image {
-  width: 150px; /* уменьшено для лучшего размещения */
-  height: 150px;
+  width: 165px; /* увеличено на 10% (150px + 15px) */
+  height: 165px;
   object-fit: contain;
   transition: transform 0.3s ease;
 
   &.lifted {
-    transform: translateY(-5px); /* небольшой подъем при ховере */
+    transform: translateY(-20px); /* подъем на 20px при ховере */
   }
 }
 
 .item-text {
   position: relative;
-  background: rgba(255, 255, 255, 0.95); /* полупрозрачный белый фон */
-  margin: 0 0 0 0; /* убрали отрицательные отступы */
-  border-radius: 0 0 8px 8px; /* скругление только снизу */
-  z-index: 2;
+  width: 100%;
+  background: transparent;
+  border-radius: 0 0 8px 8px;
+  z-index: 10; /* высокий z-index чтобы быть поверх всего */
   font-family: 'Days', sans-serif;
   font-weight: 400;
   font-size: 13px; /* слегка уменьшено для лучшего размещения */
@@ -224,9 +210,11 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0; /* убираем любые отступы */
 
   &.active {
-    background: rgba(255, 255, 255, 1); /* полностью белый при ховере */
+    background: transparent;
     transform: translateY(-2px);
   }
 }
@@ -244,8 +232,8 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
 @media (max-width: 1200px) {
   .menu-grid { 
     width: 95%; 
-    grid-template-columns: repeat(4, minmax(200px, 1fr)); 
-    gap: 40px 16px; /* еще больше увеличено с 25px до 40px */
+    grid-template-columns: repeat(3, 1fr); /* сохраняем 3 колонки */
+    gap: 25px 15px;
   }
   .menu-item { 
     max-width: 180px; 
@@ -258,15 +246,15 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
 @media (max-width: 992px) {
   .menu-grid { 
     width: 95%; 
-    grid-template-columns: repeat(3, minmax(180px, 1fr)); 
-    gap: 35px 14px; /* еще больше увеличено с 22px до 35px */
+    grid-template-columns: repeat(3, 1fr); /* сохраняем 3 колонки */
+    gap: 20px 12px;
   }
   .menu-item { 
-    max-width: 200px; 
-    height: 220px; 
+    max-width: 180px; 
+    height: 200px; 
   }
-  .item-frame { min-height: 220px; }
-  .item-image-container { height: 170px; }
+  .item-frame { min-height: 200px; }
+  .item-image-container { height: 150px; }
 }
 
 @media (max-width: 768px) {
@@ -281,7 +269,7 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
   }
   .item-frame { min-height: 180px; }
   .item-image-container { height: 130px; }
-  .item-image { width: 80px; height: 80px; } /* адаптировано под новую структуру */
+  .item-image { width: 88px; height: 88px; } /* увеличено на 10% (80px + 8px) */
   .item-text { 
     font-size: 10px; /* уменьшено для лучшего размещения */
     height: 50px;
@@ -303,7 +291,7 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
   }
   .item-frame { min-height: 200px; }
   .item-image-container { height: 150px; }
-  .item-image { width: 100px; height: 100px; } /* больше для одноколоночного макета */
+  .item-image { width: 110px; height: 110px; } /* увеличено на 10% (100px + 10px) */
   .item-text { 
     font-size: 11px; /* увеличено для лучшей читаемости */
     height: 50px;

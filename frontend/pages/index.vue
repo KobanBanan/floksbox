@@ -18,8 +18,11 @@
     <!-- Order Form -->
     <OrderForm />
     
-    <!-- Footer с картой -->
-    <FooterMap />
+    <!-- Карта и контакты -->
+    <MapSection />
+    
+    <!-- Новый современный футер -->
+    <FooterNew />
   </div>
 </template>
 
@@ -31,7 +34,8 @@ import MenuGrid from '../components/MenuGrid.vue'
 import ProductionSection from '../components/ProductionSection.vue'
 import ProductCarousel from '../components/ProductCarousel.vue'
 import OrderForm from '../components/OrderForm.vue'
-import FooterMap from '../components/FooterMap.vue'
+import MapSection from '../components/MapSection.vue'
+import FooterNew from '../components/FooterNew.vue'
 
 useHead({
   title: 'Floksbox - Упакуем ваш бизнес',

@@ -64,7 +64,7 @@ onUnmounted(() => {
   display: flex;
   justify-content: center;
   overflow: visible; /* персонаж может выходить вверх */
-  margin-top: 100px; /* опускаем баннер ниже шапки */
+  margin-top: 85px; /* поднят на 15px (было 100px) */
 }
 
 .hero-container {
@@ -72,7 +72,7 @@ onUnmounted(() => {
   max-width: 1200px; /* единая ширина */
   margin: 0 auto; /* центрирование */
   width: 100%;
-  height: 400px; /* увеличенная высота для больших элементов */
+  height: 320px; /* уменьшена на 20% (было 400px) */
 }
 
 .hero-slide {
@@ -93,6 +93,7 @@ onUnmounted(() => {
   background-size: cover;
   background-position: center;
   filter: none;
+  border-radius: 50px;
 }
 
 .banner-content {
@@ -100,7 +101,7 @@ onUnmounted(() => {
   z-index: 2;
   width: 600px; /* увеличиваем область текста для размещения заголовка в одну строку */
   height: 100%;
-  padding: 20px 24px;
+  padding: 20px 15px 20px 44px; /* сдвинут вправо на 20px (было 24px) */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -144,25 +145,25 @@ onUnmounted(() => {
   position: absolute;
   right: 40px;
   bottom: 0; /* по нижней границе баннера */
-  height: 480px; /* увеличиваем размер для соответствия большим элементам */
+  height: 384px; /* уменьшена на 20% (было 480px) */
   object-fit: contain;
   z-index: 2; /* над фоном, под шапкой */
   pointer-events: none; /* не перекрывает клики по меню */
 }
 
 @media (max-width: 768px) {
-  .hero-container { width: 95%; height: 320px; }
+  .hero-container { width: 95%; height: 256px; }
   .banner-content { width: 55%; padding: 16px; }
-  .banner-char { right: 10px; height: 380px; bottom: 0; }
+  .banner-char { right: 10px; height: 304px; bottom: 0; }
   .banner-title { font-size: 44px; }
   .banner-description { font-size: 20px; }
   .banner-button { font-size: 28px; padding: 6px 12px; border-radius: 18px; }
 }
 
 @media (max-width: 480px) {
-  .hero-container { height: 280px; }
+  .hero-container { height: 224px; }
   .banner-content { width: 60%; }
-  .banner-char { height: 320px; }
+  .banner-char { height: 256px; }
   .banner-title { font-size: 32px; }
   .banner-description { font-size: 16px; }
   .banner-button { font-size: 20px; padding: 4px 8px; border-radius: 12px; }
