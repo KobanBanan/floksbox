@@ -9,6 +9,15 @@
     <!-- Меню (заменяет старую сетку товаров) -->
     <MenuGrid />
     
+    <!-- Ident Section (видеофон + 1:1 слайдер) -->
+    <IdentSection />
+    
+    <!-- Process Section (над производством) -->
+    <ProcessSection />
+
+    <!-- Color Bars Section -->
+    <ColorBarsSection />
+
     <!-- Production Section -->
     <ProductionSection />
     
@@ -30,7 +39,10 @@
 import HeaderSimple from '../components/HeaderSimple.vue'
 import HeroBanner from '../components/HeroBanner.vue'
 import MenuGrid from '../components/MenuGrid.vue'
+import IdentSection from '../components/IdentSection.vue'
 
+import ProcessSection from '../components/ProcessSection.vue'
+import ColorBarsSection from '../components/ColorBarsSection.vue'
 import ProductionSection from '../components/ProductionSection.vue'
 import ProductCarousel from '../components/ProductCarousel.vue'
 import OrderForm from '../components/OrderForm.vue'
