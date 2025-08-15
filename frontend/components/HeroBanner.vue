@@ -151,6 +151,7 @@ onUnmounted(() => {
   pointer-events: none; /* не перекрывает клики по меню */
 }
 
+
 @media (max-width: 768px) {
   .hero-container { width: 95%; height: 256px; }
   .banner-content { width: 55%; padding: 16px; }

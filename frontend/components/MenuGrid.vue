@@ -1,6 +1,10 @@
 <template>
-  <section class="menu-section">
-    <div class="menu-grid">
+  <section class="menu-section" ref="sectionRef">
+    <div class="menu-inner">
+      <div class="parallax-box parallax-center">
+        <img ref="bgImgRef" src="/assets/menu/kb1.png" alt="Фоновая графика" class="parallax-img" />
+      </div>
+      <div class="menu-grid">
       <div
         v-for="(item, index) in menuItems"
         :key="index"
@@ -23,13 +27,14 @@
           <div class="item-text" :class="{ active: hoveredItems[index] }" v-html="item.name"></div>
         </div>
       </div>
+      </div>
     </div>
   </section>
   
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, onUnmounted, nextTick } from 'vue'
 
 // 9 пунктов меню согласно ТЗ
 const menuItems = [
@@ -89,11 +94,48 @@ const setHover = (index, isHovered) => {
 
 // Случайный фон back_1..4 для каждой ячейки
 const itemBackgrounds = reactive([])
-onMounted(() => {
+
+// Простой кастомный параллакс, чтобы точно двигалось
+const sectionRef = ref(null)
+const bgImgRef = ref(null)
+let rafId = 0
+
+const updateParallax = () => {
+  const sectionEl = sectionRef.value
+  const bgEl = bgImgRef.value
+  if (!sectionEl || !bgEl) return
+  const rect = sectionEl.getBoundingClientRect()
+  const viewportH = window.innerHeight || 800
+  const t = Math.max(-1, Math.min(1, (rect.top + rect.height / 2 - viewportH / 2) / viewportH))
+  const amplitude = Math.min(200, Math.max(120, rect.height * 0.2))
+  bgEl.style.transform = `translate3d(0, ${t * amplitude}px, 0) scale(1.35)`
+}
+
+const onScrollResize = () => {
+  if (rafId) cancelAnimationFrame(rafId)
+  rafId = requestAnimationFrame(updateParallax)
+}
+
+onMounted(async () => {
   const bgPool = ['/assets/menu/back_1.png', '/assets/menu/back_2.png', '/assets/menu/back_3.png', '/assets/menu/back_4.png']
   for (let i = 0; i < menuItems.length; i += 1) {
     const randomBg = bgPool[Math.floor(Math.random() * bgPool.length)]
     itemBackgrounds[i] = randomBg
+  }
+  if (process.client) {
+    await nextTick()
+    const imgs = [bgImgRef.value].filter(Boolean)
+    await Promise.all(imgs.map(img => (img.complete ? Promise.resolve() : new Promise(res => img.addEventListener('load', res, { once: true })))) )
+    updateParallax()
+    window.addEventListener('scroll', onScrollResize, { passive: true })
+    window.addEventListener('resize', onScrollResize)
+  }
+})
+
+onUnmounted(() => {
+  if (process.client) {
+    window.removeEventListener('scroll', onScrollResize)
+    window.removeEventListener('resize', onScrollResize)
   }
 })
 
@@ -102,8 +144,36 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
 
 <style lang="scss" scoped>
 .menu-section {
+  position: relative;
   padding: 30px 0;
   background-color: transparent;
+  overflow: visible;
+}
+
+.menu-inner {
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.parallax-box {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  width: 1200px;
+  height: auto;
+  pointer-events: none;
+  z-index: -1; /* ниже всей сетки */
+}
+
+.parallax-center { margin: 0 auto; }
+
+.parallax-img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .menu-grid {
@@ -117,6 +187,8 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
   gap: 40px 100px; /* 40px между горизонтальными рядами, 100px между вертикальными столбцами */
   justify-items: center;
   justify-content: center;
+  position: relative;
+  z-index: 1; /* поверх параллакса */
 }
 
 .menu-item {
@@ -156,7 +228,7 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
     opacity: 0.9;
     transition: opacity 0.2s ease;
     border-radius: 8px 8px 0 0;
-    z-index: 0; /* фон должен быть ниже */
+    z-index: 0; /* фон ниже контента карточки и ниже параллакса */
   }
 
   &:hover::before {
@@ -235,6 +307,7 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
     grid-template-columns: repeat(3, 1fr); /* сохраняем 3 колонки */
     gap: 25px 15px;
   }
+  .parallax-box { width: 900px; }
   .menu-item { 
     max-width: 180px; 
     height: 210px; 
@@ -249,6 +322,7 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
     grid-template-columns: repeat(3, 1fr); /* сохраняем 3 колонки */
     gap: 20px 12px;
   }
+  .parallax-box { width: 800px; }
   .menu-item { 
     max-width: 180px; 
     height: 200px; 
@@ -263,6 +337,7 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
     grid-template-columns: repeat(2, 1fr); 
     gap: 30px 12px; /* еще больше увеличено с 20px до 30px */
   }
+  .parallax-box { display: none; }
   .menu-item { 
     max-width: 160px; 
     height: 180px; 
