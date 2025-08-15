@@ -15,9 +15,6 @@
     <!-- Process Section (над производством) -->
     <ProcessSection />
 
-    <!-- Color Bars Section -->
-    <ColorBarsSection />
-
     <!-- Production Section -->
     <ProductionSection />
     
@@ -42,7 +39,6 @@ import MenuGrid from '../components/MenuGrid.vue'
 import IdentSection from '../components/IdentSection.vue'
 
 import ProcessSection from '../components/ProcessSection.vue'
-import ColorBarsSection from '../components/ColorBarsSection.vue'
 import ProductionSection from '../components/ProductionSection.vue'
 import ProductCarousel from '../components/ProductCarousel.vue'
 import OrderForm from '../components/OrderForm.vue'
