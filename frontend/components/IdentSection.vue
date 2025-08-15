@@ -73,7 +73,7 @@ onUnmounted(() => {
 .ident-section {
   position: relative;
   width: 100%;
-  min-height: 200px;
+  min-height: 250px; /* уменьшено до 250px для соответствия новым пропорциям 16:9 */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -84,9 +84,9 @@ onUnmounted(() => {
   position: absolute;
   left: 0;
   right: 0;
-  top: 20%;
-  width: 100%;
-  height: 60%; /* еще тоньше полоса */
+  top: 35%; /* отцентрировано по вертикали */
+  width: 100%; /* на всю ширину экрана */
+  height: 30%; /* уменьшенная высота (в два раза от 60%) */
   object-fit: cover;
   z-index: -1;
 }
@@ -97,12 +97,12 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px 0;
+  padding: 15px 0; /* уменьшено с 30px до 15px для уменьшения отступов */
 }
 
 .square-slider {
-  width: min(80vw, 720px);
-  aspect-ratio: 1 / 1;
+  width: min(98vw, 1150px); /* еще больше увеличено до 98vw, 1150px - очень близко к баннеру (1200px) */
+  aspect-ratio: 16 / 9; /* изменено с 1:1 на 16:9 для уменьшения высоты */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -117,15 +117,15 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
-  .ident-section { min-height: 180px; }
-  .video-bg { top: 22%; height: 56%; }
-  .square-slider { width: min(86vw, 520px); }
+  .ident-section { min-height: 200px; } /* уменьшено до 200px для соответствия 16:9 */
+  .video-bg { top: 36%; height: 28%; } /* уменьшенная высота и отцентрировано */
+  .square-slider { width: min(94vw, 750px); } /* еще больше увеличено до 94vw, 750px */
 }
 
 @media (max-width: 480px) {
-  .ident-section { min-height: 170px; }
-  .video-bg { top: 24%; height: 52%; }
-  .square-slider { width: min(92vw, 420px); }
+  .ident-section { min-height: 170px; } /* уменьшено до 170px для соответствия 16:9 */
+  .video-bg { top: 37%; height: 26%; } /* уменьшенная высота и отцентрировано */
+  .square-slider { width: min(90vw, 550px); } /* еще больше увеличено до 90vw, 550px */
 }
 </style>
 

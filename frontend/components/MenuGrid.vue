@@ -145,7 +145,7 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
 <style lang="scss" scoped>
 .menu-section {
   position: relative;
-  padding: 30px 0;
+  padding: 15px 0; /* уменьшено с 30px до 15px */
   background-color: transparent;
   overflow: visible;
 }

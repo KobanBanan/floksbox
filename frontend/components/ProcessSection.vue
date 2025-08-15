@@ -24,7 +24,7 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 16px;
+  padding: 8px 16px; /* уменьшили вертикальные отступы с 16px до 8px */
 }
 
 .process-image {
@@ -36,7 +36,7 @@
 
 @media (min-width: 1024px) {
   .process-container {
-    padding: 24px 16px;
+    padding: 12px 16px; /* уменьшили с 24px до 12px */
   }
 }
 </style>
