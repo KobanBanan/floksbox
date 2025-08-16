@@ -167,7 +167,7 @@ onMounted(() => {
 <style scoped>
 .product-carousel {
   padding: 80px 0;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: #5e3085;
 }
 
 .container {
@@ -184,14 +184,14 @@ onMounted(() => {
 .section-title {
   font-size: 48px;
   font-weight: 700;
-  color: #2d3748;
+  color: #ffffff;
   margin: 0 0 16px 0;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Days One', cursive;
 }
 
 .section-description {
   font-size: 18px;
-  color: #718096;
+  color: #ffffff;
   margin: 0;
   max-width: 600px;
   margin: 0 auto;

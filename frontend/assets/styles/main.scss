@@ -1,13 +1,14 @@
 // Импорт переменных
-@import './variables.scss';
+@use 'sass:color';
+@use './variables.scss' as vars;
 
-// Подключение шрифта Days
-@font-face {
-  font-family: 'Days';
-  src: url('/fonts/Days.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
+// Подключение шрифта Days - используем Google Fonts как fallback
+// @font-face {
+//   font-family: 'Days';
+//   src: url('/fonts/Days.ttf') format('truetype');
+//   font-weight: normal;
+//   font-style: normal;
+// }
 
 // Глобальные стили
 * {
@@ -22,8 +23,8 @@ html {
 }
 
 body {
-  font-family: $font-family-primary;
-  color: $color-black;
+  font-family: vars.$font-family-primary;
+  color: vars.$color-black;
   line-height: 1.6;
   overflow-x: hidden;
 }
@@ -40,7 +41,7 @@ body {
 }
 
 .text-primary {
-  color: $color-primary;
+  color: vars.$color-primary;
 }
 
 // Анимации
@@ -88,19 +89,19 @@ body {
 
 // Скрытие элементов на разных экранах
 .hidden-mobile {
-  @media (max-width: $breakpoint-mobile) {
+  @media (max-width: vars.$breakpoint-mobile) {
     display: none !important;
   }
 }
 
 .hidden-tablet {
-  @media (max-width: $breakpoint-tablet) {
+  @media (max-width: vars.$breakpoint-tablet) {
     display: none !important;
   }
 }
 
 .hidden-desktop {
-  @media (min-width: $breakpoint-desktop) {
+  @media (min-width: vars.$breakpoint-desktop) {
     display: none !important;
   }
 }
@@ -115,22 +116,22 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: $color-primary;
+  background: vars.$color-primary;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: darken($color-primary, 10%);
+  background: color.scale(vars.$color-primary, $lightness: -10%);
 }
 
 // Стили для ссылок
 a {
   color: inherit;
   text-decoration: none;
-  transition: color $transition-medium;
+  transition: color vars.$transition-medium;
   
   &:hover {
-    color: $color-primary;
+    color: vars.$color-primary;
   }
 }
 
@@ -139,31 +140,31 @@ a {
   display: inline-block;
   padding: 12px 24px;
   border: none;
-  border-radius: $border-radius-small;
-  font-family: $font-family-primary;
-  font-weight: $font-weight-bold;
+  border-radius: vars.$border-radius-small;
+  font-family: vars.$font-family-primary;
+  font-weight: vars.$font-weight-bold;
   text-align: center;
   cursor: pointer;
-  transition: all $transition-medium;
+  transition: all vars.$transition-medium;
   
   &.btn-primary {
-    background-color: $color-primary;
-    color: $color-white;
+    background-color: vars.$color-primary;
+    color: vars.$color-white;
     
     &:hover {
-      background-color: darken($color-primary, 10%);
+      background-color: color.scale(vars.$color-primary, $lightness: -10%);
       transform: translateY(-2px);
     }
   }
   
   &.btn-outline {
     background-color: transparent;
-    color: $color-primary;
-    border: 2px solid $color-primary;
+    color: vars.$color-primary;
+    border: 2px solid vars.$color-primary;
     
     &:hover {
-      background-color: $color-primary;
-      color: $color-white;
+      background-color: vars.$color-primary;
+      color: vars.$color-white;
     }
   }
 }
@@ -181,7 +182,7 @@ a {
     width: 20px;
     height: 20px;
     margin: -10px 0 0 -10px;
-    border: 2px solid $color-primary;
+    border: 2px solid vars.$color-primary;
     border-radius: 50%;
     border-top-color: transparent;
     animation: spin 1s linear infinite;
@@ -191,5 +192,114 @@ a {
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+// Scroll Reveal анимации
+@keyframes scrollRevealFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scrollRevealFadeLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scrollRevealFadeRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scrollRevealScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Базовые классы для scroll reveal
+.scroll-reveal {
+  opacity: 0;
+  transition: none;
+}
+
+.scroll-reveal-visible {
+  animation-duration: 0.8s;
+  animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  animation-fill-mode: both;
+}
+
+// Варианты анимаций
+.scroll-reveal-fade-up.scroll-reveal-visible {
+  animation-name: scrollRevealFadeUp;
+}
+
+.scroll-reveal-fade-left.scroll-reveal-visible {
+  animation-name: scrollRevealFadeLeft;
+}
+
+.scroll-reveal-fade-right.scroll-reveal-visible {
+  animation-name: scrollRevealFadeRight;
+}
+
+.scroll-reveal-scale.scroll-reveal-visible {
+  animation-name: scrollRevealScale;
+}
+
+// Задержки для последовательного появления
+.scroll-reveal-delay-1 {
+  animation-delay: 0.1s;
+}
+
+.scroll-reveal-delay-2 {
+  animation-delay: 0.2s;
+}
+
+.scroll-reveal-delay-3 {
+  animation-delay: 0.3s;
+}
+
+.scroll-reveal-delay-4 {
+  animation-delay: 0.4s;
+}
+
+.scroll-reveal-delay-5 {
+  animation-delay: 0.5s;
+}
+
+// Медиа запросы для уменьшения анимаций на мобильных устройствах
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal {
+    opacity: 1;
+    animation: none !important;
+  }
+}
+
+@media (max-width: vars.$breakpoint-mobile) {
+  .scroll-reveal-visible {
+    animation-duration: 0.5s;
   }
 } 

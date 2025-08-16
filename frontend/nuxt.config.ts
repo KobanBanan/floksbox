@@ -4,7 +4,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   
   // CSS конфигурация
-  css: [],
+  css: ['~/assets/styles/main.scss'],
   
   // Настройки сервера разработки
   devServer: {

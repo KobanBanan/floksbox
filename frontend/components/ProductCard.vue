@@ -2,7 +2,7 @@
   <div class="product-card" @click="goToProduct">
     <div class="product-image-wrapper">
       <img 
-        :src="product.image_url || '/assets/images/mainpage.png'" 
+        :src="getImageSrc()" 
         :alt="product.name"
         class="product-image"
         @error="handleImageError"
@@ -36,6 +36,13 @@ const router = useRouter()
 
 const goToProduct = () => {
   router.push(`/product/${props.product.id}`)
+}
+
+const getImageSrc = () => {
+  if (props.product && props.product.image_url && props.product.image_url !== 'undefined') {
+    return props.product.image_url
+  }
+  return '/assets/images/mainpage.png'
 }
 
 const handleImageError = (event) => {
