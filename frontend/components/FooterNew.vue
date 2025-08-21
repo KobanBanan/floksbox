@@ -6,21 +6,21 @@
         <div class="footer-links">
           <h3 class="footer-title">Навигация</h3>
           <ul class="links-list">
-            <li><a href="/" class="footer-link">Главная</a></li>
-            <li><a href="/catalog" class="footer-link">Каталог</a></li>
-            <li><a href="/about" class="footer-link">О компании</a></li>
-            <li><a href="/delivery" class="footer-link">Доставка</a></li>
-            <li><a href="/contacts" class="footer-link">Контакты</a></li>
+            <li><NuxtLink to="/" class="footer-link">Главная</NuxtLink></li>
+            <li><NuxtLink to="/catalog" class="footer-link">Каталог</NuxtLink></li>
+            <li><NuxtLink to="/about" class="footer-link">О компании</NuxtLink></li>
+            <li><NuxtLink to="/delivery" class="footer-link">Доставка</NuxtLink></li>
+            <li><NuxtLink to="/contacts" class="footer-link">Контакты</NuxtLink></li>
           </ul>
         </div>
         
         <div class="footer-services">
           <h3 class="footer-title">Услуги</h3>
           <ul class="links-list">
-            <li><a href="/packaging" class="footer-link">Упаковка</a></li>
-            <li><a href="/design" class="footer-link">Дизайн</a></li>
-            <li><a href="/branding" class="footer-link">Брендинг</a></li>
-            <li><a href="/consultation" class="footer-link">Консультация</a></li>
+            <li><NuxtLink to="/packaging" class="footer-link">Упаковка</NuxtLink></li>
+            <li><NuxtLink to="/design" class="footer-link">Дизайн</NuxtLink></li>
+            <li><NuxtLink to="/branding" class="footer-link">Брендинг</NuxtLink></li>
+            <li><NuxtLink to="/consultation" class="footer-link">Консультация</NuxtLink></li>
           </ul>
         </div>
       </div>
@@ -79,8 +79,8 @@
           © {{ currentYear }} Floksbox. Все права защищены.
         </p>
         <div class="footer-legal">
-          <a href="/privacy" class="legal-link">Политика конфиденциальности</a>
-          <a href="/terms" class="legal-link">Условия использования</a>
+          <NuxtLink to="/privacy" class="legal-link">Политика конфиденциальности</NuxtLink>
+          <NuxtLink to="/terms" class="legal-link">Условия использования</NuxtLink>
         </div>
       </div>
     </div>
@@ -98,7 +98,7 @@ const currentYear = computed(() => new Date().getFullYear())
 @use '~/assets/styles/variables.scss' as vars;
 
 .footer-new {
-  background: vars.$color-white;
+  background: #e0ebff;
   color: vars.$color-black;
   padding: 60px 0 0 0;
   margin-top: auto;
@@ -109,12 +109,12 @@ const currentYear = computed(() => new Date().getFullYear())
   &::before {
     content: '';
     position: absolute;
-    top: -100px;
+    top: -120px;
     left: 0;
     right: 0;
-    height: 100px;
-    background: rgba(224, 235, 255, 0.8) url('/assets/images/wave.png') no-repeat center bottom;
-    background-size: 120% auto;
+    height: 120px;
+    background: url('/assets/images/wave.png') no-repeat center center;
+    background-size: 100% 100%;
     pointer-events: none;
     z-index: 1;
   }

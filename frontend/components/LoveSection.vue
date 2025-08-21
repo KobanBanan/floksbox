@@ -64,7 +64,7 @@ const setHovered = (value) => {
 <style scoped>
 .love-section {
   padding: 60px 20px;
-  background-color: #ffffff;
+  background-color: transparent;
   color: white;
 }
 

@@ -13,28 +13,28 @@
     <div class="header-content">
       <!-- Логотип с изображением -->
       <div class="logo">
-        <a href="/" class="logo-link">
+        <NuxtLink to="/" class="logo-link">
           <img src="/assets/logo/floksbox лого.png" alt="Floksbox" class="logo-image" />
-        </a>
+        </NuxtLink>
       </div>
       
       <!-- Навигационное меню -->
       <nav class="navigation">
         <ul class="nav-list">
           <li class="nav-item">
-            <a href="/" class="nav-link">Главная</a>
+            <NuxtLink to="/" class="nav-link">Главная</NuxtLink>
           </li>
           <li class="nav-item">
-            <a href="/catalog" class="nav-link">Каталог</a>
+            <NuxtLink to="/catalog" class="nav-link">Каталог</NuxtLink>
           </li>
           <li class="nav-item">
-            <a href="/promotions" class="nav-link">Акции</a>
+            <NuxtLink to="/promotions" class="nav-link">Акции</NuxtLink>
           </li>
           <li class="nav-item">
-            <a href="/prices" class="nav-link">Цены</a>
+            <NuxtLink to="/prices" class="nav-link">Цены</NuxtLink>
           </li>
           <li class="nav-item">
-            <a href="/contacts" class="nav-link">Контакты</a>
+            <NuxtLink to="/contacts" class="nav-link">Контакты</NuxtLink>
           </li>
         </ul>
       </nav>

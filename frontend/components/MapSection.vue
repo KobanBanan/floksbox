@@ -105,7 +105,7 @@
 @use '~/assets/styles/variables.scss' as vars;
 
 .map-section {
-  background: vars.$color-white;
+  background: transparent;
   padding: 80px 0;
   position: relative;
 }
@@ -148,7 +148,7 @@
   border-radius: vars.$border-radius-large;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  background: #f8f9fa;
+  background: rgba(248, 249, 250, 0.9);
 }
 
 .yandex-map {
@@ -167,7 +167,7 @@
 }
 
 .contact-card {
-  background: vars.$color-white;
+  background: rgba(255, 255, 255, 0.95);
   border-radius: vars.$border-radius-large;
   padding: 32px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);

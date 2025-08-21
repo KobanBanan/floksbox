@@ -82,7 +82,7 @@ const handleProductClick = (item, index) => {
 <style scoped>
 .product-grid-section {
   padding: 40px 20px;
-  background-color: #f8f9fa;
+  background-color: transparent;
 }
 
 .container {

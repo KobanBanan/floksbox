@@ -44,7 +44,7 @@
     </section>
     
     <!-- Карта и контакты -->
-    <div class="scroll-reveal scroll-reveal-fade-up scroll-reveal-delay-2">
+    <div class="scroll-reveal scroll-reveal-fade-up scroll-reveal-delay-2 map-wrapper">
       <MapSection />
     </div>
     
@@ -95,8 +95,8 @@ useHead({
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 40px 0;
-  background: white;
+  padding: 60px 20px;
+  background: transparent;
 }
 
 .choose-image {
@@ -104,5 +104,9 @@ useHead({
   height: auto;
   border: none;
   outline: none;
+}
+
+.map-wrapper {
+  margin-bottom: 80px;
 }
 </style> 

@@ -340,10 +340,9 @@ const closeError = () => {
 @import url('https://fonts.googleapis.com/css2?family=Days+One&display=swap');
 
 .order-form-section {
-  background: url('/assets/task/task_d.png') center center no-repeat;
-  background-size: cover;
-  padding: 20px 0; /* уменьшено втрое с 60px */
-  min-height: 200px; /* уменьшено с 500px */
+  background: transparent;
+  padding: 120px 0;
+  min-height: 800px;
 }
 
 .container {
@@ -354,31 +353,31 @@ const closeError = () => {
 
 .form-wrapper {
   display: grid;
-  grid-template-columns: 1.5fr 1fr; /* текст теперь шире, форма уже */
-  gap: 30px; /* уменьшено с 80px */
+  grid-template-columns: 2fr 1.3fr;
+  gap: 40px;
   align-items: flex-start;
 }
 
 .form-header {
-  padding-right: 40px; /* возвращено к исходному размеру */
+  padding-right: 50px;
 }
 
 .form-header h2 {
   font-family: 'Days One', cursive;
-  font-size: 48px; /* возвращено к исходному размеру */
+  font-size: 56px;
   font-weight: normal;
-  color: #6B3F8C; /* Чуть темнее фиолетовый */
+  color: #6B3F8C;
   line-height: 1.2;
-  margin-bottom: 20px; /* возвращено к исходному размеру */
+  margin-bottom: 25px;
 }
 
 .form-header p {
   font-family: 'Montserrat', sans-serif;
   font-weight: 300;
-  font-size: 12px; /* возвращено к исходному размеру */
+  font-size: 16px;
   color: #333;
-  margin-bottom: 15px; /* возвращено к исходному размеру */
-  line-height: 1.4;
+  margin-bottom: 18px;
+  line-height: 1.5;
 }
 
 .response-info {
@@ -396,10 +395,10 @@ const closeError = () => {
 
 .phone {
   font-family: 'Montserrat', sans-serif;
-  font-size: 28px !important; /* возвращено к исходному размеру */
+  font-size: 32px !important;
   font-weight: 600 !important;
   color: #6B3F8C !important;
-  margin-top: 30px !important; /* возвращено к исходному размеру */
+  margin-top: 35px !important;
   text-decoration: none;
   display: inline-block;
   transition: color 0.3s ease;
@@ -410,9 +409,9 @@ const closeError = () => {
 }
 
 .form-container {
-  background: white;
-  border-radius: 12px; /* еще немного уменьшено */
-  padding: 12px; /* уменьшено с 15px */
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 20px;
   overflow: hidden;
   /* Добавить эффект свечения */
   box-shadow: 
@@ -430,7 +429,7 @@ const closeError = () => {
 .order-form {
   display: flex;
   flex-direction: column;
-  gap: 6px; /* еще немного уменьшено с 8px */
+  gap: 12px;
 }
 
 .form-group {
@@ -441,27 +440,27 @@ const closeError = () => {
 
 .form-group label {
   font-family: 'Montserrat', sans-serif;
-  font-size: 10px; /* уменьшено с 14px */
-  font-weight: 500; /* жирнее */
+  font-size: 14px;
+  font-weight: 500;
   color: #333;
-  margin-bottom: 3px; /* еще немного уменьшено с 4px */
+  margin-bottom: 6px;
 }
 
 .form-group input,
 .form-group textarea {
   font-family: 'Montserrat', sans-serif;
   font-weight: 300;
-  border-radius: 6px; /* уменьшено с 12px */
+  border-radius: 8px;
   background: #FAFAFA;
   border: 1px solid #E8E8E8;
-  padding: 6px 10px; /* еще немного уменьшено с 8px 12px */
-  font-size: 10px; /* уменьшено с 14px */
+  padding: 12px 16px;
+  font-size: 14px;
   transition: border-color 0.3s ease;
 }
 
 .form-group textarea {
-  min-height: 60px; /* компактная высота для textarea */
-  resize: vertical; /* позволить изменять только высоту */
+  min-height: 80px;
+  resize: vertical;
 }
 
 .form-group input:focus,
@@ -480,12 +479,12 @@ const closeError = () => {
   color: #ff4444;
   font-family: 'Montserrat', sans-serif;
   font-weight: 300;
-  font-size: 8px; /* уменьшено с 10px */
-  margin-top: 2px; /* уменьшено с 5px */
+  font-size: 12px;
+  margin-top: 4px;
 }
 
 .checkbox-group {
-  margin-top: 3px; /* еще немного уменьшено с 5px */
+  margin-top: 8px;
 }
 
 .checkbox-label {
@@ -494,7 +493,7 @@ const closeError = () => {
   cursor: pointer;
   font-family: 'Montserrat', sans-serif;
   font-weight: 300;
-  font-size: 8px; /* уменьшено с 10px */
+  font-size: 12px;
   line-height: 1.4;
 }
 
@@ -503,12 +502,12 @@ const closeError = () => {
 }
 
 .checkmark {
-  width: 12px; /* уменьшено с 18px */
-  height: 12px; /* уменьшено с 18px */
-  border: 1px solid #e0e0e0; /* уменьшено с 2px */
-  border-radius: 3px; /* уменьшено с 4px */
-  margin-right: 6px; /* уменьшено с 10px */
-  margin-top: 1px; /* уменьшено с 2px */
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 4px;
+  margin-right: 8px;
+  margin-top: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -524,7 +523,7 @@ const closeError = () => {
 .checkbox-label input[type="checkbox"]:checked + .checkmark::after {
   content: '✓';
   color: white;
-  font-size: 8px; /* уменьшено с 12px */
+  font-size: 10px;
   font-weight: bold;
 }
 
@@ -539,27 +538,27 @@ const closeError = () => {
 }
 
 .submit-btn {
-  background: #B8FF00 !important; /* Еще ярче салатовый */
+  background: #B8FF00 !important;
   color: #333 !important;
-  border-radius: 6px; /* уменьшено с 12px */
+  border-radius: 8px;
   font-weight: 700;
-  box-shadow: 0 2px 8px rgba(184, 255, 0, 0.3); /* уменьшено */
-  padding: 6px 16px; /* еще немного уменьшено с 8px 20px */
+  box-shadow: 0 2px 8px rgba(184, 255, 0, 0.3);
+  padding: 14px 20px;
   width: 100%;
   text-transform: uppercase;
-  letter-spacing: 0.5px; /* уменьшено с 1px */
+  letter-spacing: 0.5px;
   border: none;
   font-family: 'Montserrat', sans-serif;
-  font-size: 10px; /* уменьшено с 12px */
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 6px; /* еще немного уменьшено с 8px */
+  margin-top: 12px;
 }
 
 .submit-btn:hover:not(:disabled) {
   background: #A8EF00 !important;
-  transform: translateY(-1px); /* уменьшено с -2px */
-  box-shadow: 0 3px 10px rgba(184, 255, 0, 0.4); /* уменьшено */
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(184, 255, 0, 0.4);
 }
 
 .submit-btn:disabled {

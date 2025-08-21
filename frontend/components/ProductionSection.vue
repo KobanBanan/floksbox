@@ -71,7 +71,7 @@ onUnmounted(() => {
 <style scoped>
 .production-section {
   padding: 60px 20px;
-  background-color: #ffffff;
+  background-color: transparent;
   color: white;
 }
 

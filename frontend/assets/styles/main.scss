@@ -27,6 +27,11 @@ body {
   color: vars.$color-black;
   line-height: 1.6;
   overflow-x: hidden;
+  background-image: url('/assets/footer/bg ok.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 // Утилитарные классы
