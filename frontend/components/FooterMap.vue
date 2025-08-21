@@ -34,6 +34,7 @@
   position: relative;
   width: 100%;
   margin-top: auto;
+  overflow: visible;
 }
 
 .footer-container {
@@ -45,7 +46,21 @@
 .map-container {
   width: 100%;
   height: 100%;
-  background-color: #e9ecef;
+  background: #e0ebff;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: rgba(224, 235, 255, 0.8) url('/assets/images/wave.png') no-repeat center bottom;
+    background-size: 120% auto;
+    pointer-events: none;
+    z-index: 1;
+  }
 }
 
 .footer-overlay {

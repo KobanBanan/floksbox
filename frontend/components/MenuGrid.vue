@@ -147,7 +147,9 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
   position: relative;
   padding: 15px 0; /* уменьшено с 30px до 15px */
   background-color: transparent;
-  overflow: visible;
+  overflow: hidden; /* ограничиваем фон секцией */
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
 }
 
 .menu-inner {
@@ -162,13 +164,16 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
   left: 0;
   right: 0;
   transform: translateY(-50%);
-  width: 1200px;
+  width: 100%;
   height: auto;
   pointer-events: none;
   z-index: -1; /* ниже всей сетки */
 }
 
-.parallax-center { margin: 0 auto; }
+.parallax-center { 
+  margin: 0 auto;
+  width: 100%;
+}
 
 .parallax-img {
   display: block;
@@ -276,7 +281,7 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
   text-align: center;
   user-select: none;
   padding: 12px 8px; /* увеличенные вертикальные отступы */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* легкая тень */
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); убрана подложка */
   transition: all 0.3s ease;
   height: 50px; /* фиксированная высота для текстовой области */
   display: flex;
@@ -307,7 +312,7 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
     grid-template-columns: repeat(3, 1fr); /* сохраняем 3 колонки */
     gap: 25px 15px;
   }
-  .parallax-box { width: 900px; }
+  .parallax-box { width: 100%; }
   .menu-item { 
     max-width: 180px; 
     height: 210px; 
@@ -322,7 +327,7 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
     grid-template-columns: repeat(3, 1fr); /* сохраняем 3 колонки */
     gap: 20px 12px;
   }
-  .parallax-box { width: 800px; }
+  .parallax-box { width: 100%; }
   .menu-item { 
     max-width: 180px; 
     height: 200px; 
@@ -337,7 +342,10 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
     grid-template-columns: repeat(2, 1fr); 
     gap: 30px 12px; /* еще больше увеличено с 20px до 30px */
   }
-  .parallax-box { display: none; }
+  .parallax-box { 
+    display: none; 
+    /* Фон скрыт на мобильных устройствах */
+  }
   .menu-item { 
     max-width: 160px; 
     height: 180px; 

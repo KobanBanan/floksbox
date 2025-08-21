@@ -2,8 +2,12 @@
   <header class="header">
     <!-- Фоновое видео -->
     <div class="header-background">
-      <!-- Заглушка для видео, пока не добавлен файл tudasuda.mp4 -->
-      <div class="video-placeholder"></div>
+      <video class="header-video" autoplay muted loop playsinline>
+        <source src="/assets/hero/tudasuda.mp4" type="video/mp4">
+        Ваш браузер не поддерживает видео.
+      </video>
+      <!-- Fallback фон если видео не загрузилось -->
+      <div class="video-fallback"></div>
     </div>
     
     <div class="header-content">
@@ -37,8 +41,22 @@
       
       <!-- Контактная информация -->
       <div class="contacts">
-        <a href="tel:+79602543323" class="contact-phone">+7 (960) 254-33-23</a>
-        <a href="mailto:info@floksbox.ru" class="contact-email">info@floksbox.ru</a>
+        <div class="contact-info">
+          <a href="tel:+79602543323" class="contact-phone">+7 (960) 254-33-23</a>
+          <a href="mailto:info@floksbox.ru" class="contact-email">info@floksbox.ru</a>
+          <!-- Иконки связи -->
+          <div class="contact-icons">
+            <a href="mailto:info@floksbox.ru" class="contact-icon" title="Email">
+              <img src="/assets/icons/p_email.png" alt="Email" class="contact-icon-img">
+            </a>
+            <a href="https://t.me/floksbox" class="contact-icon" title="Telegram" target="_blank">
+              <img src="/assets/icons/p_tg.png" alt="Telegram" class="contact-icon-img">
+            </a>
+            <a href="https://wa.me/79602543323" class="contact-icon" title="WhatsApp" target="_blank">
+              <img src="/assets/icons/p_wa.png" alt="WhatsApp" class="contact-icon-img">
+            </a>
+          </div>
+        </div>
       </div>
       <div class="action-buttons">
         <button class="constructor-btn" @click="showConstructor = true">Конструктор</button>
@@ -88,14 +106,14 @@ function submitRequest() {
   showModal.value = false
   form.value = { name: '', phone: '', message: '' }
 }
-// Логика для видео будет добавлена после получения файла
+// Видео добавлено в фон шапки
 </script>
 
 <style lang="scss" scoped>
 .header {
   position: relative;
   width: 100%;
-  height: auto;
+  min-height: 120px; /* минимальная высота для отображения видео */
   z-index: 10;
 }
 
@@ -107,40 +125,75 @@ function submitRequest() {
   height: 100%;
   z-index: -1;
   
-  .video-placeholder {
+  .header-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+  
+  .video-fallback {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    z-index: 0;
   }
 }
 
 .header-content {
   display: flex;
-  align-items: center;
-  gap: 40px;
-  padding: 20px 40px;
+  align-items: flex-end; /* Выравнивание по нижнему краю */
+  gap: 0px;
+  padding: 30px 40px; /* увеличиваем padding для лучшего отображения видео */
   position: relative;
   z-index: 1;
+  font-size: 0; /* Убираем отступы между элементами */
+  
+  /* Убираем все отступы между flex элементами */
+  > * {
+    margin: 0;
+    padding: 0;
+    font-size: 1rem; /* Восстанавливаем размер шрифта для дочерних элементов */
+  }
   
   .navigation {
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0; /* Убираем все отступы навигации */
+    padding: 0; /* Убираем все внутренние отступы навигации */
+    margin-left: -70px; /* Максимальный отрицательный отступ */
+    flex-shrink: 0; /* Предотвращаем сжатие */
+    font-size: 1rem; /* Восстанавливаем размер шрифта */
+    align-self: flex-end; /* Дополнительное выравнивание навигации по нижнему краю */
   }
   
   .contacts {
     margin-left: auto;
+    font-size: 1rem; /* Восстанавливаем размер шрифта */
   }
 }
 
 // Логотип
 .logo {
+  margin: 0; /* Убираем все отступы логотипа */
+  padding: 0; /* Убираем все внутренние отступы логотипа */
+  
   .logo-link {
     display: block;
+    margin: 0; /* Убираем отступы ссылки */
+    padding: 0; /* Убираем внутренние отступы ссылки */
   }
   
   .logo-image {
     height: 42px;
     width: auto;
+    margin: 0; /* Убираем отступы изображения */
+    padding: 0; /* Убираем внутренние отступы изображения */
+    display: block; /* Убираем возможные отступы inline элемента */
   }
 }
 
@@ -149,7 +202,9 @@ function submitRequest() {
   .nav-list {
     display: flex;
     list-style: none;
-    gap: 40px;
+    gap: 8px; /* Уменьшенные отступы между пунктами меню */
+    margin: 0; /* Убираем стандартные отступы списка */
+    padding: 0; /* Убираем стандартные отступы списка */
   }
   
   .nav-item {
@@ -158,13 +213,23 @@ function submitRequest() {
   
   .nav-link {
     display: block;
-    padding: 10px 15px;
+    padding: 8px 6px; /* Еще более минимальные внутренние отступы */
     color: #000000;
     text-decoration: none;
     font-weight: 500;
     position: relative;
     border-radius: 5px;
     transition: color 1s ease, background-color 0.1s ease;
+    
+    /* Убираем левый отступ у первого элемента */
+    &:first-child {
+      padding-left: 0;
+    }
+  }
+  
+  .nav-item:first-child .nav-link {
+    padding-left: 0; /* Убираем левый отступ у ссылки "Главная" */
+  }
     
     &:hover {
       color: #47009f;
@@ -197,6 +262,12 @@ function submitRequest() {
   flex-direction: column;
   gap: 10px;
   
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
   .contact-phone,
   .contact-email {
     color: #000000;
@@ -207,12 +278,41 @@ function submitRequest() {
       color: #47009f;
     }
   }
+  
+  .contact-icons {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  
+  .contact-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: rgba(71, 0, 159, 0.1);
+      transform: translateY(-2px);
+    }
+  }
+  
+  .contact-icon-img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+  }
 }
 
 .action-buttons {
   display: flex;
   gap: 15px;
-  margin-left: 30px;
+  margin-left: 60px;
 }
 
 .constructor-btn,

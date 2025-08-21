@@ -7,15 +7,15 @@
         class="hero-slide"
         :class="{ active: index === currentSlide }"
       >
-        <div class="banner-background" :style="{ backgroundImage: `url(${banner.fon})` }"></div>
+        <div class="banner-background" :style="{ backgroundImage: `url(${banner.fon})` }" @click="handleBannerClick"></div>
         
-        <div class="banner-content">
-          <h1 class="banner-title">{{ banner.title }}</h1>
+        <div class="banner-content" @click="handleBannerClick">
+          <h1 class="banner-title" :class="{ 'banner-title-small': index === 1 }">{{ banner.title }}</h1>
           <p class="banner-description">{{ banner.description }}</p>
-          <a href="#" class="banner-button">{{ banner.cta }}</a>
+          <a :href="banner.href" class="banner-button" :class="{ 'banner-button-lower': index === 1 }" @click.stop="handleButtonClick(banner.href)">{{ banner.cta }}</a>
         </div>
 
-        <img :src="banner.char" alt="Персонаж" class="banner-char" />
+        <img :src="banner.char" alt="Персонаж" class="banner-char" @click="handleBannerClick" />
       </div>
     </div>
   </section>
@@ -31,7 +31,16 @@ const banners = [
     char: '/assets/hero/char1.png',
     title: 'Упакуем ваш бизнес!',
     description: 'Работаем на клиента',
-    cta: 'Узнать подробности'
+    cta: 'Узнать подробности',
+    href: '#'
+  },
+  {
+    fon: '/assets/hero/fon2.png',
+    char: '/assets/hero/char2.png',
+    title: 'Пусть о Вас говорит Ваша упаковка',
+    description: 'Коробки и упаковка для общепита. Не кусается!',
+    cta: 'Перейти',
+    href: '/akcii' // TODO: обновить когда страница Акции будет создана
   }
 ]
 
@@ -42,10 +51,20 @@ const nextSlide = () => {
   currentSlide.value = (currentSlide.value + 1) % banners.length
 }
 
+const handleBannerClick = () => {
+  nextSlide()
+}
+
+const handleButtonClick = (href) => {
+  if (href && href !== '#') {
+    window.location.href = href
+  }
+}
+
 const startSlideShow = () => {
   slideInterval = setInterval(() => {
     nextSlide()
-  }, 6000)
+  }, 4000)
 }
 
 onMounted(() => {
@@ -65,6 +84,7 @@ onUnmounted(() => {
   justify-content: center;
   overflow: visible; /* персонаж может выходить вверх */
   margin-top: 85px; /* поднят на 15px (было 100px) */
+  margin-bottom: 60px; /* увеличенный отступ до следующего раздела */
 }
 
 .hero-container {
@@ -113,6 +133,14 @@ onUnmounted(() => {
   color: #cbff07;
   margin: 0 0 8px 0;
   white-space: nowrap;
+}
+
+.banner-title-small {
+  font-size: 44px;
+}
+
+.banner-button-lower {
+  margin-top: 4px;
 }
 
 .banner-description {

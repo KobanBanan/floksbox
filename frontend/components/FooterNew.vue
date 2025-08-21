@@ -98,11 +98,26 @@ const currentYear = computed(() => new Date().getFullYear())
 @import '~/assets/styles/variables.scss';
 
 .footer-new {
-  background: $color-white;
+  background: #e0ebff;
   color: $color-black;
   padding: 60px 0 0 0;
   margin-top: auto;
   border-top: 1px solid #e5e7eb;
+  position: relative;
+  overflow: visible;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: rgba(224, 235, 255, 0.8) url('/assets/images/wave.png') no-repeat center bottom;
+    background-size: 120% auto;
+    pointer-events: none;
+    z-index: 1;
+  }
 }
 
 .footer-content {
