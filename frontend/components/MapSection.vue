@@ -101,10 +101,11 @@
 </script>
 
 <style lang="scss" scoped>
-@import '~/assets/styles/variables.scss';
+@use 'sass:color';
+@use '~/assets/styles/variables.scss' as vars;
 
 .map-section {
-  background: $color-white;
+  background: vars.$color-white;
   padding: 80px 0;
   position: relative;
 }
@@ -123,7 +124,7 @@
 .map-title {
   font-size: 36px;
   font-weight: 700;
-  color: $color-black;
+  color: vars.$color-black;
   margin-bottom: 16px;
   line-height: 1.2;
 }
@@ -144,7 +145,7 @@
 }
 
 .map-wrapper {
-  border-radius: $border-radius-large;
+  border-radius: vars.$border-radius-large;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   background: #f8f9fa;
@@ -156,7 +157,7 @@
   min-height: 400px;
   
   iframe {
-    border-radius: $border-radius-large;
+    border-radius: vars.$border-radius-large;
   }
 }
 
@@ -166,8 +167,8 @@
 }
 
 .contact-card {
-  background: $color-white;
-  border-radius: $border-radius-large;
+  background: vars.$color-white;
+  border-radius: vars.$border-radius-large;
   padding: 32px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   border: 1px solid #e5e7eb;
@@ -176,7 +177,7 @@
 .contact-title {
   font-size: 24px;
   font-weight: 700;
-  color: $color-black;
+  color: vars.$color-black;
   margin-bottom: 24px;
   text-align: center;
 }
@@ -193,8 +194,8 @@
   align-items: flex-start;
   gap: 16px;
   padding: 16px;
-  border-radius: $border-radius-medium;
-  transition: all $transition-medium;
+  border-radius: vars.$border-radius-medium;
+  transition: all vars.$transition-medium;
   
   &:hover {
     background: rgba(71, 0, 159, 0.05);
@@ -210,7 +211,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $color-primary;
+  color: vars.$color-primary;
   flex-shrink: 0;
   
   svg {
@@ -225,7 +226,7 @@
   h4 {
     font-size: 16px;
     font-weight: 600;
-    color: $color-black;
+    color: vars.$color-black;
     margin-bottom: 4px;
   }
   
@@ -238,10 +239,10 @@
     a {
       color: inherit;
       text-decoration: none;
-      transition: color $transition-medium;
+      transition: color vars.$transition-medium;
       
       &:hover {
-        color: $color-primary;
+        color: vars.$color-primary;
       }
     }
   }
@@ -256,16 +257,16 @@
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: $color-primary;
-  color: $color-white;
+  background: vars.$color-primary;
+  color: vars.$color-white;
   text-decoration: none;
-  border-radius: $border-radius-medium;
+  border-radius: vars.$border-radius-medium;
   font-weight: 600;
   font-size: 14px;
-  transition: all $transition-medium;
+  transition: all vars.$transition-medium;
   
   &:hover {
-    background: darken($color-primary, 10%);
+    background: color.scale(vars.$color-primary, $lightness: -10%);
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(71, 0, 159, 0.3);
   }

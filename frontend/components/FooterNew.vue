@@ -95,11 +95,11 @@ const currentYear = computed(() => new Date().getFullYear())
 </script>
 
 <style lang="scss" scoped>
-@import '~/assets/styles/variables.scss';
+@use '~/assets/styles/variables.scss' as vars;
 
 .footer-new {
-  background: #e0ebff;
-  color: $color-black;
+  background: vars.$color-white;
+  color: vars.$color-black;
   padding: 60px 0 0 0;
   margin-top: auto;
   border-top: 1px solid #e5e7eb;
@@ -140,7 +140,7 @@ const currentYear = computed(() => new Date().getFullYear())
   font-size: 20px;
   font-weight: 700;
   margin-bottom: 24px;
-  color: $color-black;
+  color: vars.$color-black;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -160,14 +160,14 @@ const currentYear = computed(() => new Date().getFullYear())
   text-decoration: none;
   font-size: 16px;
   font-weight: 500;
-  transition: all $transition-medium;
-  border-radius: $border-radius-small;
+  transition: all vars.$transition-medium;
+  border-radius: vars.$border-radius-small;
   padding: 8px 12px;
   margin: -8px -12px;
   display: inline-block;
   
   &:hover {
-    color: $color-primary;
+    color: vars.$color-primary;
     background-color: rgba(71, 0, 159, 0.1);
     transform: translateX(5px);
   }
@@ -206,7 +206,7 @@ const currentYear = computed(() => new Date().getFullYear())
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 20px;
-  color: $color-black;
+  color: vars.$color-black;
 }
 
 .social-icons {
@@ -223,39 +223,39 @@ const currentYear = computed(() => new Date().getFullYear())
   height: 48px;
   background: rgba(71, 0, 159, 0.1);
   border-radius: 50%;
-  color: $color-primary;
+  color: vars.$color-primary;
   text-decoration: none;
-  transition: all $transition-medium;
+  transition: all vars.$transition-medium;
   border: 1px solid rgba(71, 0, 159, 0.2);
   
   &:hover {
     background: rgba(71, 0, 159, 0.2);
-    color: $color-primary;
+    color: vars.$color-primary;
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(71, 0, 159, 0.3);
   }
   
   &:nth-child(1):hover {
     background: #4680c2;
-    color: $color-white;
+    color: vars.$color-white;
     border-color: #4680c2;
   }
   
   &:nth-child(2):hover {
     background: #0088cc;
-    color: $color-white;
+    color: vars.$color-white;
     border-color: #0088cc;
   }
   
   &:nth-child(3):hover {
     background: #25d366;
-    color: $color-white;
+    color: vars.$color-white;
     border-color: #25d366;
   }
   
   &:nth-child(4):hover {
     background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-    color: $color-white;
+    color: vars.$color-white;
     border-color: transparent;
   }
 }
@@ -296,12 +296,12 @@ const currentYear = computed(() => new Date().getFullYear())
   color: #666666;
   text-decoration: none;
   font-size: 14px;
-  transition: color $transition-medium;
+  transition: color vars.$transition-medium;
   padding: 4px 8px;
-  border-radius: $border-radius-small;
+  border-radius: vars.$border-radius-small;
   
   &:hover {
-    color: $color-primary;
+    color: vars.$color-primary;
     background-color: rgba(71, 0, 159, 0.1);
   }
 }

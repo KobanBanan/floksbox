@@ -128,7 +128,7 @@ onUnmounted(() => {
 }
 
 .banner-title {
-  font-family: 'Days', sans-serif;
+  font-family: 'Days One', cursive;
   font-size: 56px;
   color: #cbff07;
   margin: 0 0 8px 0;

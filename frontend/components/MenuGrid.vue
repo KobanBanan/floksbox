@@ -273,7 +273,7 @@ const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
   background: transparent;
   border-radius: 0 0 8px 8px;
   z-index: 10; /* высокий z-index чтобы быть поверх всего */
-  font-family: 'Days', sans-serif;
+  font-family: 'Days One', cursive;
   font-weight: 400;
   font-size: 13px; /* слегка уменьшено для лучшего размещения */
   line-height: 1.2;
