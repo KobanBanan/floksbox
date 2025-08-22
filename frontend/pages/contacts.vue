@@ -60,23 +60,14 @@ useHead({
 }
 
 .page-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: transparent;
+  color: #333;
   padding: 100px 0 80px 0;
   position: relative;
   text-align: center;
 }
 
-.page-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.1);
-  z-index: 1;
-}
+
 
 .page-header-container {
   max-width: 1200px;
@@ -91,20 +82,23 @@ useHead({
   font-weight: 700;
   margin-bottom: 20px;
   line-height: 1.2;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  color: #000;
+  text-shadow: none;
 }
 
 .page-subtitle {
   font-size: 20px;
   font-weight: 400;
-  opacity: 0.9;
+  color: #000;
+  opacity: 0.8;
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.4;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  text-shadow: none;
 }
 
 .map-section-wrapper {
+  margin-top: -40px;
   margin-bottom: 120px;
 }
 

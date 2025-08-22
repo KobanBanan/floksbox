@@ -8,6 +8,9 @@ router.register(r'categories', views.CategoryViewSet, basename='category')
 router.register(r'products', views.ProductViewSet, basename='product')
 
 urlpatterns = [
+    # Root URL - redirects to health check for basic API status
+    path('', views.health_check, name='root'),
+    
     # Существующие URL
     path('sent_request/', views.sent_request, name='sent_request'),
     path('health/', views.health_check, name='health_check'),

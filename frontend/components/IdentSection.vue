@@ -73,7 +73,7 @@ onUnmounted(() => {
 .ident-section {
   position: relative;
   width: 100%;
-  min-height: 250px; /* уменьшено до 250px для соответствия новым пропорциям 16:9 */
+  min-height: 400px; /* увеличено до 400px для большего пространства вокруг видео */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -82,12 +82,12 @@ onUnmounted(() => {
 
 .video-bg {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 35%; /* отцентрировано по вертикали */
-  width: 100%; /* на всю ширину экрана */
-  height: 30%; /* уменьшенная высота (в два раза от 60%) */
-  object-fit: cover;
+  left: 50%; /* центрируем относительно левого края */
+  top: 20%; /* скорректирован отступ для центрирования увеличенного видео */
+  width: 100vw; /* ширина во весь viewport */
+  transform: translateX(-50%); /* центрируем по горизонтали */
+  height: 60%; /* увеличена высота для полного отображения видео */
+  object-fit: contain;
   z-index: -1;
 }
 
@@ -117,14 +117,14 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
-  .ident-section { min-height: 200px; } /* уменьшено до 200px для соответствия 16:9 */
-  .video-bg { top: 36%; height: 28%; } /* уменьшенная высота и отцентрировано */
+  .ident-section { min-height: 320px; } /* увеличено до 320px для большего пространства */
+  .video-bg { top: 30%; height: 40%; } /* еще больше уменьшенный размер */
   .square-slider { width: min(94vw, 750px); } /* еще больше увеличено до 94vw, 750px */
 }
 
 @media (max-width: 480px) {
-  .ident-section { min-height: 170px; } /* уменьшено до 170px для соответствия 16:9 */
-  .video-bg { top: 37%; height: 26%; } /* уменьшенная высота и отцентрировано */
+  .ident-section { min-height: 280px; } /* увеличено до 280px для большего пространства */
+  .video-bg { top: 30%; height: 40%; } /* еще больше уменьшенный размер */
   .square-slider { width: min(90vw, 550px); } /* еще больше увеличено до 90vw, 550px */
 }
 </style>

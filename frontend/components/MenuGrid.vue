@@ -1,8 +1,9 @@
 <template>
   <section class="menu-section" ref="sectionRef">
     <div class="menu-inner">
+      <!-- Фоновое изображение удалено -->
       <div class="parallax-box parallax-center">
-        <img ref="bgImgRef" src="/assets/menu/kb1.png" alt="Фоновая графика" class="parallax-img" />
+        <!-- <img ref="bgImgRef" src="/assets/menu/kb1.png" alt="Фоновая графика" class="parallax-img" /> -->
       </div>
       <div class="menu-grid">
       <div
@@ -95,20 +96,14 @@ const setHover = (index, isHovered) => {
 // Случайный фон back_1..4 для каждой ячейки
 const itemBackgrounds = reactive([])
 
-// Простой кастомный параллакс, чтобы точно двигалось
+// Параллакс-эффект отключен (фоновое изображение удалено)
 const sectionRef = ref(null)
-const bgImgRef = ref(null)
+// const bgImgRef = ref(null) // Удален, так как фоновое изображение убрано
 let rafId = 0
 
 const updateParallax = () => {
-  const sectionEl = sectionRef.value
-  const bgEl = bgImgRef.value
-  if (!sectionEl || !bgEl) return
-  const rect = sectionEl.getBoundingClientRect()
-  const viewportH = window.innerHeight || 800
-  const t = Math.max(-1, Math.min(1, (rect.top + rect.height / 2 - viewportH / 2) / viewportH))
-  const amplitude = Math.min(200, Math.max(120, rect.height * 0.2))
-  bgEl.style.transform = `translate3d(0, ${t * amplitude}px, 0) scale(1.35)`
+  // Функция отключена, так как фоновое изображение удалено
+  return
 }
 
 const onScrollResize = () => {
@@ -124,18 +119,18 @@ onMounted(async () => {
   }
   if (process.client) {
     await nextTick()
-    const imgs = [bgImgRef.value].filter(Boolean)
-    await Promise.all(imgs.map(img => (img.complete ? Promise.resolve() : new Promise(res => img.addEventListener('load', res, { once: true })))) )
-    updateParallax()
-    window.addEventListener('scroll', onScrollResize, { passive: true })
-    window.addEventListener('resize', onScrollResize)
+    // Удалено ожидание загрузки фонового изображения
+    // updateParallax() // Отключен параллакс-эффект
+    // window.addEventListener('scroll', onScrollResize, { passive: true }) // Отключены слушатели
+    // window.addEventListener('resize', onScrollResize)
   }
 })
 
 onUnmounted(() => {
   if (process.client) {
-    window.removeEventListener('scroll', onScrollResize)
-    window.removeEventListener('resize', onScrollResize)
+    // Слушатели событий отключены, так как параллакс-эффект удален
+    // window.removeEventListener('scroll', onScrollResize)
+    // window.removeEventListener('resize', onScrollResize)
   }
 })
 
