@@ -224,8 +224,8 @@ onMounted(() => {
 }
 
 .carousel-item {
-  flex: 0 0 280px;
-  height: 350px;
+  flex: 0 0 320px;
+  height: 400px;
 }
 
 .carousel-button {
@@ -259,8 +259,8 @@ onMounted(() => {
 }
 
 .loading-placeholder {
-  width: 280px;
-  height: 350px;
+  width: 320px;
+  height: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -307,8 +307,8 @@ onMounted(() => {
   }
   
   .carousel-item {
-    flex: 0 0 250px;
-    height: 320px;
+    flex: 0 0 280px;
+    height: 360px;
   }
   
   .carousel-button {
@@ -318,8 +318,8 @@ onMounted(() => {
   }
   
   .loading-placeholder {
-    width: 250px;
-    height: 320px;
+    width: 280px;
+    height: 360px;
   }
 }
 
@@ -339,13 +339,13 @@ onMounted(() => {
   }
   
   .carousel-item {
-    flex: 0 0 220px;
-    height: 300px;
+    flex: 0 0 240px;
+    height: 320px;
   }
   
   .loading-placeholder {
-    width: 220px;
-    height: 300px;
+    width: 240px;
+    height: 320px;
   }
 }
 </style> 

@@ -75,15 +75,18 @@ const formatPrice = (price) => {
 .product-image-wrapper {
   position: relative;
   width: 100%;
-  height: 160px;
+  height: 200px;
   overflow: hidden;
   background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .product-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   transition: transform 0.3s ease;
 }
 
@@ -153,7 +156,10 @@ const formatPrice = (price) => {
 
 @media (max-width: 768px) {
   .product-image-wrapper {
-    height: 120px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   .product-info {

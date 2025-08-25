@@ -12,6 +12,7 @@
         class="menu-item"
         @mouseenter="setHover(index, true)"
         @mouseleave="setHover(index, false)"
+        @click="navigateToCategory(item.route)"
       >
         <div
           class="item-frame"
@@ -42,47 +43,56 @@ const menuItems = [
   {
     name: 'Четырехклапанные<br>коробки',
     iconOn: '/assets/menu/for_on.png',
-    iconOff: '/assets/menu/for_off.png'
+    iconOff: '/assets/menu/for_off.png',
+    route: '/category/four-flap-boxes'
   },
   {
     name: 'Гофролисты<br>',
     iconOn: '/assets/menu/blk_on.png',
-    iconOff: '/assets/menu/blk_off.png'
+    iconOff: '/assets/menu/blk_off.png',
+    route: '/category/corrugated-sheets'
   },
   {
     name: 'Сложная высечка<br>',
     iconOn: '/assets/menu/clp_on.png',
-    iconOff: '/assets/menu/clp_off.png'
+    iconOff: '/assets/menu/clp_off.png',
+    route: '/category/complex-cutting'
   },
   {
     name: 'Офсетная печать<br>',
     iconOn: '/assets/menu/plg_on.png',
-    iconOff: '/assets/menu/plg_off.png'
+    iconOff: '/assets/menu/plg_off.png',
+    route: '/category/offset-printing'
   },
   {
     name: 'Подарочные<br>пакеты',
     iconOn: '/assets/menu/pkt_on.png',
-    iconOff: '/assets/menu/pkt_off.png'
+    iconOff: '/assets/menu/pkt_off.png',
+    route: '/category/gift-bags'
   },
   {
     name: 'Шляпные&nbsp;коробки<br>',
     iconOn: '/assets/menu/rnd_on.png',
-    iconOff: '/assets/menu/rnd_off.png'
+    iconOff: '/assets/menu/rnd_off.png',
+    route: '/category/hat-boxes'
   },
   {
     name: 'Дизайнерская<br>упаковка',
     iconOn: '/assets/menu/dsg_on.png',
-    iconOff: '/assets/menu/dsg_off.png'
+    iconOff: '/assets/menu/dsg_off.png',
+    route: '/category/designer-packaging'
   },
   {
     name: 'Кашированная<br>гофроупаковка',
     iconOn: '/assets/menu/klp_on.png',
-    iconOff: '/assets/menu/klp_off.png'
+    iconOff: '/assets/menu/klp_off.png',
+    route: '/category/laminated-corrugated'
   },
   {
     name: 'Гофроупаковка<br>с флексопечатью',
     iconOn: '/assets/menu/dvj_on.png',
-    iconOff: '/assets/menu/dvj_off.png'
+    iconOff: '/assets/menu/dvj_off.png',
+    route: '/category/flexo-corrugated'
   }
 ]
 
@@ -135,6 +145,13 @@ onUnmounted(() => {
 })
 
 const plainText = (htmlText) => htmlText.replace(/<br\s*\/?>/gi, ' ')
+
+// Функция навигации к категории
+const navigateToCategory = (route) => {
+  if (route) {
+    navigateTo(route)
+  }
+}
 </script>
 
 <style lang="scss" scoped>
