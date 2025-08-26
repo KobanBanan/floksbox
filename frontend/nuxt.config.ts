@@ -24,7 +24,20 @@ export default defineNuxtConfig({
       ],
       host: '0.0.0.0',
       port: 3000,
-      strictPort: false
+      strictPort: false,
+      // Прокси для API запросов
+      proxy: {
+        '/api': {
+          target: 'http://localhost:8000',
+          changeOrigin: true,
+          rewrite: (path) => path
+        },
+        '/media': {
+          target: 'http://localhost:8000',
+          changeOrigin: true,
+          rewrite: (path) => path
+        }
+      }
     }
   },
   
@@ -48,6 +61,13 @@ export default defineNuxtConfig({
     }
   },
   
+  // Runtime configuration
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.NODE_ENV === 'development' ? '' : 'http://localhost:8000'
+    }
+  },
+
   // Настройки сборки
   nitro: {
     preset: 'node-server',
