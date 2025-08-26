@@ -47,11 +47,8 @@ class ProductSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at', 'updated_at', 'dimensions', 'volume', 'image_url']
     
     def get_image_url(self, obj):
-        """Возвращает полный URL изображения"""
+        """Возвращает относительный URL изображения (от /media), чтобы хост подставлял ngrok"""
         if obj.image:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri(obj.image.url)
             return obj.image.url
         return None
     
@@ -85,11 +82,8 @@ class ProductListSerializer(serializers.ModelSerializer):
         ]
     
     def get_image_url(self, obj):
-        """Возвращает полный URL изображения"""
+        """Возвращает относительный URL изображения (от /media), чтобы хост подставлял ngrok"""
         if obj.image:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri(obj.image.url)
             return obj.image.url
         return None
 

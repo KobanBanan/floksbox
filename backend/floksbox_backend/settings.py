@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-change-this-in-production'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '*.ngrok-free.app', '.ngrok.io', '*.ngrok.io']
 
 # Application definition
 
@@ -150,6 +150,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
+
+# Добавим настройки для ngrok
+CORS_ALLOW_ALL_ORIGINS = True  # Временно для разработки с ngrok
 
 CORS_ALLOW_CREDENTIALS = True
 

@@ -118,7 +118,7 @@ import FooterMap from '~/components/FooterMap.vue'
 const route = useRoute()
 const router = useRouter()
 
-const apiBaseUrl = 'http://localhost:8000'
+// Используем относительные пути благодаря прокси
 const productId = route.params.id
 
 // Reactive data
@@ -133,7 +133,9 @@ const loadProduct = async () => {
     pending.value = true
     error.value = false
     
-    const response = await $fetch(`${apiBaseUrl}/api/products/${productId}/`)
+    const config = useRuntimeConfig()
+    const apiBase = config.public.apiBase
+    const response = await $fetch(`${apiBase}/api/products/${productId}/`)
     product.value = response
     
     // Обновляем meta-теги
@@ -157,7 +159,9 @@ const loadProduct = async () => {
 // Загрузка рекомендуемых товаров
 const loadRecommendedProducts = async () => {
   try {
-    const response = await $fetch(`${apiBaseUrl}/api/products/`, {
+    const config = useRuntimeConfig()
+    const apiBase = config.public.apiBase
+    const response = await $fetch(`${apiBase}/api/products/`, {
       params: {
         active_only: true,
         page_size: 4

@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { defineNuxtConfig } from 'nuxt/config'
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
@@ -22,8 +23,6 @@ export default defineNuxtConfig({
         '.ngrok-free.app',
         'all'
       ],
-      host: '0.0.0.0',
-      port: 3000,
       strictPort: false,
       // Прокси для API запросов
       proxy: {
@@ -64,15 +63,14 @@ export default defineNuxtConfig({
   // Runtime configuration
   runtimeConfig: {
     public: {
-      apiBase: process.env.NODE_ENV === 'development' ? '' : 'http://localhost:8000'
+      // Пустая база => `${apiBase}/api/...` даст `/api/...` на текущем хосте (ngrok)
+      apiBase: ''
     }
   },
 
   // Настройки сборки
   nitro: {
     preset: 'node-server',
-    devServer: {
-      watch: true
-    }
+    
   }
 })

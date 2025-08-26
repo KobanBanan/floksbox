@@ -110,7 +110,8 @@ const products = ref([])
 const loading = ref(true)
 const showF1 = ref(true)
 
-const apiBaseUrl = 'http://localhost:8000'
+const config = useRuntimeConfig()
+const apiBaseUrl = config.public.apiBase
 
 // Получаем slug категории из URL
 const categorySlug = computed(() => route.params.slug)
