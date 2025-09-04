@@ -9,7 +9,7 @@
         
         <div class="slider-content">
           <div 
-            v-for="(slide, index) in productionSlides" 
+            v-for="(slide, index) in shuffledSlides" 
             :key="index"
             class="production-slide"
             :class="{ 'active': index === currentProductionSlide }"
@@ -33,31 +33,59 @@ import { ref, onMounted, onUnmounted } from 'vue'
 
 const currentProductionSlide = ref(0)
 let slideInterval = null
+const shuffledSlides = ref([])
 
 const productionSlides = [
-  { image: '/assets/production/controlkillslove1.jpg', alt: 'Производственное помещение 1' },
-  { image: '/assets/production/controlkillslove2.jpg', alt: 'Производственное помещение 2' },
-  { image: '/assets/production/controlkillslove3.jpg', alt: 'Производственное помещение 3' },
-  { image: '/assets/production/controlkillslove4.jpg', alt: 'Производственное помещение 4' }
+  { image: '/assets/production/00009052.jpg', alt: 'Производственное изображение' },
+  { image: '/assets/production/12399_dizain-korobok-dlia-pitstsy-round-the-clock_640s.jpg', alt: 'Производственное изображение' },
+  { image: '/assets/production/1460812309_14327757-1000x1000.jpg', alt: 'Производственное изображение' },
+  { image: '/assets/production/1989984_upakovka_slozhnoj_vysechki.jpeg', alt: 'Производственное изображение' },
+  { image: '/assets/production/36b8e41aabab2ebe00f6d0ddab820723.jpg', alt: 'Производственное изображение' },
+  { image: '/assets/production/5.jpg', alt: 'Производственное изображение' },
+  { image: '/assets/production/ad20b9cef8ecbee4e2d33102696dc73d.jpg', alt: 'Производственное изображение' },
+  { image: '/assets/production/caf19f2ed5f34444df5429a11636336c.jpg', alt: 'Производственное изображение' },
+  { image: '/assets/production/controlkillslove1.jpg', alt: 'Производственное изображение' },
+  { image: '/assets/production/controlkillslove2.jpg', alt: 'Производственное изображение' },
+  { image: '/assets/production/controlkillslove3.jpg', alt: 'Производственное изображение' },
+  { image: '/assets/production/controlkillslove4.jpg', alt: 'Производственное изображение' },
+  { image: '/assets/production/gmanman1.jpg', alt: 'Производственное изображение' },
+  { image: '/assets/production/gmanman3.jpg', alt: 'Производственное изображение' },
+  { image: '/assets/production/gofrokarton-korobki-gofrokoroba-gofrolotki_foto_largest.jpg', alt: 'Производственное изображение' },
+  { image: '/assets/production/IMG_5513.jpg', alt: 'Производственное изображение' },
+  { image: '/assets/production/le-tim_7X.jpg', alt: 'Производственное изображение' },
+  { image: '/assets/production/pod-ovoshi.jpg', alt: 'Производственное изображение' },
+  { image: '/assets/production/top-view-fresh-delicious-whole-pizza-pizza-box_114579-88419.jpg', alt: 'Производственное изображение' },
+  { image: '/assets/production/Vegancuts-02.jpg', alt: 'Производственное изображение' },
+  { image: '/assets/production/пакет_большой.jpg', alt: 'Производственное изображение' }
 ]
 
 const nextSlide = () => {
-  currentProductionSlide.value = (currentProductionSlide.value + 1) % productionSlides.length
+  currentProductionSlide.value = (currentProductionSlide.value + 1) % shuffledSlides.value.length
 }
 
 const previousSlide = () => {
   currentProductionSlide.value = currentProductionSlide.value === 0 
-    ? productionSlides.length - 1 
+    ? shuffledSlides.value.length - 1 
     : currentProductionSlide.value - 1
+}
+
+const shuffleArray = (array) => {
+  const result = array.slice()
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[result[i], result[j]] = [result[j], result[i]]
+  }
+  return result
 }
 
 const startSlideShow = () => {
   slideInterval = setInterval(() => {
     nextSlide()
-  }, 4000) // 4 секунды автосмена
+  }, 3000) // 3 секунды автосмена
 }
 
 onMounted(() => {
+  shuffledSlides.value = shuffleArray(productionSlides)
   startSlideShow()
 })
 
