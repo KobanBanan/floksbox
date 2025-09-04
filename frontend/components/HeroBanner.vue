@@ -41,6 +41,38 @@ const banners = [
     description: 'Коробки и упаковка для общепита. Не кусается!',
     cta: 'Перейти',
     href: '/akcii' // TODO: обновить когда страница Акции будет создана
+  },
+  {
+    fon: '/assets/hero/fon3.png',
+    char: '/assets/hero/char3.png',
+    title: 'Упакуем ваш бизнес!',
+    description: 'Работаем на клиента',
+    cta: 'Узнать подробности',
+    href: '#'
+  },
+  {
+    fon: '/assets/hero/fon4.png',
+    char: '/assets/hero/char4.png',
+    title: 'Упакуем ваш бизнес!',
+    description: 'Работаем на клиента',
+    cta: 'Узнать подробности',
+    href: '#'
+  },
+  {
+    fon: '/assets/hero/fon5.png',
+    char: '/assets/hero/char5.png',
+    title: 'Упакуем ваш бизнес!',
+    description: 'Работаем на клиента',
+    cta: 'Узнать подробности',
+    href: '#'
+  },
+  {
+    fon: '/assets/hero/fon6.png',
+    char: '/assets/hero/char6.png',
+    title: 'Упакуем ваш бизнес!',
+    description: 'Работаем на клиента',
+    cta: 'Узнать подробности',
+    href: '#'
   }
 ]
 
@@ -84,15 +116,15 @@ onUnmounted(() => {
   justify-content: center;
   overflow: visible; /* персонаж может выходить вверх */
   margin-top: 85px; /* поднят на 15px (было 100px) */
-  margin-bottom: 60px; /* увеличенный отступ до следующего раздела */
+  margin-bottom: 80px; /* увеличенный отступ до следующего раздела */
 }
 
 .hero-container {
   position: relative;
-  max-width: 1200px; /* единая ширина */
+  max-width: 1100px; /* уменьшена с 1200px для более компактного вида */
   margin: 0 auto; /* центрирование */
   width: 100%;
-  height: 320px; /* уменьшена на 20% (было 400px) */
+  height: 450px; /* увеличена на 40% (было 320px) */
 }
 
 .hero-slide {
@@ -114,6 +146,8 @@ onUnmounted(() => {
   background-position: center;
   filter: none;
   border-radius: 50px;
+  width: 110%; /* делаем фон шире */
+  left: -5%; /* центрируем расширенный фон */
 }
 
 .banner-content {
@@ -121,7 +155,7 @@ onUnmounted(() => {
   z-index: 2;
   width: 600px; /* увеличиваем область текста для размещения заголовка в одну строку */
   height: 100%;
-  padding: 20px 15px 20px 44px; /* сдвинут вправо на 20px (было 24px) */
+  padding: 40px 15px 20px 44px; /* увеличиваем верхний отступ для лучшего позиционирования в увеличенном баннере */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -137,10 +171,41 @@ onUnmounted(() => {
 
 .banner-title-small {
   font-size: 44px;
+  white-space: normal; /* разрешаем перенос для второго баннера */
+  line-height: 1.1; /* уменьшаем межстрочный интервал */
+  max-width: 500px; /* ограничиваем ширину для переноса */
 }
 
 .banner-button-lower {
   margin-top: 4px;
+}
+
+/* Специальные стили для второго баннера */
+.hero-slide:nth-child(2) .banner-content {
+  padding-right: 200px; /* добавляем отступ справа для персонажа */
+}
+
+.hero-slide:nth-child(2) .banner-title {
+  white-space: normal;
+  line-height: 1.1;
+  max-width: 500px;
+}
+
+/* Стили для новых баннеров (3-6) - используем стандартные стили как у первого баннера */
+.hero-slide:nth-child(3) .banner-content,
+.hero-slide:nth-child(4) .banner-content,
+.hero-slide:nth-child(5) .banner-content,
+.hero-slide:nth-child(6) .banner-content {
+  padding-right: 0; /* стандартный отступ */
+}
+
+.hero-slide:nth-child(3) .banner-title,
+.hero-slide:nth-child(4) .banner-title,
+.hero-slide:nth-child(5) .banner-title,
+.hero-slide:nth-child(6) .banner-title {
+  white-space: nowrap; /* стандартное поведение как у первого баннера */
+  line-height: normal;
+  max-width: none;
 }
 
 .banner-description {
@@ -173,7 +238,7 @@ onUnmounted(() => {
   position: absolute;
   right: 40px;
   bottom: 0; /* по нижней границе баннера */
-  height: 384px; /* уменьшена на 20% (было 480px) */
+  height: 540px; /* увеличена на 40% (было 384px) */
   object-fit: contain;
   z-index: 2; /* над фоном, под шапкой */
   pointer-events: none; /* не перекрывает клики по меню */
@@ -181,20 +246,38 @@ onUnmounted(() => {
 
 
 @media (max-width: 768px) {
-  .hero-container { width: 95%; height: 256px; }
+  .hero-container { width: 95%; height: 360px; }
   .banner-content { width: 55%; padding: 16px; }
-  .banner-char { right: 10px; height: 304px; bottom: 0; }
+  .banner-char { right: 10px; height: 432px; bottom: 0; }
   .banner-title { font-size: 44px; }
   .banner-description { font-size: 20px; }
   .banner-button { font-size: 28px; padding: 6px 12px; border-radius: 18px; }
+  
+  /* Адаптивные стили для второго баннера */
+  .hero-slide:nth-child(2) .banner-content {
+    padding-right: 16px; /* убираем лишний отступ на мобильных */
+  }
+  
+  .banner-title-small {
+    max-width: 100%; /* на мобильных используем всю доступную ширину */
+  }
 }
 
 @media (max-width: 480px) {
-  .hero-container { height: 224px; }
+  .hero-container { height: 315px; }
   .banner-content { width: 60%; }
-  .banner-char { height: 256px; }
+  .banner-char { height: 378px; }
   .banner-title { font-size: 32px; }
   .banner-description { font-size: 16px; }
   .banner-button { font-size: 20px; padding: 4px 8px; border-radius: 12px; }
+  
+  /* Адаптивные стили для второго баннера */
+  .hero-slide:nth-child(2) .banner-content {
+    padding-right: 16px;
+  }
+  
+  .banner-title-small {
+    max-width: 100%;
+  }
 }
 </style>

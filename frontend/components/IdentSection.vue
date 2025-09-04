@@ -89,6 +89,21 @@ onUnmounted(() => {
   height: 60%; /* увеличена высота для полного отображения видео */
   object-fit: contain;
   z-index: -1;
+  display: none; /* ВРЕМЕННО СКРЫТО: видео stripes.mp4 скрыто, но не удалено */
+  /* 
+  НАСТРОЙКИ ВИДЕО ДЛЯ ВОССТАНОВЛЕНИЯ:
+  - src: /assets/task/stripes.mp4
+  - autoplay: true
+  - muted: true  
+  - loop: true
+  - playsinline: true
+  - preload: auto
+  - position: absolute, left: 50%, top: 20%
+  - width: 100vw, height: 60%
+  - transform: translateX(-50%)
+  - object-fit: contain
+  - z-index: -1
+  */
 }
 
 .content-center {

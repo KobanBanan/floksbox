@@ -1,0 +1,5 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="10" y="10" width="380" height="280" fill="#f8f9fa" stroke="#5e3085" stroke-width="2"/>
+  <text x="200" y="160" text-anchor="middle" font-family="Arial" font-size="24" fill="#5e3085">0100</text>
+  <text x="200" y="190" text-anchor="middle" font-family="Arial" font-size="16" fill="#6c757d">FEFCO Diagram</text>
+</svg>

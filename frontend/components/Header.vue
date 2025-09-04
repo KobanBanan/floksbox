@@ -31,6 +31,9 @@
             <NuxtLink to="/promotions" class="nav-link">Акции</NuxtLink>
           </li>
           <li class="nav-item">
+            <NuxtLink to="/fefco" class="nav-link">FEFCO</NuxtLink>
+          </li>
+          <li class="nav-item">
             <NuxtLink to="/prices" class="nav-link">Цены</NuxtLink>
           </li>
           <li class="nav-item">
@@ -225,11 +228,6 @@ function submitRequest() {
     &:first-child {
       padding-left: 0;
     }
-  }
-  
-  .nav-item:first-child .nav-link {
-    padding-left: 0; /* Убираем левый отступ у ссылки "Главная" */
-  }
     
     &:hover {
       color: #47009f;
@@ -253,6 +251,10 @@ function submitRequest() {
     &:hover::before {
       opacity: 1;
     }
+  }
+  
+  .nav-item:first-child .nav-link {
+    padding-left: 0; /* Убираем левый отступ у ссылки "Главная" */
   }
 }
 
