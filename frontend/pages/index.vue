@@ -13,10 +13,7 @@
       <MenuGrid />
     </div>
     
-    <!-- Ident Section (видеофон + 1:1 слайдер) -->
-    <div class="scroll-reveal scroll-reveal-fade-left scroll-reveal-delay-2">
-      <IdentSection />
-    </div>
+    
     
     <!-- Process Section (над производством) -->
     <div class="scroll-reveal scroll-reveal-scale scroll-reveal-delay-1">
@@ -38,10 +35,7 @@
       <OrderForm />
     </div>
     
-    <!-- Нас выбирают -->
-    <section class="choose-section scroll-reveal scroll-reveal-fade-up scroll-reveal-delay-1">
-      <img src="/assets/footer/choose.png" alt="Нас выбирают" class="choose-image" />
-    </section>
+    
     
     <!-- Карта и контакты -->
     <div class="scroll-reveal scroll-reveal-fade-up scroll-reveal-delay-2 map-wrapper">
@@ -59,7 +53,7 @@
 import HeaderSimple from '../components/HeaderSimple.vue'
 import HeroBanner from '../components/HeroBanner.vue'
 import MenuGrid from '../components/MenuGrid.vue'
-import IdentSection from '../components/IdentSection.vue'
+ 
 import ProcessSection from '../components/ProcessSection.vue'
 import ProductionSection from '../components/ProductionSection.vue'
 import ProductCarousel from '../components/ProductCarousel.vue'
@@ -90,21 +84,7 @@ useHead({
   min-height: 100vh;
 }
 
-.choose-section {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 60px 20px;
-  background: transparent;
-}
-
-.choose-image {
-  max-width: 100%;
-  height: auto;
-  border: none;
-  outline: none;
-}
+ 
 
 .map-wrapper {
   margin-bottom: 80px;

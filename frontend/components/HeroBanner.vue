@@ -167,6 +167,10 @@ onUnmounted(() => {
   color: #cbff07;
   margin: 0 0 8px 0;
   white-space: nowrap;
+  text-shadow: none;
+  -webkit-text-stroke: 0;
+  text-stroke: 0;
+  paint-order: fill; /* исключаем отрисовку обводки, если она задана где-то глобально */
 }
 
 .banner-title-small {
@@ -193,19 +197,28 @@ onUnmounted(() => {
 
 /* Стили для новых баннеров (3-6) - используем стандартные стили как у первого баннера */
 .hero-slide:nth-child(3) .banner-content,
-.hero-slide:nth-child(4) .banner-content,
 .hero-slide:nth-child(5) .banner-content,
 .hero-slide:nth-child(6) .banner-content {
   padding-right: 0; /* стандартный отступ */
 }
 
 .hero-slide:nth-child(3) .banner-title,
-.hero-slide:nth-child(4) .banner-title,
 .hero-slide:nth-child(5) .banner-title,
 .hero-slide:nth-child(6) .banner-title {
   white-space: nowrap; /* стандартное поведение как у первого баннера */
   line-height: normal;
   max-width: none;
+}
+
+/* Специальные стили для баннера 4 - разрешаем перенос заголовка */
+.hero-slide:nth-child(4) .banner-content {
+  padding-right: 200px; /* добавляем отступ справа для персонажа */
+}
+
+.hero-slide:nth-child(4) .banner-title {
+  white-space: normal; /* разрешаем перенос для четвертого баннера */
+  line-height: 1.1; /* уменьшаем межстрочный интервал */
+  max-width: 500px; /* ограничиваем ширину для переноса */
 }
 
 .banner-description {
@@ -258,7 +271,16 @@ onUnmounted(() => {
     padding-right: 16px; /* убираем лишний отступ на мобильных */
   }
   
+  /* Адаптивные стили для четвертого баннера */
+  .hero-slide:nth-child(4) .banner-content {
+    padding-right: 16px; /* убираем лишний отступ на мобильных */
+  }
+  
   .banner-title-small {
+    max-width: 100%; /* на мобильных используем всю доступную ширину */
+  }
+  
+  .hero-slide:nth-child(4) .banner-title {
     max-width: 100%; /* на мобильных используем всю доступную ширину */
   }
 }
@@ -276,7 +298,16 @@ onUnmounted(() => {
     padding-right: 16px;
   }
   
+  /* Адаптивные стили для четвертого баннера */
+  .hero-slide:nth-child(4) .banner-content {
+    padding-right: 16px;
+  }
+  
   .banner-title-small {
+    max-width: 100%;
+  }
+  
+  .hero-slide:nth-child(4) .banner-title {
     max-width: 100%;
   }
 }

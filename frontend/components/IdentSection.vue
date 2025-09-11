@@ -11,11 +11,7 @@
       preload="auto"
     />
 
-    <div class="content-center">
-      <div class="square-slider" @click="goNext">
-        <img :src="slides[current]" alt="ident slide" class="slide-image" />
-      </div>
-    </div>
+    
   </section>
   
 </template>
@@ -106,41 +102,18 @@ onUnmounted(() => {
   */
 }
 
-.content-center {
-  position: relative;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 15px 0; /* уменьшено с 30px до 15px для уменьшения отступов */
-}
-
-.square-slider {
-  width: min(98vw, 1150px); /* еще больше увеличено до 98vw, 1150px - очень близко к баннеру (1200px) */
-  aspect-ratio: 16 / 9; /* изменено с 1:1 на 16:9 для уменьшения высоты */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.slide-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain; /* без обрезаний */
-  display: block;
-}
+.content-center { display: none; }
 
 @media (max-width: 768px) {
   .ident-section { min-height: 320px; } /* увеличено до 320px для большего пространства */
   .video-bg { top: 30%; height: 40%; } /* еще больше уменьшенный размер */
-  .square-slider { width: min(94vw, 750px); } /* еще больше увеличено до 94vw, 750px */
+  
 }
 
 @media (max-width: 480px) {
   .ident-section { min-height: 280px; } /* увеличено до 280px для большего пространства */
   .video-bg { top: 30%; height: 40%; } /* еще больше уменьшенный размер */
-  .square-slider { width: min(90vw, 550px); } /* еще больше увеличено до 90vw, 550px */
+  
 }
 </style>
 
