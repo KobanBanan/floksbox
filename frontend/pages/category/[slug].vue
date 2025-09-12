@@ -52,8 +52,145 @@
       </div>
     </section>
     
+    <!-- Конструктор для круглых коробок -->
+    <section v-if="categorySlug === 'hat-boxes'" class="constructor-page-section">
+      <div class="constructor-page-container">
+        <h2 class="constructor-page-title">Конструктор круглых коробок</h2>
+        <p class="constructor-page-subtitle">Создайте коробку по вашим размерам</p>
+        <div class="constructor-wrapper">
+          <div class="constructor-container">
+            <div class="constructor-content">
+              <div class="constructor-left">
+                <!-- Параметры коробки -->
+                <div class="parameter-group">
+                  <div class="parameter">
+                    <label class="parameter-label">высота коробки</label>
+                    <div class="slider-container">
+                      <input 
+                        type="range" 
+                        v-model="constructorHeight" 
+                        :min="3" 
+                        :max="50" 
+                        step="1"
+                        class="slider"
+                      />
+                      <div class="slider-value">{{ constructorHeight }}см</div>
+                      <div class="input-with-unit">
+                        <input 
+                          type="number" 
+                          v-model="constructorHeight" 
+                          :min="3" 
+                          :max="50" 
+                          step="1"
+                          class="manual-input"
+                        />
+                        <span class="unit-label">см</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="parameter">
+                    <label class="parameter-label">диаметр коробки</label>
+                    <div class="slider-container">
+                      <input 
+                        type="range" 
+                        v-model="constructorDiameter" 
+                        :min="12" 
+                        :max="30" 
+                        step="2"
+                        class="slider"
+                      />
+                      <div class="slider-value">{{ constructorDiameter }}см</div>
+                      <div class="input-with-unit">
+                        <input 
+                          type="number" 
+                          v-model="constructorDiameter" 
+                          :min="12" 
+                          :max="30" 
+                          step="2"
+                          class="manual-input"
+                        />
+                        <span class="unit-label">см</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Материалы -->
+                <div class="material-group">
+                  <label class="material-label">Материал</label>
+                  <div class="material-options">
+                    <label class="material-option">
+                      <input type="radio" v-model="constructorMaterial" value="paper" />
+                      <span>Бумага</span>
+                    </label>
+                  </div>
+                </div>
+                
+                <!-- Дополнительные опции -->
+                <div class="options-group">
+                  <label class="option-label">
+                    <input type="checkbox" v-model="constructorWithLid" />
+                    <span>С крышкой</span>
+                  </label>
+                </div>
+                
+                <!-- Тираж -->
+                <div class="circulation-group">
+                  <label class="circulation-label">Тираж (от 300 штук)</label>
+                  <div class="circulation-input">
+                    <input 
+                      type="number" 
+                      v-model="constructorCirculation" 
+                      :min="300" 
+                      class="circulation-field"
+                    />
+                    <span class="unit-label">шт.</span>
+                  </div>
+                </div>
+                
+                <!-- Кнопка заказа -->
+                <button class="order-button">
+                  Оформить заказ у менеджера
+                </button>
+              </div>
+              
+              <!-- Визуализация коробки -->
+              <div class="constructor-right">
+                <div class="box-visualization">
+                  <div 
+                    class="cylinder-container"
+                    :class="{ 'with-lid': constructorWithLid, [constructorMaterial]: true }"
+                    :style="cylinderStyle"
+                  >
+                    <!-- Цилиндр -->
+                    <div class="cylinder-body">
+                      <div class="cylinder-top"></div>
+                      <div class="cylinder-side"></div>
+                      <div class="cylinder-bottom"></div>
+                      <div class="cylinder-wall-front"></div>
+                      <div class="cylinder-wall-back"></div>
+                      <div class="cylinder-wall-left"></div>
+                      <div class="cylinder-wall-right"></div>
+                    </div>
+                    
+                    <!-- Крышка (если выбрана) -->
+                    <div v-if="constructorWithLid" class="cylinder-lid">
+                      <div class="lid-top"></div>
+                      <div class="lid-side"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Раздел с товарами -->
     <section class="products-section">
+      
       <div v-if="loading" class="loading-container">
         <div class="spinner"></div>
         <p>Загрузка товаров...</p>
@@ -93,6 +230,7 @@
       </div>
     </section>
     
+    
     <!-- Футер сайта -->
     <FooterNew />
   </div>
@@ -109,6 +247,13 @@ const router = useRouter()
 const products = ref([])
 const loading = ref(true)
 const showF1 = ref(true)
+
+// Данные конструктора
+const constructorHeight = ref(25)
+const constructorDiameter = ref(20)
+const constructorMaterial = ref('paper')
+const constructorWithLid = ref(false)
+const constructorCirculation = ref(300)
 
 const config = useRuntimeConfig()
 const apiBaseUrl = config.public.apiBase
@@ -173,6 +318,17 @@ const currentCategory = computed(() => {
 const categoryName = computed(() => currentCategory.value.name)
 const categoryDescription = computed(() => currentCategory.value.description)
 const categoryImage = computed(() => currentCategory.value.image)
+
+// Стили для визуализации цилиндра в конструкторе
+const cylinderStyle = computed(() => {
+  const diameter = Math.max(120, constructorDiameter.value * 6)
+  const height = Math.max(80, constructorHeight.value * 4)
+  return {
+    '--cylinder-diameter': `${diameter}px`,
+    '--cylinder-height': `${height}px`,
+    '--lid-offset': constructorWithLid.value ? '10px' : '0px'
+  }
+})
 
 // Загрузка товаров по категории
 const loadCategoryProducts = async () => {
@@ -415,6 +571,494 @@ useHead({
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
+}
+
+/* Секция конструктора на странице */
+.constructor-page-section {
+  padding: 80px 0;
+  background: transparent;
+  width: 100%;
+}
+
+.constructor-page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.constructor-page-title {
+  font-family: 'Days One', cursive;
+  font-size: 2.5rem;
+  font-weight: 400;
+  color: #5e3085;
+  text-align: center;
+  margin-bottom: 15px;
+  text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+}
+
+.constructor-page-subtitle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #666;
+  text-align: center;
+  margin-bottom: 50px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+/* Стили конструктора */
+.constructor-wrapper {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.constructor-container {
+  width: 100%;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.constructor-content {
+  display: flex;
+  min-height: 500px;
+}
+
+.constructor-left {
+  flex: 1;
+  padding: 40px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-right: 1px solid #e9ecef;
+}
+
+.constructor-right {
+  flex: 1;
+  padding: 40px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Параметры */
+.parameter-group {
+  margin-bottom: 30px;
+}
+
+.parameter {
+  margin-bottom: 25px;
+}
+
+.parameter-label {
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #e9ecef;
+  outline: none;
+  -webkit-appearance: none;
+  
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #5e3085;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(94, 48, 133, 0.3);
+  }
+  
+  &::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #5e3085;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(94, 48, 133, 0.3);
+  }
+}
+
+.slider-value {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #5e3085;
+  text-align: center;
+}
+
+.input-with-unit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.manual-input {
+  width: 80px;
+  padding: 8px 12px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  text-align: center;
+  transition: border-color 0.3s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: #5e3085;
+  }
+}
+
+.unit-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+}
+
+/* Материалы */
+.material-group {
+  margin-bottom: 25px;
+}
+
+.material-label {
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.material-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.material-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  
+  &:hover {
+    background: #f8f9fa;
+  }
+  
+  input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #5e3085;
+  }
+  
+  span {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    color: #333;
+  }
+}
+
+/* Опции */
+.options-group {
+  margin-bottom: 25px;
+}
+
+.option-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  
+  &:hover {
+    background: #f8f9fa;
+  }
+  
+  input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #5e3085;
+  }
+  
+  span {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    color: #333;
+    font-weight: 500;
+  }
+}
+
+/* Тираж */
+.circulation-group {
+  margin-bottom: 30px;
+}
+
+.circulation-label {
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.circulation-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.circulation-field {
+  width: 120px;
+  padding: 8px 12px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  text-align: center;
+  transition: border-color 0.3s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: #5e3085;
+  }
+}
+
+/* Кнопка заказа */
+.order-button {
+  width: 100%;
+  padding: 15px 25px;
+  background: linear-gradient(135deg, #5e3085 0%, #8B4FB8 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(94, 48, 133, 0.3);
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(94, 48, 133, 0.4);
+    background: linear-gradient(135deg, #6d3a9a 0%, #9a5fc8 100%);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+/* Визуализация цилиндра */
+.box-visualization {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 400px;
+  perspective: 800px;
+}
+
+.cylinder-container {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: all 0.3s ease;
+  transform: rotateX(-15deg) rotateY(15deg);
+  
+  &.paper {
+    .cylinder-body,
+    .cylinder-lid {
+      .cylinder-top,
+      .cylinder-bottom,
+      .lid-top {
+        background: linear-gradient(135deg, #8B4FB8 0%, #5e3085 100%);
+      }
+      
+      .cylinder-side,
+      .lid-side {
+        background: linear-gradient(135deg, #5e3085 0%, #4a2570 100%);
+      }
+      
+      .cylinder-wall-front {
+        background: linear-gradient(135deg, #6d3a9a 0%, #5e3085 100%);
+      }
+      
+      .cylinder-wall-back {
+        background: linear-gradient(135deg, #4a2570 0%, #3d1e5c 100%);
+      }
+      
+      .cylinder-wall-left {
+        background: linear-gradient(135deg, #5e3085 0%, #4a2570 100%);
+      }
+      
+      .cylinder-wall-right {
+        background: linear-gradient(135deg, #4a2570 0%, #3d1e5c 100%);
+      }
+    }
+  }
+}
+
+.cylinder-body {
+  position: relative;
+  width: var(--cylinder-diameter);
+  height: var(--cylinder-height);
+  transform-style: preserve-3d;
+}
+
+.cylinder-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--cylinder-diameter);
+  height: var(--cylinder-diameter);
+  background: linear-gradient(135deg, #8B4FB8 0%, #5e3085 100%);
+  border-radius: 50%;
+  transform: rotateX(90deg) translateZ(calc(var(--cylinder-diameter) / 2));
+  box-shadow: 0 5px 15px rgba(139, 79, 184, 0.3);
+}
+
+.cylinder-side {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--cylinder-diameter);
+  height: var(--cylinder-height);
+  background: linear-gradient(135deg, #5e3085 0%, #4a2570 100%);
+  border-radius: 50%;
+  transform: rotateY(0deg);
+  box-shadow: inset 0 0 20px rgba(94, 48, 133, 0.3);
+}
+
+.cylinder-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: var(--cylinder-diameter);
+  height: var(--cylinder-diameter);
+  background: linear-gradient(135deg, #4a2570 0%, #3d1e5c 100%);
+  border-radius: 50%;
+  transform: rotateX(-90deg) translateZ(calc(var(--cylinder-diameter) / 2));
+  box-shadow: 0 -5px 15px rgba(74, 37, 112, 0.4);
+}
+
+.cylinder-wall-front {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--cylinder-diameter);
+  height: var(--cylinder-height);
+  background: linear-gradient(135deg, #6d3a9a 0%, #5e3085 100%);
+  border-radius: 50%;
+  transform: rotateY(0deg) translateZ(calc(var(--cylinder-diameter) / 2 - 2px));
+  box-shadow: 0 0 10px rgba(109, 58, 154, 0.3);
+  border: 1px solid rgba(139, 79, 184, 0.2);
+}
+
+.cylinder-wall-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--cylinder-diameter);
+  height: var(--cylinder-height);
+  background: linear-gradient(135deg, #4a2570 0%, #3d1e5c 100%);
+  border-radius: 50%;
+  transform: rotateY(180deg) translateZ(calc(var(--cylinder-diameter) / 2 - 2px));
+  box-shadow: 0 0 10px rgba(74, 37, 112, 0.3);
+  border: 1px solid rgba(94, 48, 133, 0.2);
+}
+
+.cylinder-wall-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--cylinder-diameter);
+  height: var(--cylinder-height);
+  background: linear-gradient(135deg, #5e3085 0%, #4a2570 100%);
+  border-radius: 50%;
+  transform: rotateY(-90deg) translateZ(calc(var(--cylinder-diameter) / 2 - 2px));
+  box-shadow: 0 0 8px rgba(94, 48, 133, 0.2);
+  border: 1px solid rgba(139, 79, 184, 0.15);
+}
+
+.cylinder-wall-right {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--cylinder-diameter);
+  height: var(--cylinder-height);
+  background: linear-gradient(135deg, #4a2570 0%, #3d1e5c 100%);
+  border-radius: 50%;
+  transform: rotateY(90deg) translateZ(calc(var(--cylinder-diameter) / 2 - 2px));
+  box-shadow: 0 0 8px rgba(74, 37, 112, 0.2);
+  border: 1px solid rgba(94, 48, 133, 0.15);
+}
+
+.cylinder-lid {
+  position: absolute;
+  top: calc(-1 * var(--lid-offset));
+  left: 0;
+  width: var(--cylinder-diameter);
+  height: calc(var(--cylinder-diameter) * 0.8);
+  transform-style: preserve-3d;
+  transform: translateZ(5px);
+}
+
+.lid-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--cylinder-diameter);
+  height: var(--cylinder-diameter);
+  background: linear-gradient(135deg, #8B4FB8 0%, #5e3085 100%);
+  border-radius: 50%;
+  transform: rotateX(90deg) translateZ(calc(var(--cylinder-diameter) * 0.4));
+  box-shadow: 0 8px 20px rgba(139, 79, 184, 0.4);
+}
+
+.lid-side {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--cylinder-diameter);
+  height: calc(var(--cylinder-diameter) * 0.8);
+  background: linear-gradient(135deg, #5e3085 0%, #4a2570 100%);
+  border-radius: 50%;
+  transform: rotateY(0deg);
+  box-shadow: inset 0 0 15px rgba(94, 48, 133, 0.3);
 }
 
 .products-grid {
@@ -662,6 +1306,40 @@ useHead({
   .products-grid {
     padding: 0 20px;
   }
+  
+  /* Адаптивные стили для конструктора на странице */
+  .constructor-page-section {
+    padding: 60px 0;
+  }
+  
+  .constructor-page-container {
+    padding: 0 20px;
+  }
+  
+  .constructor-page-title {
+    font-size: 2rem;
+  }
+  
+  .constructor-page-subtitle {
+    font-size: 1rem;
+    margin-bottom: 40px;
+  }
+  
+  .constructor-content {
+    flex-direction: column;
+    min-height: auto;
+  }
+  
+  .constructor-left {
+    border-right: none;
+    border-bottom: 1px solid #e9ecef;
+    padding: 30px 20px;
+  }
+  
+  .constructor-right {
+    padding: 20px;
+    min-height: 300px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -707,6 +1385,54 @@ useHead({
   
   .products-section {
     padding: 40px 0 110px 0;
+  }
+  
+  /* Дополнительные адаптивные стили для конструктора на маленьких экранах */
+  .constructor-page-section {
+    padding: 40px 0;
+  }
+  
+  .constructor-page-container {
+    padding: 0 15px;
+  }
+  
+  .constructor-page-title {
+    font-size: 1.8rem;
+  }
+  
+  .constructor-page-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 30px;
+  }
+  
+  .constructor-left {
+    padding: 20px 15px;
+  }
+  
+  .constructor-right {
+    padding: 15px;
+    min-height: 250px;
+  }
+  
+  .parameter-label,
+  .material-label,
+  .circulation-label {
+    font-size: 0.9rem;
+  }
+  
+  .manual-input,
+  .circulation-field {
+    width: 70px;
+    font-size: 0.9rem;
+  }
+  
+  .circulation-field {
+    width: 100px;
+  }
+  
+  .order-button {
+    padding: 12px 20px;
+    font-size: 1rem;
   }
 }
 </style>
