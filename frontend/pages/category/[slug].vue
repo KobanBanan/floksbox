@@ -69,7 +69,7 @@
                       <input 
                         type="range" 
                         v-model="constructorHeight" 
-                        :min="3" 
+                        :min="4" 
                         :max="50" 
                         step="1"
                         class="slider"
@@ -79,7 +79,7 @@
                         <input 
                           type="number" 
                           v-model="constructorHeight" 
-                          :min="3" 
+                          :min="4" 
                           :max="50" 
                           step="1"
                           class="manual-input"
@@ -90,7 +90,7 @@
                   </div>
                   
                   <div class="parameter">
-                    <label class="parameter-label">диаметр коробки</label>
+                    <label class="parameter-label">диаметр коробки (временно фиксирован)</label>
                     <div class="slider-container">
                       <input 
                         type="range" 
@@ -98,7 +98,7 @@
                         :min="12" 
                         :max="30" 
                         step="2"
-                        class="slider"
+                        class="slider" disabled
                       />
                       <div class="slider-value">{{ constructorDiameter }}см</div>
                       <div class="input-with-unit">
@@ -108,7 +108,7 @@
                           :min="12" 
                           :max="30" 
                           step="2"
-                          class="manual-input"
+                          class="manual-input" disabled
                         />
                         <span class="unit-label">см</span>
                       </div>
@@ -121,8 +121,12 @@
                   <label class="material-label">Материал</label>
                   <div class="material-options">
                     <label class="material-option">
-                      <input type="radio" v-model="constructorMaterial" value="paper" />
-                      <span>Бумага</span>
+                      <input type="radio" v-model="constructorMaterial" value="d" />
+                      <span>Дизайнерская бумага</span>
+                    </label>
+                    <label class="material-option">
+                      <input type="radio" v-model="constructorMaterial" value="b" />
+                      <span>Бархатная</span>
                     </label>
                   </div>
                 </div>
@@ -158,27 +162,16 @@
               <!-- Визуализация коробки -->
               <div class="constructor-right">
                 <div class="box-visualization">
-                  <div 
-                    class="cylinder-container"
-                    :class="{ 'with-lid': constructorWithLid, [constructorMaterial]: true }"
-                    :style="cylinderStyle"
-                  >
-                    <!-- Цилиндр -->
-                    <div class="cylinder-body">
-                      <div class="cylinder-top"></div>
-                      <div class="cylinder-side"></div>
-                      <div class="cylinder-bottom"></div>
-                      <div class="cylinder-wall-front"></div>
-                      <div class="cylinder-wall-back"></div>
-                      <div class="cylinder-wall-left"></div>
-                      <div class="cylinder-wall-right"></div>
-                    </div>
-                    
-                    <!-- Крышка (если выбрана) -->
-                    <div v-if="constructorWithLid" class="cylinder-lid">
-                      <div class="lid-top"></div>
-                      <div class="lid-side"></div>
-                    </div>
+                  <div class="constructor-image-wrapper" :style="imageWrapperStyle">
+                    <img
+                      class="constructor-image"
+                      :style="imageStyle"
+                      :src="currentImageSrc"
+                      :key="currentImageSrc"
+                      alt="Круглая коробка"
+                      @error="handleConstructorImageError"
+                      @click="openFullImage"
+                    />
                   </div>
                 </div>
               </div>
@@ -250,9 +243,9 @@ const showF1 = ref(true)
 
 // Данные конструктора
 const constructorHeight = ref(25)
-const constructorDiameter = ref(20)
-const constructorMaterial = ref('paper')
-const constructorWithLid = ref(false)
+const constructorDiameter = ref(22) // ширина временно фиксирована на 22
+const constructorMaterial = ref('b') // d: дизайнерская, b: бархатная (по умолчанию есть полный набор b)
+const constructorWithLid = ref(true)
 const constructorCirculation = ref(300)
 
 const config = useRuntimeConfig()
@@ -319,16 +312,106 @@ const categoryName = computed(() => currentCategory.value.name)
 const categoryDescription = computed(() => currentCategory.value.description)
 const categoryImage = computed(() => currentCategory.value.image)
 
-// Стили для визуализации цилиндра в конструкторе
-const cylinderStyle = computed(() => {
-  const diameter = Math.max(120, constructorDiameter.value * 6)
-  const height = Math.max(80, constructorHeight.value * 4)
+// Вспомогательные вычисления для выбора изображения и кропа
+const effectiveHeightStep = computed(() => {
+  // Округление вниз к ближайшему четному из последовательности [4,6,...,50]
+  const h = Math.max(4, Math.min(50, Math.floor(constructorHeight.value)))
+  const stepped = h % 2 === 0 ? h : h - 1
+  return Math.max(4, Math.min(50, stepped))
+})
+
+// Подготовка к активации логики ширины: шаги [12,14,...,30]
+const effectiveWidthStep = computed(() => {
+  const w = Math.max(12, Math.min(30, Math.floor(constructorDiameter.value)))
+  const stepped = w % 2 === 0 ? w : w - 1
+  return Math.max(12, Math.min(30, stepped))
+})
+
+const currentImageSrc = computed(() => {
+  // width (w) пока фиксирован через контрол, но уже поддерживаем все наборы
+  const w = effectiveWidthStep.value
+  const mat = constructorMaterial.value || 'd' // d | b
+  const lid = constructorWithLid.value ? 'on' : 'off'
+  const h = effectiveHeightStep.value
+  const baseDir = '/assets/images/22 крышка д'
+  const dir = encodeURI(baseDir)
+  return `${dir}/${mat}_${lid}_w${w}_h${h}.png`
+})
+
+// Процент видимой высоты: от 60% (h4) до 100% (h50)
+const visiblePercent = computed(() => {
+  const h = effectiveHeightStep.value
+  // линейная интерполяция: 4 -> 60, 50 -> 100
+  const t = (h - 4) / (50 - 4)
+  return 60 + t * 40
+})
+
+// Контейнер для центрирования и обрезки
+const imageWrapperStyle = computed(() => {
+  const heightPx = Math.max(240, constructorHeight.value * 12)
+  const widthPx = Math.max(240, constructorDiameter.value * 12)
   return {
-    '--cylinder-diameter': `${diameter}px`,
-    '--cylinder-height': `${height}px`,
-    '--lid-offset': constructorWithLid.value ? '10px' : '0px'
+    width: `${widthPx}px`,
+    height: `${heightPx}px`,
+    overflow: 'hidden',
+    margin: '0 auto',
+    display: 'flex',
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    background: 'transparent'
   }
 })
+
+// Само изображение: кроп сверху за счет масштабирования
+const imageStyle = computed(() => {
+  const vp = visiblePercent.value / 100
+  // Чтобы показать только vp высоты, увеличим изображение по высоте в 1/vp
+  const scaleY = 1 / vp
+  return {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    objectPosition: 'center bottom',
+    transform: `scaleY(${scaleY})`,
+    transformOrigin: 'center bottom',
+    background: 'transparent',
+    cursor: 'zoom-in'
+  }
+})
+
+const imageErrorStage = ref(0)
+
+const resetImageErrorStage = () => {
+  imageErrorStage.value = 0
+}
+
+watch([constructorHeight, constructorWithLid, constructorMaterial], resetImageErrorStage)
+
+const handleConstructorImageError = (e) => {
+  const w = effectiveWidthStep.value
+  const h = effectiveHeightStep.value
+  const mat = constructorMaterial.value || 'd' // d | b
+  const baseDir = encodeURI('/assets/images/22 крышка д')
+  if (imageErrorStage.value === 0) {
+    // Первая попытка: сменить только параметр крышки, не меняя материал
+    const altLid = constructorWithLid.value ? 'off' : 'on'
+    e.target.src = `${baseDir}/${mat}_${altLid}_w${w}_h${h}.png`
+    imageErrorStage.value = 1
+    return
+  }
+  if (imageErrorStage.value === 1) {
+    // Вторая попытка: минимальная высота в этом же материале и с крышкой
+    e.target.src = `${baseDir}/${mat}_on_w${w}_h4.png`
+    imageErrorStage.value = 2
+    return
+  }
+  // Больше не пытаемся — оставляем как есть, чтобы было видно некорректное сочетание
+}
+
+const openFullImage = () => {
+  const src = currentImageSrc.value
+  window.open(src, '_blank')
+}
 
 // Загрузка товаров по категории
 const loadCategoryProducts = async () => {
@@ -639,7 +722,7 @@ useHead({
 .constructor-right {
   flex: 1;
   padding: 40px;
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -890,175 +973,15 @@ useHead({
   justify-content: center;
   height: 100%;
   min-height: 400px;
-  perspective: 800px;
 }
 
-.cylinder-container {
-  position: relative;
-  transform-style: preserve-3d;
-  transition: all 0.3s ease;
-  transform: rotateX(-15deg) rotateY(15deg);
-  
-  &.paper {
-    .cylinder-body,
-    .cylinder-lid {
-      .cylinder-top,
-      .cylinder-bottom,
-      .lid-top {
-        background: linear-gradient(135deg, #8B4FB8 0%, #5e3085 100%);
-      }
-      
-      .cylinder-side,
-      .lid-side {
-        background: linear-gradient(135deg, #5e3085 0%, #4a2570 100%);
-      }
-      
-      .cylinder-wall-front {
-        background: linear-gradient(135deg, #6d3a9a 0%, #5e3085 100%);
-      }
-      
-      .cylinder-wall-back {
-        background: linear-gradient(135deg, #4a2570 0%, #3d1e5c 100%);
-      }
-      
-      .cylinder-wall-left {
-        background: linear-gradient(135deg, #5e3085 0%, #4a2570 100%);
-      }
-      
-      .cylinder-wall-right {
-        background: linear-gradient(135deg, #4a2570 0%, #3d1e5c 100%);
-      }
-    }
-  }
+.constructor-image {
+  display: block;
+  background: transparent;
 }
 
-.cylinder-body {
-  position: relative;
-  width: var(--cylinder-diameter);
-  height: var(--cylinder-height);
-  transform-style: preserve-3d;
-}
-
-.cylinder-top {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: var(--cylinder-diameter);
-  height: var(--cylinder-diameter);
-  background: linear-gradient(135deg, #8B4FB8 0%, #5e3085 100%);
-  border-radius: 50%;
-  transform: rotateX(90deg) translateZ(calc(var(--cylinder-diameter) / 2));
-  box-shadow: 0 5px 15px rgba(139, 79, 184, 0.3);
-}
-
-.cylinder-side {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: var(--cylinder-diameter);
-  height: var(--cylinder-height);
-  background: linear-gradient(135deg, #5e3085 0%, #4a2570 100%);
-  border-radius: 50%;
-  transform: rotateY(0deg);
-  box-shadow: inset 0 0 20px rgba(94, 48, 133, 0.3);
-}
-
-.cylinder-bottom {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: var(--cylinder-diameter);
-  height: var(--cylinder-diameter);
-  background: linear-gradient(135deg, #4a2570 0%, #3d1e5c 100%);
-  border-radius: 50%;
-  transform: rotateX(-90deg) translateZ(calc(var(--cylinder-diameter) / 2));
-  box-shadow: 0 -5px 15px rgba(74, 37, 112, 0.4);
-}
-
-.cylinder-wall-front {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: var(--cylinder-diameter);
-  height: var(--cylinder-height);
-  background: linear-gradient(135deg, #6d3a9a 0%, #5e3085 100%);
-  border-radius: 50%;
-  transform: rotateY(0deg) translateZ(calc(var(--cylinder-diameter) / 2 - 2px));
-  box-shadow: 0 0 10px rgba(109, 58, 154, 0.3);
-  border: 1px solid rgba(139, 79, 184, 0.2);
-}
-
-.cylinder-wall-back {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: var(--cylinder-diameter);
-  height: var(--cylinder-height);
-  background: linear-gradient(135deg, #4a2570 0%, #3d1e5c 100%);
-  border-radius: 50%;
-  transform: rotateY(180deg) translateZ(calc(var(--cylinder-diameter) / 2 - 2px));
-  box-shadow: 0 0 10px rgba(74, 37, 112, 0.3);
-  border: 1px solid rgba(94, 48, 133, 0.2);
-}
-
-.cylinder-wall-left {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: var(--cylinder-diameter);
-  height: var(--cylinder-height);
-  background: linear-gradient(135deg, #5e3085 0%, #4a2570 100%);
-  border-radius: 50%;
-  transform: rotateY(-90deg) translateZ(calc(var(--cylinder-diameter) / 2 - 2px));
-  box-shadow: 0 0 8px rgba(94, 48, 133, 0.2);
-  border: 1px solid rgba(139, 79, 184, 0.15);
-}
-
-.cylinder-wall-right {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: var(--cylinder-diameter);
-  height: var(--cylinder-height);
-  background: linear-gradient(135deg, #4a2570 0%, #3d1e5c 100%);
-  border-radius: 50%;
-  transform: rotateY(90deg) translateZ(calc(var(--cylinder-diameter) / 2 - 2px));
-  box-shadow: 0 0 8px rgba(74, 37, 112, 0.2);
-  border: 1px solid rgba(94, 48, 133, 0.15);
-}
-
-.cylinder-lid {
-  position: absolute;
-  top: calc(-1 * var(--lid-offset));
-  left: 0;
-  width: var(--cylinder-diameter);
-  height: calc(var(--cylinder-diameter) * 0.8);
-  transform-style: preserve-3d;
-  transform: translateZ(5px);
-}
-
-.lid-top {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: var(--cylinder-diameter);
-  height: var(--cylinder-diameter);
-  background: linear-gradient(135deg, #8B4FB8 0%, #5e3085 100%);
-  border-radius: 50%;
-  transform: rotateX(90deg) translateZ(calc(var(--cylinder-diameter) * 0.4));
-  box-shadow: 0 8px 20px rgba(139, 79, 184, 0.4);
-}
-
-.lid-side {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: var(--cylinder-diameter);
-  height: calc(var(--cylinder-diameter) * 0.8);
-  background: linear-gradient(135deg, #5e3085 0%, #4a2570 100%);
-  border-radius: 50%;
-  transform: rotateY(0deg);
-  box-shadow: inset 0 0 15px rgba(94, 48, 133, 0.3);
+.constructor-image-wrapper {
+  background: transparent;
 }
 
 .products-grid {
