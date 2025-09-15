@@ -65,13 +65,15 @@ const isScrolling = ref(false)
 const showPrevButton = ref(false)
 const showNextButton = ref(true)
 
-const apiBaseUrl = 'http://localhost:8000'
+// Используем относительные пути благодаря прокси
 
 // Загрузка товаров
 const loadProducts = async (page = 1, append = false) => {
   try {
     loading.value = true
-    const response = await $fetch(`${apiBaseUrl}/api/products/`, {
+    const config = useRuntimeConfig()
+    const apiBase = config.public.apiBase
+    const response = await $fetch(`${apiBase}/api/products/`, {
       params: {
         page: page,
         page_size: 5,
@@ -167,7 +169,6 @@ onMounted(() => {
 <style scoped>
 .product-carousel {
   padding: 80px 0;
-  background: transparent;
 }
 
 .container {
@@ -184,14 +185,12 @@ onMounted(() => {
 .section-title {
   font-size: 48px;
   font-weight: 700;
-  color: #2d3748;
   margin: 0 0 16px 0;
   font-family: 'Days One', cursive;
 }
 
 .section-description {
   font-size: 18px;
-  color: #4a5568;
   margin: 0;
   max-width: 600px;
   margin: 0 auto;
@@ -224,8 +223,8 @@ onMounted(() => {
 }
 
 .carousel-item {
-  flex: 0 0 320px;
-  height: 400px;
+  flex: 0 0 280px;
+  height: 350px;
 }
 
 .carousel-button {
@@ -259,8 +258,8 @@ onMounted(() => {
 }
 
 .loading-placeholder {
-  width: 320px;
-  height: 400px;
+  width: 280px;
+  height: 350px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -307,8 +306,8 @@ onMounted(() => {
   }
   
   .carousel-item {
-    flex: 0 0 280px;
-    height: 360px;
+    flex: 0 0 250px;
+    height: 320px;
   }
   
   .carousel-button {
@@ -318,8 +317,8 @@ onMounted(() => {
   }
   
   .loading-placeholder {
-    width: 280px;
-    height: 360px;
+    width: 250px;
+    height: 320px;
   }
 }
 
@@ -339,13 +338,13 @@ onMounted(() => {
   }
   
   .carousel-item {
-    flex: 0 0 240px;
-    height: 320px;
+    flex: 0 0 220px;
+    height: 300px;
   }
   
   .loading-placeholder {
-    width: 240px;
-    height: 320px;
+    width: 220px;
+    height: 300px;
   }
 }
 </style> 
