@@ -10,7 +10,7 @@
         <div class="banner-background" :style="{ backgroundImage: `url(${banner.fon})` }" @click="handleBannerClick"></div>
         
         <div class="banner-content" @click="handleBannerClick">
-          <h1 class="banner-title" :class="{ 'banner-title-small': index === 1 }">{{ banner.title }}</h1>
+          <h1 class="banner-title" :class="{ 'banner-title-small': index === 1, 'banner-title-preline': banner.title && banner.title.includes('\n') }">{{ banner.title }}</h1>
           <p class="banner-description">{{ banner.description }}</p>
           <a :href="banner.href" class="banner-button" :class="{ 'banner-button-lower': index === 1 }" @click.stop="handleButtonClick(banner.href)">{{ banner.cta }}</a>
         </div>
@@ -59,21 +59,14 @@ const banners = [
     href: '#'
   },
   {
-    fon: '/assets/hero/fon5.png',
-    char: '/assets/hero/char5.png',
-    title: 'Упакуем ваш бизнес!',
-    description: 'Работаем на клиента',
-    cta: 'Узнать подробности',
-    href: '#'
-  },
-  {
     fon: '/assets/hero/fon6.png',
     char: '/assets/hero/char6.png',
-    title: 'Упакуем ваш бизнес!',
+    title: 'Доставляем до двери',
     description: 'Работаем на клиента',
     cta: 'Узнать подробности',
     href: '#'
   }
+  
 ]
 
 const currentSlide = ref(0)
@@ -180,6 +173,10 @@ onUnmounted(() => {
   max-width: 500px; /* ограничиваем ширину для переноса */
 }
 
+.banner-title-preline {
+  white-space: pre-line;
+}
+
 .banner-button-lower {
   margin-top: 4px;
 }
@@ -195,16 +192,14 @@ onUnmounted(() => {
   max-width: 500px;
 }
 
-/* Стили для новых баннеров (3-6) - используем стандартные стили как у первого баннера */
+/* Стили для новых баннеров (3-4) - используем стандартные стили как у первого баннера */
 .hero-slide:nth-child(3) .banner-content,
-.hero-slide:nth-child(5) .banner-content,
-.hero-slide:nth-child(6) .banner-content {
+.hero-slide:nth-child(5) .banner-content {
   padding-right: 0; /* стандартный отступ */
 }
 
 .hero-slide:nth-child(3) .banner-title,
-.hero-slide:nth-child(5) .banner-title,
-.hero-slide:nth-child(6) .banner-title {
+.hero-slide:nth-child(5) .banner-title {
   white-space: nowrap; /* стандартное поведение как у первого баннера */
   line-height: normal;
   max-width: none;
@@ -219,6 +214,22 @@ onUnmounted(() => {
   white-space: normal; /* разрешаем перенос для четвертого баннера */
   line-height: 1.1; /* уменьшаем межстрочный интервал */
   max-width: 500px; /* ограничиваем ширину для переноса */
+}
+
+/* Специальные стили для баннера 6 - сдвигаем изображение */
+.hero-slide:nth-child(6) .banner-content {
+  padding-right: 200px; /* добавляем отступ справа для персонажа */
+}
+
+.hero-slide:nth-child(6) .banner-title {
+  white-space: nowrap; /* стандартное поведение */
+  line-height: normal;
+  max-width: none;
+  font-size: 56px; /* стандартный размер шрифта */
+}
+
+.hero-slide:nth-child(6) .banner-char {
+  right: 20px; /* сдвигаем персонажа еще правее */
 }
 
 .banner-description {
@@ -276,6 +287,11 @@ onUnmounted(() => {
     padding-right: 16px; /* убираем лишний отступ на мобильных */
   }
   
+  /* Адаптивные стили для шестого баннера */
+  .hero-slide:nth-child(6) .banner-content {
+    padding-right: 16px; /* убираем лишний отступ на мобильных */
+  }
+  
   .banner-title-small {
     max-width: 100%; /* на мобильных используем всю доступную ширину */
   }
@@ -300,6 +316,11 @@ onUnmounted(() => {
   
   /* Адаптивные стили для четвертого баннера */
   .hero-slide:nth-child(4) .banner-content {
+    padding-right: 16px;
+  }
+  
+  /* Адаптивные стили для шестого баннера */
+  .hero-slide:nth-child(6) .banner-content {
     padding-right: 16px;
   }
   
