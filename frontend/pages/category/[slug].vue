@@ -90,7 +90,7 @@
                   </div>
                   
                   <div class="parameter">
-                    <label class="parameter-label">диаметр коробки (временно фиксирован)</label>
+                    <label class="parameter-label">диаметр коробки</label>
                     <div class="slider-container">
                       <input 
                         type="range" 
@@ -98,7 +98,7 @@
                         :min="12" 
                         :max="30" 
                         step="2"
-                        class="slider" disabled
+                        class="slider"
                       />
                       <div class="slider-value">{{ constructorDiameter }}см</div>
                       <div class="input-with-unit">
@@ -108,7 +108,7 @@
                           :min="12" 
                           :max="30" 
                           step="2"
-                          class="manual-input" disabled
+                          class="manual-input"
                         />
                         <span class="unit-label">см</span>
                       </div>
@@ -166,10 +166,8 @@
                     <img
                       class="constructor-image"
                       :style="imageStyle"
-                      :src="currentImageSrc"
-                      :key="currentImageSrc"
+                      :src="displayedImageSrc"
                       alt="Круглая коробка"
-                      @error="handleConstructorImageError"
                       @click="openFullImage"
                     />
                   </div>
@@ -338,21 +336,38 @@ const currentImageSrc = computed(() => {
   return `${dir}/${mat}_${lid}_w${w}_h${h}.png`
 })
 
-// Процент видимой высоты: от 60% (h4) до 100% (h50)
-const visiblePercent = computed(() => {
-  const h = effectiveHeightStep.value
-  // линейная интерполяция: 4 -> 60, 50 -> 100
-  const t = (h - 4) / (50 - 4)
-  return 60 + t * 40
+// Плавная смена изображения без белого фона
+const displayedImageSrc = ref('')
+
+watchEffect(() => {
+  const nextSrc = currentImageSrc.value
+  if (!nextSrc) return
+  const img = new Image()
+  img.onload = () => {
+    displayedImageSrc.value = nextSrc
+  }
+  img.onerror = () => {
+    // если новый не загрузился — остаемся на предыдущем
+  }
+  img.src = nextSrc
 })
 
-// Контейнер для центрирования и обрезки
+// Процент видимой высоты: от 60% (h4) до 100% (h50)
+const visiblePercentHeight = computed(() => 100)
+
+// Процент видимой ширины: от 60% (w12) до 100% (w30)
+const visiblePercentWidth = computed(() => 100)
+
+// Дополнительный авто-масштаб для гармоничности:
+// маленькие размеры визуально крупнее, большие — чуть меньше
+const autoSizeScale = computed(() => 1)
+
+// Контейнер фиксированного размера (единый масштаб для всех изображений)
 const imageWrapperStyle = computed(() => {
-  const heightPx = Math.max(240, constructorHeight.value * 12)
-  const widthPx = Math.max(240, constructorDiameter.value * 12)
   return {
-    width: `${widthPx}px`,
-    height: `${heightPx}px`,
+    width: '100%',
+    maxWidth: '520px',
+    height: '520px',
     overflow: 'hidden',
     margin: '0 auto',
     display: 'flex',
@@ -362,17 +377,14 @@ const imageWrapperStyle = computed(() => {
   }
 })
 
-// Само изображение: кроп сверху за счет масштабирования
+// Само изображение: зум от нижнего края по высоте и ширине
 const imageStyle = computed(() => {
-  const vp = visiblePercent.value / 100
-  // Чтобы показать только vp высоты, увеличим изображение по высоте в 1/vp
-  const scaleY = 1 / vp
   return {
     width: '100%',
     height: '100%',
-    objectFit: 'cover',
+    objectFit: 'contain',
     objectPosition: 'center bottom',
-    transform: `scaleY(${scaleY})`,
+    transform: 'none',
     transformOrigin: 'center bottom',
     background: 'transparent',
     cursor: 'zoom-in'
@@ -385,7 +397,7 @@ const resetImageErrorStage = () => {
   imageErrorStage.value = 0
 }
 
-watch([constructorHeight, constructorWithLid, constructorMaterial], resetImageErrorStage)
+watch([constructorHeight, constructorWithLid, constructorMaterial, constructorDiameter], resetImageErrorStage)
 
 const handleConstructorImageError = (e) => {
   const w = effectiveWidthStep.value
@@ -395,13 +407,21 @@ const handleConstructorImageError = (e) => {
   if (imageErrorStage.value === 0) {
     // Первая попытка: сменить только параметр крышки, не меняя материал
     const altLid = constructorWithLid.value ? 'off' : 'on'
-    e.target.src = `${baseDir}/${mat}_${altLid}_w${w}_h${h}.png`
+    const fallback1 = `${baseDir}/${mat}_${altLid}_w${w}_h${h}.png`
+    // пробуем подменить только если текущий источник совпадает с currentImageSrc,
+    // чтобы не сорвать плавную подмену displayedImageSrc
+    if (currentImageSrc.value === displayedImageSrc.value) {
+      displayedImageSrc.value = fallback1
+    }
     imageErrorStage.value = 1
     return
   }
   if (imageErrorStage.value === 1) {
     // Вторая попытка: минимальная высота в этом же материале и с крышкой
-    e.target.src = `${baseDir}/${mat}_on_w${w}_h4.png`
+    const fallback2 = `${baseDir}/${mat}_on_w${w}_h4.png`
+    if (currentImageSrc.value === displayedImageSrc.value) {
+      displayedImageSrc.value = fallback2
+    }
     imageErrorStage.value = 2
     return
   }
