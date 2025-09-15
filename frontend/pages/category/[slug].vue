@@ -339,18 +339,22 @@ const currentImageSrc = computed(() => {
 // Плавная смена изображения без белого фона
 const displayedImageSrc = ref('')
 
-watchEffect(() => {
-  const nextSrc = currentImageSrc.value
-  if (!nextSrc) return
-  const img = new Image()
-  img.onload = () => {
-    displayedImageSrc.value = nextSrc
+const preloadAndSwap = (src) => {
+  if (!src) return
+  if (process.client && typeof Image !== 'undefined') {
+    const img = new Image()
+    img.onload = () => { displayedImageSrc.value = src }
+    img.onerror = () => { /* остаёмся на предыдущем */ }
+    img.src = src
+  } else {
+    // SSR/рендер на сервере — просто выставляем без предзагрузки
+    displayedImageSrc.value = src
   }
-  img.onerror = () => {
-    // если новый не загрузился — остаемся на предыдущем
-  }
-  img.src = nextSrc
-})
+}
+
+watch(() => currentImageSrc.value, (src) => {
+  preloadAndSwap(src)
+}, { immediate: true })
 
 // Процент видимой высоты: от 60% (h4) до 100% (h50)
 const visiblePercentHeight = computed(() => 100)
