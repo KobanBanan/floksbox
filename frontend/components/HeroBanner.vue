@@ -43,25 +43,17 @@ const banners = [
     href: '/akcii' // TODO: обновить когда страница Акции будет создана
   },
   {
-    fon: '/assets/hero/fon3.png',
-    char: '/assets/hero/char3.png',
-    title: 'Упакуем ваш бизнес!',
-    description: 'Работаем на клиента',
-    cta: 'Узнать подробности',
-    href: '#'
-  },
-  {
     fon: '/assets/hero/fon4.png',
     char: '/assets/hero/char4.png',
-    title: 'Упакуем ваш бизнес!',
+    title: 'Сделай шляпную\nкоробку сам',
     description: 'Работаем на клиента',
-    cta: 'Узнать подробности',
-    href: '#'
+    cta: 'Попробовать',
+    href: '/category/hat-boxes'
   },
   {
     fon: '/assets/hero/fon6.png',
     char: '/assets/hero/char6.png',
-    title: 'Доставляем до двери',
+    title: 'Доставляем\nдо двери',
     description: 'Работаем на клиента',
     cta: 'Узнать подробности',
     href: '#'
@@ -192,20 +184,7 @@ onUnmounted(() => {
   max-width: 500px;
 }
 
-/* Стили для новых баннеров (3-4) - используем стандартные стили как у первого баннера */
-.hero-slide:nth-child(3) .banner-content,
-.hero-slide:nth-child(5) .banner-content {
-  padding-right: 0; /* стандартный отступ */
-}
-
-.hero-slide:nth-child(3) .banner-title,
-.hero-slide:nth-child(5) .banner-title {
-  white-space: nowrap; /* стандартное поведение как у первого баннера */
-  line-height: normal;
-  max-width: none;
-}
-
-/* Специальные стили для баннера 4 - разрешаем перенос заголовка */
+/* Специальные стили для баннера 4 (с fon6.png) - разрешаем перенос заголовка */
 .hero-slide:nth-child(4) .banner-content {
   padding-right: 200px; /* добавляем отступ справа для персонажа */
 }
@@ -216,21 +195,23 @@ onUnmounted(() => {
   max-width: 500px; /* ограничиваем ширину для переноса */
 }
 
-/* Специальные стили для баннера 6 - сдвигаем изображение */
-.hero-slide:nth-child(6) .banner-content {
-  padding-right: 200px; /* добавляем отступ справа для персонажа */
-}
-
-.hero-slide:nth-child(6) .banner-title {
-  white-space: nowrap; /* стандартное поведение */
-  line-height: normal;
-  max-width: none;
-  font-size: 56px; /* стандартный размер шрифта */
-}
-
-.hero-slide:nth-child(6) .banner-char {
+.hero-slide:nth-child(4) .banner-char {
   right: 20px; /* сдвигаем персонажа еще правее */
 }
+
+/* Специальные стили для баннера 3 (с fon4.png) - разрешаем перенос заголовка */
+.hero-slide:nth-child(3) .banner-content {
+  padding-right: 200px; /* добавляем отступ справа для персонажа */
+  padding-left: 80px; /* сдвигаем текст правее */
+}
+
+.hero-slide:nth-child(3) .banner-title {
+  white-space: normal; /* разрешаем перенос для третьего баннера */
+  line-height: 1.1; /* уменьшаем межстрочный интервал */
+  max-width: 500px; /* ограничиваем ширину для переноса */
+  font-size: 48px; /* уменьшенный размер шрифта */
+}
+
 
 .banner-description {
   font-family: 'Montserrat', Arial, sans-serif;
@@ -282,18 +263,24 @@ onUnmounted(() => {
     padding-right: 16px; /* убираем лишний отступ на мобильных */
   }
   
+  /* Адаптивные стили для третьего баннера */
+  .hero-slide:nth-child(3) .banner-content {
+    padding-right: 16px; /* убираем лишний отступ на мобильных */
+  }
+  
   /* Адаптивные стили для четвертого баннера */
   .hero-slide:nth-child(4) .banner-content {
     padding-right: 16px; /* убираем лишний отступ на мобильных */
   }
   
-  /* Адаптивные стили для шестого баннера */
-  .hero-slide:nth-child(6) .banner-content {
-    padding-right: 16px; /* убираем лишний отступ на мобильных */
-  }
   
   .banner-title-small {
     max-width: 100%; /* на мобильных используем всю доступную ширину */
+  }
+  
+  .hero-slide:nth-child(3) .banner-title {
+    max-width: 100%; /* на мобильных используем всю доступную ширину */
+    font-size: 38px; /* адаптивный размер для планшетов */
   }
   
   .hero-slide:nth-child(4) .banner-title {
@@ -314,18 +301,24 @@ onUnmounted(() => {
     padding-right: 16px;
   }
   
+  /* Адаптивные стили для третьего баннера */
+  .hero-slide:nth-child(3) .banner-content {
+    padding-right: 16px;
+  }
+  
   /* Адаптивные стили для четвертого баннера */
   .hero-slide:nth-child(4) .banner-content {
     padding-right: 16px;
   }
   
-  /* Адаптивные стили для шестого баннера */
-  .hero-slide:nth-child(6) .banner-content {
-    padding-right: 16px;
-  }
   
   .banner-title-small {
     max-width: 100%;
+  }
+  
+  .hero-slide:nth-child(3) .banner-title {
+    max-width: 100%;
+    font-size: 28px; /* адаптивный размер для мобильных */
   }
   
   .hero-slide:nth-child(4) .banner-title {
