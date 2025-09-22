@@ -154,7 +154,7 @@
                 </div>
                 
                 <!-- Кнопка заказа -->
-                <button class="order-button">
+                <button class="order-button" @click="handleConstructorOrder">
                   Оформить заказ у менеджера
                 </button>
               </div>
@@ -435,6 +435,26 @@ const handleConstructorImageError = (e) => {
 const openFullImage = () => {
   const src = currentImageSrc.value
   window.open(src, '_blank')
+}
+
+// Обработчик заказа из конструктора
+const handleConstructorOrder = () => {
+  // Формируем детальное сообщение для шляпной коробки
+  const materialName = constructorMaterial.value === 'd' ? 'дизайнерской бумаги' : 'бархата'
+  const lidText = constructorWithLid.value ? 'с крышкой' : 'без крышки'
+  
+  const message = `Мне интересна шляпная коробка ${constructorDiameter.value}см в ширину / ${constructorHeight.value}см в высоту, ${lidText}, из ${materialName} в количестве ${constructorCirculation.value}`
+  
+  // Устанавливаем флаг для скролла к форме
+  if (process.client) {
+    sessionStorage.setItem('floksbox_scroll_to_form', 'true')
+  }
+  
+  // Переходим на главную страницу с предзаполненным сообщением
+  router.push({
+    path: '/',
+    query: { message: message }
+  })
 }
 
 // Загрузка товаров по категории

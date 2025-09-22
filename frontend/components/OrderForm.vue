@@ -145,7 +145,15 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
+
+// Props для автозаполнения формы
+const props = defineProps({
+  prefilledMessage: {
+    type: String,
+    default: ''
+  }
+})
 
 const form = reactive({
   name: '',
@@ -161,6 +169,56 @@ const loading = ref(false)
 const showSuccess = ref(false)
 const showError = ref(false)
 const errorMessage = ref('')
+
+// Функции для работы с localStorage
+const saveUserData = () => {
+  if (process.client) {
+    const userData = {
+      name: form.name,
+      phone: form.phone,
+      email: form.email,
+      socialContact: form.socialContact
+    }
+    localStorage.setItem('floksbox_user_data', JSON.stringify(userData))
+  }
+}
+
+const loadUserData = () => {
+  if (process.client) {
+    try {
+      const savedData = localStorage.getItem('floksbox_user_data')
+      if (savedData) {
+        const userData = JSON.parse(savedData)
+        form.name = userData.name || ''
+        form.phone = userData.phone || ''
+        form.email = userData.email || ''
+        form.socialContact = userData.socialContact || ''
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки данных пользователя:', error)
+    }
+  }
+}
+
+// Следим за изменениями в полях пользователя и сохраняем их
+watch([() => form.name, () => form.phone, () => form.email, () => form.socialContact], () => {
+  saveUserData()
+}, { deep: true })
+
+// Загружаем данные при монтировании и устанавливаем предзаполненное сообщение
+onMounted(() => {
+  loadUserData()
+  if (props.prefilledMessage) {
+    form.question = props.prefilledMessage
+  }
+})
+
+// Следим за изменениями в prefilledMessage
+watch(() => props.prefilledMessage, (newMessage) => {
+  if (newMessage) {
+    form.question = newMessage
+  }
+})
 
 const canSubmit = computed(() => {
   return form.name.trim() && 

@@ -190,8 +190,19 @@ const handleImageError = (event) => {
 
 // Открытие модального окна заказа
 const openOrderModal = () => {
-  // Скроллим к форме заказа на главной странице
-  router.push('/#order-form')
+  // Формируем сообщение для автозаполнения
+  const message = `Мне интересна позиция ${product.value.name}`
+  
+  // Устанавливаем флаг для скролла к форме
+  if (process.client) {
+    sessionStorage.setItem('floksbox_scroll_to_form', 'true')
+  }
+  
+  // Переходим на главную страницу с предзаполненным сообщением
+  router.push({
+    path: '/',
+    query: { message: message }
+  })
 }
 
 // Загрузка данных при монтировании

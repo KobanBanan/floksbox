@@ -280,18 +280,25 @@ function correctDiameterIfNeeded(event) {
 }
 
 function handleOrder() {
-  // Здесь будет логика отправки заказа менеджеру
-  const orderData = {
-    height: height.value,
-    diameter: diameter.value,
-    material: material.value,
-    withLid: withLid.value,
-    circulation: circulation.value,
-    price: calculatedPrice.value
+  // Формируем детальное сообщение для шляпной коробки
+  const materialName = material.value === 'paper' ? 'дизайнерской бумаги' : 'бархата'
+  const lidText = withLid.value ? 'с крышкой' : 'без крышки'
+  
+  const message = `Мне интересна шляпная коробка ${diameter.value}см в ширину / ${height.value}см в высоту, ${lidText}, из ${materialName} в количестве ${circulation.value}`
+  
+  // Устанавливаем флаг для скролла к форме
+  if (process.client) {
+    sessionStorage.setItem('floksbox_scroll_to_form', 'true')
   }
   
-  console.log('Order data:', orderData)
-  alert('Заказ отправлен менеджеру! Мы свяжемся с вами в ближайшее время.')
+  // Переходим на главную страницу с предзаполненным сообщением
+  const router = useRouter()
+  router.push({
+    path: '/',
+    query: { message: message }
+  })
+  
+  // Закрываем модальное окно
   emit('close')
 }
 </script>

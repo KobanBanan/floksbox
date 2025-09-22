@@ -184,6 +184,7 @@ function submitRequest() {
 .logo {
   margin: 0; /* Убираем все отступы логотипа */
   padding: 0; /* Убираем все внутренние отступы логотипа */
+  margin-left: -36px; /* Выравниваем логотип с левым краем баннера (40px padding - 44px banner padding + 40px для выравнивания) */
   
   .logo-link {
     display: block;
@@ -192,7 +193,7 @@ function submitRequest() {
   }
   
   .logo-image {
-    height: 42px;
+    height: 27px;
     width: auto;
     margin: 0; /* Убираем отступы изображения */
     padding: 0; /* Убираем внутренние отступы изображения */
