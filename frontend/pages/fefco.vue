@@ -97,11 +97,16 @@
                  </div>
                </ScrollRevealWrapper>
               
-              <!-- Кнопка заказа -->
+              <!-- Кнопки заказа -->
               <ScrollRevealWrapper type="fade-up" :delay="3">
-                <button class="order-btn" @click="showOrderForm = true">
-                  Заказать у менеджера
-                </button>
+                <div class="order-buttons">
+                  <button class="order-btn primary" @click="openOrderForm">
+                    Заказать у менеджера
+                  </button>
+                  <button class="order-btn secondary" @click="addToOrder" :disabled="!selectedDrawing">
+                    Добавить к обращению
+                  </button>
+                </div>
               </ScrollRevealWrapper>
               
                              <!-- Область чертежей -->
@@ -120,7 +125,7 @@
                             :class="{ active: selectedDrawing === drawing }"
                             @click="selectDrawing(drawing)">
                          <div class="drawing-icon">
-                           <img :src="`/assets/fefco/icons/${drawing}.svg`" :alt="drawing" />
+                           <img :src="`/assets/fefco/preview/${drawing}_thumb.jpg`" :alt="drawing" />
                          </div>
                          <span class="drawing-number">{{ drawing }}</span>
                        </div>
@@ -143,7 +148,7 @@
                               :class="{ active: selectedDrawing === drawing }"
                               @click="selectDrawing(drawing)">
                            <div class="drawing-icon">
-                             <img :src="`/assets/fefco/icons/${drawing}.svg`" :alt="drawing" />
+                             <img :src="`/assets/fefco/preview/${drawing}_thumb.jpg`" :alt="drawing" />
                            </div>
                            <span class="drawing-number">{{ drawing }}</span>
                          </div>
@@ -160,13 +165,13 @@
     
     <!-- Подвал -->
     <div class="scroll-reveal scroll-reveal-fade-up scroll-reveal-delay-3">
-      <FooterNew />
+      <Footer />
     </div>
     
     <!-- Модальное окно заказа -->
     <div v-if="showOrderForm" class="modal-overlay" @click.self="showOrderForm = false">
       <div class="modal-content">
-        <OrderForm @close="showOrderForm = false" />
+        <OrderForm @close="showOrderForm = false" :prefilled-message="orderMessage" />
         <button class="close-btn" @click="showOrderForm = false">×</button>
       </div>
     </div>
@@ -181,7 +186,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import HeaderSimple from '../components/HeaderSimple.vue'
-import FooterNew from '../components/FooterNew.vue'
+import Footer from '../components/Footer.vue'
 
 // Состояние
 const selectedSection = ref('commercial')
@@ -190,51 +195,53 @@ const currentSlide = ref(0)
 const showOrderForm = ref(false)
 const fullscreenImage = ref(null)
 const showAllDrawings = ref(false)
+const selectedItems = ref([]) // Для накопления выбранных позиций
 
 // Меню
 const menuItems = [
   {
     id: 'commercial',
     title: 'КОММЕРЧЕСКИЕ\nРУЛОНЫ И ЛИСТЫ',
-    icon: '/assets/fefco/img/icon_roll.png'
+    icon: '/assets/fefco/img/icon_roll.png',
+    folder: '1'
   },
   {
     id: 'boxes',
     title: 'ЗАКРЫВАЕМЫЕ\nКОРОБКИ',
-    icon: '/assets/fefco/img/icon_box1.png'
+    icon: '/assets/fefco/img/icon_box1.png',
+    folder: '2'
   },
   {
-    id: 'section3',
-    title: 'РАЗДЕЛ 3',
-    icon: '/assets/fefco/img/icon_roll.png'
-  },
-  {
-    id: 'section4',
-    title: 'РАЗДЕЛ 4',
-    icon: '/assets/fefco/img/icon_box1.png'
-  },
-  {
-    id: 'section5',
-    title: 'РАЗДЕЛ 5',
-    icon: '/assets/fefco/img/icon_roll.png'
-  },
-  {
-    id: 'section6',
-    title: 'РАЗДЕЛ 6',
-    icon: '/assets/fefco/img/icon_box1.png'
-  },
-  {
-    id: 'section7',
-    title: 'РАЗДЕЛ 7',
-    icon: '/assets/fefco/img/icon_roll.png'
+    id: 'telescopic',
+    title: 'ТЕЛЕСКОПИЧЕСКИЕ\nКОРОБКИ',
+    icon: '/assets/fefco/img/icon_box2.png',
+    folder: '3'
   }
 ]
 
-// Доступные чертежи
-const availableDrawings = [
-  '0100', '0110', '0111', '0112', '0113', '0119',
-  '0121', '0122', '0123', '0129', '0130'
-]
+// Доступные чертежи по разделам
+const drawingsBySection = {
+  'commercial': [
+    '0100', '0110', '0111', '0112', '0113', '0119',
+    '0121', '0122', '0123', '0129', '0130'
+  ],
+  'boxes': [
+    '0200', '0201', '0202', '0203', '0204', '0205', '0206', '0207', '0208', '0209',
+    '0210', '0211', '0212', '0214', '0215', '0216', '0217', '0218', '0219', '0220',
+    '0221', '0222', '0225', '0226', '0227', '0228', '0229', '0229.1', '0230', '0231',
+    '0232', '0233', '0233.1', '0240', '0241', '0242'
+  ],
+  'telescopic': [
+    '0301', '0302', '0303', '0304', '0306', '0307', '0308', '0309', '0310', '0312',
+    '0313', '0314', '0319', '0320', '0321', '0322', '0323', '0325', '0330', '0331',
+    '0350', '0351', '0352', '0360'
+  ]
+}
+
+// Доступные чертежи для текущего раздела
+const availableDrawings = computed(() => {
+  return drawingsBySection[selectedSection.value] || []
+})
 
 // Текущий раздел
 const currentSection = computed(() => {
@@ -246,16 +253,17 @@ const currentImages = computed(() => {
   if (!selectedDrawing.value) return []
   
   const drawing = selectedDrawing.value
+  const folder = currentSection.value.folder
   const images = []
   
   // Проверяем наличие изображений по номеру
   if (drawing === '0100') {
     // Для 0100 только одно изображение
-    images.push(`/assets/fefco/1/0100.jpg`)
+    images.push(`/assets/fefco/${folder}/0100.jpg`)
   } else {
     // Для остальных два изображения
-    images.push(`/assets/fefco/1/${drawing}_1.jpg`)
-    images.push(`/assets/fefco/1/${drawing}_2.jpg`)
+    images.push(`/assets/fefco/${folder}/${drawing}_1.jpg`)
+    images.push(`/assets/fefco/${folder}/${drawing}_2.jpg`)
   }
   
   return images
@@ -266,6 +274,12 @@ const selectSection = (sectionId) => {
   selectedSection.value = sectionId
   selectedDrawing.value = null
   currentSlide.value = 0
+  
+  // Автоматически выбираем первый чертеж нового раздела
+  const drawings = drawingsBySection[sectionId] || []
+  if (drawings.length > 0) {
+    selectDrawing(drawings[0])
+  }
 }
 
 const selectDrawing = (drawing) => {
@@ -301,6 +315,25 @@ const closeFullscreen = () => {
   fullscreenImage.value = null
 }
 
+// Методы для работы с заказами
+const addToOrder = () => {
+  if (selectedDrawing.value && !selectedItems.value.includes(selectedDrawing.value)) {
+    selectedItems.value.push(selectedDrawing.value)
+  }
+}
+
+const openOrderForm = () => {
+  showOrderForm.value = true
+}
+
+// Формируем сообщение для заказа
+const orderMessage = computed(() => {
+  if (selectedItems.value.length === 0 && selectedDrawing.value) {
+    return `FEFCO ${selectedDrawing.value}`
+  }
+  return selectedItems.value.map(item => `FEFCO ${item}`).join(', ')
+})
+
 
 
 
@@ -309,8 +342,10 @@ const closeFullscreen = () => {
 let slideInterval = null
 
 onMounted(() => {
-  // Автоматически выбираем первый чертеж
-  selectDrawing('0100')
+  // Автоматически выбираем первый чертеж из текущего раздела
+  if (availableDrawings.value.length > 0) {
+    selectDrawing(availableDrawings.value[0])
+  }
   
   // Автоматическое переключение каждые 3 секунды
   slideInterval = setInterval(() => {
@@ -611,10 +646,15 @@ useHead({
   }
 }
 
-// Кнопка заказа
+// Кнопки заказа
+.order-buttons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
 .order-btn {
-  background: #00d4aa;
-  color: white;
   border: none;
   padding: 15px 30px;
   border-radius: 6px;
@@ -622,11 +662,31 @@ useHead({
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-bottom: 30px;
   
-  &:hover {
-    background: #00b894;
-    transform: translateY(-2px);
+  &.primary {
+    background: #00d4aa;
+    color: white;
+    
+    &:hover {
+      background: #00b894;
+      transform: translateY(-2px);
+    }
+  }
+  
+  &.secondary {
+    background: #5e3085;
+    color: white;
+    
+    &:hover:not(:disabled) {
+      background: #4a2a6b;
+      transform: translateY(-2px);
+    }
+    
+    &:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
   }
 }
 
@@ -712,12 +772,18 @@ useHead({
   width: 60px;
   height: 60px;
   margin-bottom: 10px;
+  overflow: hidden;
   
   img {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    transition: transform 0.3s ease;
   }
+}
+
+.drawing-item:hover .drawing-icon img {
+  transform: scale(1.2);
 }
 
 .drawing-number {
