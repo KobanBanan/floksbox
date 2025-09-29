@@ -112,10 +112,10 @@
                              <!-- Область чертежей -->
                <ScrollRevealWrapper type="fade-up" :delay="4">
                  <div class="drawings-area">
-                   <h3>Доступные чертежи</h3>
+                   <h3>Доступные чертежи ({{ availableDrawings.length }} всего)</h3>
                    <div class="drawings-grid">
                      <ScrollRevealWrapper 
-                       v-for="(drawing, index) in availableDrawings.slice(0, 12)" 
+                       v-for="(drawing, index) in paginatedDrawings" 
                        :key="drawing"
                        type="scale"
                        :delay="Math.min(index, 5)"
@@ -131,28 +131,21 @@
                        </div>
                      </ScrollRevealWrapper>
                    </div>
-                   <!-- Показать больше чертежей если их больше 12 -->
-                   <div v-if="availableDrawings.length > 12" class="show-more-drawings">
-                     <button @click="showAllDrawings = !showAllDrawings" class="show-more-btn">
-                       {{ showAllDrawings ? 'Скрыть' : `Показать еще ${availableDrawings.length - 12} чертежей` }}
-                     </button>
-                     <div v-if="showAllDrawings" class="additional-drawings">
-                       <ScrollRevealWrapper 
-                         v-for="(drawing, index) in availableDrawings.slice(12)" 
-                         :key="drawing"
-                         type="scale"
-                         :delay="Math.min(index, 5)"
-                         class="drawing-wrapper"
+                   
+                   <!-- Пагинация -->
+                   <div v-if="totalPages > 1" class="pagination">
+                     <div class="pagination-info">
+                       Страница {{ currentPage }} из {{ totalPages }}
+                     </div>
+                     <div class="pagination-dots">
+                       <span 
+                         v-for="page in totalPages" 
+                         :key="page"
+                         :class="{ active: currentPage === page }"
+                         @click="goToPage(page)"
+                         class="pagination-dot"
                        >
-                         <div class="drawing-item"
-                              :class="{ active: selectedDrawing === drawing }"
-                              @click="selectDrawing(drawing)">
-                           <div class="drawing-icon">
-                             <img :src="`/assets/fefco/preview/${drawing}_thumb.jpg`" :alt="drawing" />
-                           </div>
-                           <span class="drawing-number">{{ drawing }}</span>
-                         </div>
-                       </ScrollRevealWrapper>
+                       </span>
                      </div>
                    </div>
                  </div>
@@ -165,7 +158,7 @@
     
     <!-- Подвал -->
     <div class="scroll-reveal scroll-reveal-fade-up scroll-reveal-delay-3">
-      <Footer />
+      <FooterNew />
     </div>
     
     <!-- Модальное окно заказа -->
@@ -186,7 +179,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import HeaderSimple from '../components/HeaderSimple.vue'
-import Footer from '../components/Footer.vue'
+import FooterNew from '../components/FooterNew.vue'
 
 // Состояние
 const selectedSection = ref('commercial')
@@ -194,8 +187,9 @@ const selectedDrawing = ref(null)
 const currentSlide = ref(0)
 const showOrderForm = ref(false)
 const fullscreenImage = ref(null)
-const showAllDrawings = ref(false)
 const selectedItems = ref([]) // Для накопления выбранных позиций
+const currentPage = ref(1) // Текущая страница пагинации
+const itemsPerPage = 15 // Количество чертежей на странице
 
 // Меню
 const menuItems = [
@@ -207,7 +201,7 @@ const menuItems = [
   },
   {
     id: 'boxes',
-    title: 'ЗАКРЫВАЕМЫЕ\nКОРОБКИ',
+    title: 'КОРОБКИ\nС ПРОРЕЗЯМИ',
     icon: '/assets/fefco/img/icon_box1.png',
     folder: '2'
   },
@@ -216,6 +210,42 @@ const menuItems = [
     title: 'ТЕЛЕСКОПИЧЕСКИЕ\nКОРОБКИ',
     icon: '/assets/fefco/img/icon_box2.png',
     folder: '3'
+  },
+  {
+    id: 'folders',
+    title: 'КОРОБКИ-ПАПКИ\nИ ЛОТКИ',
+    icon: '/assets/fefco/img/icon_box3.png',
+    folder: '4'
+  },
+  {
+    id: 'sliding',
+    title: 'ВЫДВИЖНЫЕ\nКОРОБКИ',
+    icon: '/assets/fefco/img/icon_box4.png',
+    folder: '5'
+  },
+  {
+    id: 'rigid',
+    title: 'ЖЁСТКИЕ\nКОРОБКИ',
+    icon: '/assets/fefco/img/icon_box5.png',
+    folder: '6'
+  },
+  {
+    id: 'ready',
+    title: 'ГОТОВЫЕ\nСКЛЕЕННЫЕ КОРОБКИ',
+    icon: '/assets/fefco/img/icon_box6.png',
+    folder: '7'
+  },
+  {
+    id: 'retail',
+    title: 'УПАКОВКА ДЛЯ РОЗНИЦЫ\nИ ЭЛ. КОММЕРЦИИ',
+    icon: '/assets/fefco/img/icon_box7.png',
+    folder: '8'
+  },
+  {
+    id: 'interior',
+    title: 'ВНУТРЕННЕЕ\nОСНАЩЕНИЕ',
+    icon: '/assets/fefco/img/icon_box7.png',
+    folder: '9'
   }
 ]
 
@@ -235,12 +265,61 @@ const drawingsBySection = {
     '0301', '0302', '0303', '0304', '0306', '0307', '0308', '0309', '0310', '0312',
     '0313', '0314', '0319', '0320', '0321', '0322', '0323', '0325', '0330', '0331',
     '0350', '0351', '0352', '0360'
+  ],
+  'folders': [
+    '0400', '0401', '0402', '0403', '0404', '0405', '0406', '0407', '0409', '0410',
+    '0411', '0412', '0413', '0414', '0415', '0416', '0418', '0420', '0421', '0422',
+    '0423', '0424', '0425', '0425.1', '0426', '0427', '0427.1', '0428', '0429', '0430',
+    '0431', '0432', '0433', '0434', '0435', '0435.1', '0436', '0436.1', '0436.2', '0437',
+    '0438', '0439', '0440', '0441', '0442', '0443', '0444', '0445', '0446', '0447',
+    '0448', '0449', '0449.1', '0450', '0451', '0451.1', '0452', '0453', '0454', '0455',
+    '0456', '0457', '0458', '0459', '0459.1', '0460', '0461', '0462', '0463', '0464',
+    '0465', '0466', '0469', '0470', '0471', '0472', '0473', '0474', '0475', '0476',
+    '0480', '0481', '0482', '0483', '0484', '0485'
+  ],
+  'sliding': [
+    '0501', '0502', '0503', '0504', '0505', '0507', '0509', '0510', '0511', '0512'
+  ],
+  'rigid': [
+    '0601', '0602', '0605', '0606', '0607', '0608', '0610', '0615', '0616', '0620', '0621'
+  ],
+  'ready': [
+    '0700', '0701', '0702', '0703', '0704', '0705', '0706', '0707', '0708', '0709',
+    '0710', '0711', '0712', '0713', '0714', '0715', '0716', '0717', '0718', '0719',
+    '0720', '0721', '0722', '0723', '0724', '0725', '0726', '0727', '0728', '0730',
+    '0740', '0747', '0748', '0760', '0771', '0772', '0773', '0774', '770'
+  ],
+  'retail': [
+    '0801', '0802', '0803', '0804', '0808', '0809', '0815', '0816', '0817', '0818',
+    '0819', '0825', '0826', '0830', '0831', '0832', '0833', '0834', '0840', '0841',
+    '0842', '0843', '0845', '0846', '0847', '0848', '0849', '0850', '0851', '0852',
+    '0853', '0854', '0858', '0859', '0860', '0861', '0865', '0866', '0870', '0871',
+    '0872', '0873', '0874', '0880', '0881', '0882', '0885', '0886', '0887'
+  ],
+  'interior': [
+    '0900', '0901', '0902', '0903', '0904', '0905', '0906', '0907', '0908', '0909',
+    '0910', '0911', '0912', '0913', '0914', '0920', '0921', '0929', '0930', '0931',
+    '0932', '0933', '0934', '0935', '0936', '0937', '0938', '0939', '0940', '0941',
+    '0942', '0943', '0944', '0945', '0946', '0947', '0948', '0949', '0950', '0951',
+    '0952', '0953', '0954', '0955', '0960', '0965', '0966', '0967', '0970', '0971',
+    '0972', '0973', '0974', '0975', '0976'
   ]
 }
 
 // Доступные чертежи для текущего раздела
 const availableDrawings = computed(() => {
   return drawingsBySection[selectedSection.value] || []
+})
+
+// Пагинация
+const totalPages = computed(() => {
+  return Math.ceil(availableDrawings.value.length / itemsPerPage)
+})
+
+const paginatedDrawings = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage
+  const end = start + itemsPerPage
+  return availableDrawings.value.slice(start, end)
 })
 
 // Текущий раздел
@@ -274,11 +353,19 @@ const selectSection = (sectionId) => {
   selectedSection.value = sectionId
   selectedDrawing.value = null
   currentSlide.value = 0
+  currentPage.value = 1 // Сбрасываем на первую страницу
   
   // Автоматически выбираем первый чертеж нового раздела
   const drawings = drawingsBySection[sectionId] || []
   if (drawings.length > 0) {
     selectDrawing(drawings[0])
+  }
+}
+
+// Методы пагинации
+const goToPage = (page) => {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page
   }
 }
 
@@ -455,20 +542,16 @@ useHead({
   border-radius: 0;
   cursor: pointer;
   background: transparent;
-  transition: none;
+  transition: opacity 0.3s ease;
   position: relative;
+  opacity: 0.5; // Неактивные разделы прозрачные на 50%
   
   &:hover {
-    background: transparent;
+    opacity: 1; // При наведении полностью видимые
   }
   
   &.active {
-    background: transparent;
-    color: #333;
-    
-    &::before {
-      display: none;
-    }
+    opacity: 1; // Активный раздел полностью видимый
     
     .menu-text {
       color: #333;
@@ -700,39 +783,44 @@ useHead({
   }
 }
 
-.show-more-drawings {
-  margin-top: 20px;
+// Пагинация
+.pagination {
+  margin-top: 30px;
   text-align: center;
 }
 
-.show-more-btn {
-  background: #5e3085;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
+.pagination-info {
   font-size: 0.9rem;
-  font-weight: 600;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.pagination-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pagination-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ddd;
   cursor: pointer;
   transition: all 0.3s ease;
   
   &:hover {
-    background: #4a2a6b;
-    transform: translateY(-1px);
+    background: #5e3085;
+    transform: scale(1.2);
+  }
+  
+  &.active {
+    background: #5e3085;
+    transform: scale(1.3);
   }
 }
 
-.additional-drawings {
-  margin-top: 20px;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 20px;
-  max-height: 300px;
-  overflow-y: auto;
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 8px;
-}
 
 .drawings-grid {
   display: grid;
@@ -870,9 +958,9 @@ useHead({
   }
   
   .menu-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
   
   .active-area {
