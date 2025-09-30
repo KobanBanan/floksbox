@@ -12,6 +12,7 @@
     <div class="scroll-reveal scroll-reveal-fade-up fefco-link-section">
       <nuxt-link to="/fefco" class="fefco-link">
         <div class="fefco-link-content">
+          <!-- <img src="/assets/images/fefco_bg.png" alt="FEFCO background" class="fefco-bg-image" /> -->
           <span class="fefco-text">поиск товара по каталогу FEFCO</span>
         </div>
       </nuxt-link>
@@ -89,12 +90,11 @@ useHead({
   position: relative;
   width: 100%;
   height: 120px;
-  background-image: url('/assets/images/fefco_bg.png');
+  background-image: url('/assets/fefco/fefco_bg1.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: #f0f0f0; /* Добавляем фоновый цвет для отладки */
-  border: 2px solid #5e3085; /* Добавляем границу для видимости */
+  /* border: 2px solid #5e3085; */ /* Убрали границу */
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -102,6 +102,16 @@ useHead({
   opacity: 0.8;
   transition: opacity 0.3s ease;
   overflow: hidden;
+}
+
+.fefco-bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
 }
 
 .fefco-link:hover .fefco-link-content {
@@ -116,6 +126,7 @@ useHead({
   text-align: center;
   text-transform: lowercase;
   position: relative;
+  z-index: 2; /* Поверх изображения */
   transition: all 0.3s ease;
   padding: 0 20px;
   background-color: rgba(255, 255, 255, 0.8); /* Добавляем фон для текста */
