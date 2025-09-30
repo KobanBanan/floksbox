@@ -8,6 +8,15 @@
       <MenuGrid />
     </div>
     
+    <!-- Ссылка на FEFCO -->
+    <div class="scroll-reveal scroll-reveal-fade-up fefco-link-section">
+      <nuxt-link to="/fefco" class="fefco-link">
+        <div class="fefco-link-content">
+          <span class="fefco-text">поиск товара по каталогу FEFCO</span>
+        </div>
+      </nuxt-link>
+    </div>
+    
     <!-- Раздел с товарами -->
     <div class="scroll-reveal scroll-reveal-fade-up scroll-reveal-delay-1 products-section">
       <ProductCarousel />
@@ -58,6 +67,65 @@ useHead({
   padding-bottom: 20px; /* Уменьшенный внутренний отступ */
 }
 
+/* Стили для блока ссылки на FEFCO */
+.fefco-link-section {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  margin-bottom: 60px;
+  padding: 0;
+}
+
+.fefco-link {
+  display: block;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-decoration: none;
+  outline: none;
+}
+
+.fefco-link-content {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  background-image: url('/assets/images/fefco_bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #f0f0f0; /* Добавляем фоновый цвет для отладки */
+  border: 2px solid #5e3085; /* Добавляем границу для видимости */
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+  overflow: hidden;
+}
+
+.fefco-link:hover .fefco-link-content {
+  opacity: 1;
+}
+
+.fefco-text {
+  font-family: 'Days One', cursive;
+  font-size: 24px;
+  font-weight: 400;
+  color: #5e3085;
+  text-align: center;
+  text-transform: lowercase;
+  position: relative;
+  transition: all 0.3s ease;
+  padding: 0 20px;
+  background-color: rgba(255, 255, 255, 0.8); /* Добавляем фон для текста */
+  border-radius: 8px;
+}
+
+.fefco-link:hover .fefco-text {
+  text-decoration: underline;
+}
+
 /* Отступ для раздела товаров */
 .products-section {
   margin-bottom: 120px; /* Увеличенный отступ снизу от товаров */
@@ -65,7 +133,7 @@ useHead({
 }
 
 /* Обеспечиваем правильные отступы между компонентами */
-.catalog-page > div:not(:last-child):not(.menu-section):not(.products-section) {
+.catalog-page > div:not(:last-child):not(.menu-section):not(.products-section):not(.fefco-link-section) {
   margin-bottom: 40px;
 }
 
@@ -78,12 +146,25 @@ useHead({
     padding-bottom: 15px;
   }
   
+  .fefco-link-section {
+    margin-bottom: 40px;
+  }
+  
+  .fefco-link-content {
+    height: 100px;
+  }
+  
+  .fefco-text {
+    font-size: 20px;
+    padding: 0 15px;
+  }
+  
   .products-section {
     margin-bottom: 80px; /* Увеличенный отступ на планшетах */
     padding-bottom: 40px;
   }
   
-  .catalog-page > div:not(:last-child):not(.menu-section):not(.products-section) {
+  .catalog-page > div:not(:last-child):not(.menu-section):not(.products-section):not(.fefco-link-section) {
     margin-bottom: 20px;
   }
 }
@@ -94,6 +175,24 @@ useHead({
     padding-top: 10px;
     margin-bottom: 25px; /* Уменьшенный отступ на мобильных */
     padding-bottom: 10px;
+  }
+  
+  .fefco-link-section {
+    margin-bottom: 30px;
+  }
+  
+  .fefco-link {
+    padding: 0 15px;
+  }
+  
+  .fefco-link-content {
+    height: 80px;
+    border-radius: 8px;
+  }
+  
+  .fefco-text {
+    font-size: 16px;
+    padding: 0 10px;
   }
   
   .products-section {

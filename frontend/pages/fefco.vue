@@ -48,14 +48,14 @@
               
             </aside>
             
-                        <!-- Активная область -->
+            <!-- Активная область -->
             <div class="active-area">
               <!-- Название раздела -->
               <ScrollRevealWrapper type="fade-right">
                 <h2 class="section-title">{{ currentSection.title }}</h2>
               </ScrollRevealWrapper>
               
-                             <!-- Область слайдера -->
+              <!-- Область слайдера -->
                <ScrollRevealWrapper type="fade-up" :delay="1">
                  <div class="slider-area">
                    <div class="slider-container" :class="{ 'inactive': !selectedDrawing }">
@@ -89,7 +89,7 @@
                  </div>
                </ScrollRevealWrapper>
               
-                             <!-- Номер предмета -->
+              <!-- Номер предмета -->
                <ScrollRevealWrapper type="fade-up" :delay="2">
                  <div class="item-number" :class="{ 'inactive': !selectedDrawing }">
                    <span v-if="selectedDrawing">№{{ selectedDrawing }}</span>
@@ -244,7 +244,7 @@ const menuItems = [
   {
     id: 'interior',
     title: 'ВНУТРЕННЕЕ\nОСНАЩЕНИЕ',
-    icon: '/assets/fefco/img/icon_box7.png',
+    icon: '/assets/fefco/img/icon_box8.png',
     folder: '9'
   }
 ]
