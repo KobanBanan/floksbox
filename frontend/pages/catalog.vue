@@ -8,7 +8,7 @@
       <MenuGrid />
     </div>
     
-    <!-- Ссылка на FEFCO -->
+     <!-- Ссылка на FEFCO -->
     <div class="scroll-reveal scroll-reveal-fade-up fefco-link-section">
       <nuxt-link to="/fefco" class="fefco-link">
         <div class="fefco-link-content">
@@ -129,7 +129,7 @@ useHead({
   z-index: 2; /* Поверх изображения */
   transition: all 0.3s ease;
   padding: 0 20px;
-  background-color: rgba(255, 255, 255, 0.8); /* Добавляем фон для текста */
+  background-color: transparent; /* Прозрачный фон */
   border-radius: 8px;
 }
 

@@ -73,8 +73,8 @@
                         :max="50" 
                         step="1"
                         class="slider"
+                        :style="{ '--slider-progress': heightProgress + '%' }"
                       />
-                      <div class="slider-value">{{ constructorHeight }}см</div>
                       <div class="input-with-unit">
                         <input 
                           type="number" 
@@ -99,8 +99,8 @@
                         :max="30" 
                         step="2"
                         class="slider"
+                        :style="{ '--slider-progress': diameterProgress + '%' }"
                       />
-                      <div class="slider-value">{{ constructorDiameter }}см</div>
                       <div class="input-with-unit">
                         <input 
                           type="number" 
@@ -133,10 +133,13 @@
                 
                 <!-- Дополнительные опции -->
                 <div class="options-group">
-                  <label class="option-label">
-                    <input type="checkbox" v-model="constructorWithLid" />
-                    <span>С крышкой</span>
-                  </label>
+                  <div class="lid-option">
+                    <label class="switch">
+                      <input type="checkbox" v-model="constructorWithLid" />
+                      <span class="switch-slider"></span>
+                    </label>
+                    <span class="lid-label">С крышкой</span>
+                  </div>
                 </div>
                 
                 <!-- Тираж -->
@@ -245,6 +248,21 @@ const constructorDiameter = ref(22) // ширина временно фикси�
 const constructorMaterial = ref('b') // d: дизайнерская, b: бархатная (по умолчанию есть полный набор b)
 const constructorWithLid = ref(true)
 const constructorCirculation = ref(300)
+
+// Прогресс ползунков для активной области
+const heightProgress = computed(() => {
+  const minHeight = 4
+  const maxHeight = 50
+  const progress = ((constructorHeight.value - minHeight) / (maxHeight - minHeight)) * 100
+  return Math.min(100, Math.max(0, progress))
+})
+
+const diameterProgress = computed(() => {
+  const minDiameter = 12
+  const maxDiameter = 30
+  const progress = ((constructorDiameter.value - minDiameter) / (maxDiameter - minDiameter)) * 100
+  return Math.min(100, Math.max(0, progress))
+})
 
 const config = useRuntimeConfig()
 const apiBaseUrl = config.public.apiBase
@@ -760,7 +778,6 @@ useHead({
   flex: 1;
   padding: 40px;
   background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-  border-right: 1px solid #e9ecef;
 }
 
 .constructor-right {
@@ -794,37 +811,72 @@ useHead({
 
 .slider-container {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  gap: 15px;
 }
 
 .slider {
-  width: 100%;
+  flex: 0 0 80%; /* Уменьшаем ширину на 20% */
   height: 6px;
+  background: linear-gradient(to right, #bf82f9 0%, #bf82f9 var(--slider-progress, 50%), #e9d8f9 var(--slider-progress, 50%), #e9d8f9 100%);
   border-radius: 3px;
-  background: #e9ecef;
   outline: none;
-  -webkit-appearance: none;
-  
-  &::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #5e3085;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(94, 48, 133, 0.3);
-  }
-  
-  &::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #5e3085;
-    cursor: pointer;
-    border: none;
-    box-shadow: 0 2px 6px rgba(94, 48, 133, 0.3);
-  }
+  appearance: none;
+  position: relative;
+}
+
+/* Активная область ползунка для WebKit */
+.slider::-webkit-slider-runnable-track {
+  height: 6px;
+  background: transparent;
+  border-radius: 3px;
+}
+
+/* Стили для Firefox */
+.slider::-moz-range-track {
+  height: 6px;
+  background: #e9d8f9;
+  border-radius: 3px;
+  border: none;
+}
+
+.slider::-moz-range-progress {
+  height: 6px;
+  background: #bf82f9;
+  border-radius: 3px;
+}
+
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #fbf6ff;
+  border: 1px solid #bf82f9;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+  margin-top: -7px; /* Центрируем бегунок по вертикали относительно полоски */
+}
+
+.slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #fbf6ff;
+  border: 1px solid #bf82f9;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+  margin-top: -7px; /* Центрируем бегунок по вертикали относительно полоски */
+}
+
+.slider::-moz-range-thumb:hover {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
 .slider-value {
@@ -883,8 +935,9 @@ useHead({
 
 .material-options {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex-direction: row;
+  gap: 30px;
+  align-items: center;
 }
 
 .material-option {
@@ -901,9 +954,7 @@ useHead({
   }
   
   input[type="radio"] {
-    width: 18px;
-    height: 18px;
-    accent-color: #5e3085;
+    display: none;
   }
   
   span {
@@ -911,6 +962,23 @@ useHead({
     font-size: 1rem;
     color: #333;
   }
+}
+
+/* Кастомные радиокнопки для материалов */
+.material-option::before {
+  content: '';
+  width: 18px;
+  height: 18px;
+  border: 2px solid #bf82f9;
+  border-radius: 50%;
+  background: #fbf6ff;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.material-option:has(input:checked)::before {
+  background: #bf82f9;
+  box-shadow: inset 0 0 0 3px white;
 }
 
 /* Опции */
@@ -918,54 +986,90 @@ useHead({
   margin-bottom: 25px;
 }
 
-.option-label {
+.lid-option {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-slider {
+  position: absolute;
   cursor: pointer;
-  padding: 10px;
-  border-radius: 8px;
-  transition: background-color 0.3s ease;
-  
-  &:hover {
-    background: #f8f9fa;
-  }
-  
-  input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: #5e3085;
-  }
-  
-  span {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1rem;
-    color: #333;
-    font-weight: 500;
-  }
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fbf6ff;
+  border: 2px solid #bf82f9;
+  transition: .4s;
+  border-radius: 24px;
+}
+
+.switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #bf82f9;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+.switch input:checked + .switch-slider {
+  background-color: #bf82f9;
+  border-color: #bf82f9;
+}
+
+.switch input:checked + .switch-slider:before {
+  background-color: white;
+  transform: translateX(26px);
+}
+
+.lid-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500;
 }
 
 /* Тираж */
 .circulation-group {
   margin-bottom: 30px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 30px;
 }
 
 .circulation-label {
-  display: block;
   font-family: 'Montserrat', sans-serif;
   font-size: 1rem;
   font-weight: 600;
   color: #333;
-  margin-bottom: 10px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  flex-shrink: 0;
 }
 
 .circulation-input {
   display: flex;
   align-items: center;
   gap: 8px;
-  justify-content: center;
 }
 
 .circulation-field {
@@ -986,10 +1090,10 @@ useHead({
 
 /* Кнопка заказа */
 .order-button {
-  width: 100%;
+  width: auto;
   padding: 15px 25px;
-  background: linear-gradient(135deg, #5e3085 0%, #8B4FB8 100%);
-  color: white;
+  background: #d0ff0a;
+  color: #55376e;
   border: none;
   border-radius: 12px;
   font-family: 'Montserrat', sans-serif;
@@ -997,12 +1101,15 @@ useHead({
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(94, 48, 133, 0.3);
+  box-shadow: 0 4px 15px rgba(208, 255, 10, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  align-self: flex-start;
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(94, 48, 133, 0.4);
-    background: linear-gradient(135deg, #6d3a9a 0%, #9a5fc8 100%);
+    box-shadow: 0 8px 25px rgba(208, 255, 10, 0.4);
+    background: #c4f000;
   }
   
   &:active {
@@ -1298,8 +1405,6 @@ useHead({
   }
   
   .constructor-left {
-    border-right: none;
-    border-bottom: 1px solid #e9ecef;
     padding: 30px 20px;
   }
   

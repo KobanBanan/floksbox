@@ -48,7 +48,7 @@
           </div>
           <!-- Время работы -->
           <div class="working-hours">
-            <span class="hours-text">каждый день с 9 до 19</span>
+            <span class="hours-text">ежедневно с 9 до 19</span>
           </div>
           <!-- Иконки связи -->
           <div class="contact-icons">

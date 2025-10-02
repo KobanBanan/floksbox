@@ -18,8 +18,8 @@
                 :max="maxHeight" 
                 step="1"
                 class="slider"
+                :style="{ '--slider-progress': heightProgress + '%' }"
               />
-              <div class="slider-value">{{ height }}см</div>
               <div class="input-with-unit">
                 <input 
                   type="number" 
@@ -44,9 +44,9 @@
                 :max="maxDiameter" 
                 step="2"
                 class="slider"
+                :style="{ '--slider-progress': diameterProgress + '%' }"
                 @input="syncDiameterToInput"
               />
-              <div class="slider-value">{{ diameter }}см</div>
               <div class="input-with-unit">
                 <input 
                   type="number" 
@@ -175,6 +175,17 @@ const boxStyle = computed(() => ({
   height: `${Math.max(150, height.value * 6)}px`,
   width: `${Math.max(150, diameter.value * 8)}px`,
 }))
+
+// Прогресс ползунков для активной области
+const heightProgress = computed(() => {
+  const progress = ((height.value - minHeight) / (maxHeight - minHeight)) * 100
+  return Math.min(100, Math.max(0, progress))
+})
+
+const diameterProgress = computed(() => {
+  const progress = ((diameter.value - minDiameter) / (maxDiameter - minDiameter)) * 100
+  return Math.min(100, Math.max(0, progress))
+})
 
 const calculatedPrice = computed(() => {
   let basePrice = 50
@@ -373,30 +384,67 @@ function handleOrder() {
 }
 
 .slider {
-  flex: 1;
+  flex: 0 0 80%; /* Уменьшаем ширину на 20% */
   height: 6px;
-  background: #e0e0e0;
+  background: linear-gradient(to right, #bf82f9 0%, #bf82f9 var(--slider-progress, 50%), #e9d8f9 var(--slider-progress, 50%), #e9d8f9 100%);
   border-radius: 3px;
   outline: none;
   appearance: none;
+  position: relative;
+}
+
+/* Активная область ползунка для WebKit */
+.slider::-webkit-slider-runnable-track {
+  height: 6px;
+  background: transparent;
+  border-radius: 3px;
+}
+
+/* Стили для Firefox */
+.slider::-moz-range-track {
+  height: 6px;
+  background: #e9d8f9;
+  border-radius: 3px;
+  border: none;
+}
+
+.slider::-moz-range-progress {
+  height: 6px;
+  background: #bf82f9;
+  border-radius: 3px;
 }
 
 .slider::-webkit-slider-thumb {
   appearance: none;
   width: 20px;
   height: 20px;
-  background: #6B4C93;
+  background: #fbf6ff;
+  border: 1px solid #bf82f9;
   border-radius: 50%;
   cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+  margin-top: -7px; /* Центрируем бегунок по вертикали относительно полоски */
+}
+
+.slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
 .slider::-moz-range-thumb {
   width: 20px;
   height: 20px;
-  background: #6B4C93;
+  background: #fbf6ff;
+  border: 1px solid #bf82f9;
   border-radius: 50%;
   cursor: pointer;
-  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+  margin-top: -7px; /* Центрируем бегунок по вертикали относительно полоски */
+}
+
+.slider::-moz-range-thumb:hover {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
 .slider-value {
@@ -460,6 +508,7 @@ function handleOrder() {
 .material-group {
   display: flex;
   gap: 30px;
+  align-items: center;
 }
 
 .material-option {
@@ -483,15 +532,16 @@ function handleOrder() {
 .radio-custom {
   width: 16px;
   height: 16px;
-  border: 2px solid #ddd;
+  border: 2px solid #bf82f9;
   border-radius: 50%;
   position: relative;
   transition: all 0.3s;
+  background: #fbf6ff;
 }
 
 .material-radio:checked + .material-label .radio-custom {
-  border-color: #6B4C93;
-  background: #6B4C93;
+  border-color: #bf82f9;
+  background: #bf82f9;
 }
 
 .material-radio:checked + .material-label .radio-custom::after {
@@ -532,7 +582,8 @@ function handleOrder() {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: #fbf6ff;
+  border: 2px solid #bf82f9;
   transition: .4s;
   border-radius: 24px;
 }
@@ -544,16 +595,18 @@ function handleOrder() {
   width: 18px;
   left: 3px;
   bottom: 3px;
-  background-color: white;
+  background-color: #bf82f9;
   transition: .4s;
   border-radius: 50%;
 }
 
 .switch input:checked + .switch-slider {
-  background-color: #6B4C93;
+  background-color: #bf82f9;
+  border-color: #bf82f9;
 }
 
 .switch input:checked + .switch-slider:before {
+  background-color: white;
   transform: translateX(26px);
 }
 
@@ -564,8 +617,9 @@ function handleOrder() {
 
 .circulation-group {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex-direction: row;
+  align-items: center;
+  gap: 30px;
 }
 
 .circulation-label {
@@ -610,8 +664,8 @@ function handleOrder() {
 }
 
 .order-btn {
-  background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
-  color: #2e7d32;
+  background: #d0ff0a;
+  color: #55376e;
   border: none;
   padding: 18px 30px;
   border-radius: 8px;
@@ -621,12 +675,14 @@ function handleOrder() {
   transition: all 0.3s;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  align-self: flex-start;
+  width: auto;
 }
 
 .order-btn:hover {
-  background: linear-gradient(135deg, #a5d6a7 0%, #81c784 100%);
+  background: #c4f000;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 15px rgba(208, 255, 10, 0.3);
 }
 
 .constructor-right {

@@ -106,10 +106,10 @@ onUnmounted(() => {
 
 .hero-container {
   position: relative;
-  max-width: 1100px; /* уменьшена с 1200px для более компактного вида */
+  max-width: 990px; /* уменьшена на 10% (было 1100px) */
   margin: 0 auto; /* центрирование */
   width: 100%;
-  height: 450px; /* увеличена на 40% (было 320px) */
+  height: 405px; /* уменьшена на 10% (было 450px) */
 }
 
 .hero-slide {
@@ -153,9 +153,15 @@ onUnmounted(() => {
   margin: 0 0 8px 0;
   white-space: nowrap;
   text-shadow: none;
-  -webkit-text-stroke: 0;
-  text-stroke: 0;
-  paint-order: fill; /* исключаем отрисовку обводки, если она задана где-то глобально */
+  -webkit-text-stroke: 0 !important;
+  text-stroke: 0 !important;
+  -webkit-text-stroke-width: 0 !important;
+  -webkit-text-stroke-color: transparent !important;
+  text-stroke-width: 0 !important;
+  text-stroke-color: transparent !important;
+  paint-order: fill !important;
+  outline: none !important;
+  text-outline: none !important;
 }
 
 .banner-title-small {
@@ -163,6 +169,15 @@ onUnmounted(() => {
   white-space: normal; /* разрешаем перенос для второго баннера */
   line-height: 1.1; /* уменьшаем межстрочный интервал */
   max-width: 500px; /* ограничиваем ширину для переноса */
+  -webkit-text-stroke: 0 !important;
+  text-stroke: 0 !important;
+  -webkit-text-stroke-width: 0 !important;
+  -webkit-text-stroke-color: transparent !important;
+  text-stroke-width: 0 !important;
+  text-stroke-color: transparent !important;
+  paint-order: fill !important;
+  outline: none !important;
+  text-outline: none !important;
 }
 
 .banner-title-preline {
@@ -182,6 +197,15 @@ onUnmounted(() => {
   white-space: normal;
   line-height: 1.1;
   max-width: 500px;
+  -webkit-text-stroke: 0 !important;
+  text-stroke: 0 !important;
+  -webkit-text-stroke-width: 0 !important;
+  -webkit-text-stroke-color: transparent !important;
+  text-stroke-width: 0 !important;
+  text-stroke-color: transparent !important;
+  paint-order: fill !important;
+  outline: none !important;
+  text-outline: none !important;
 }
 
 /* Специальные стили для баннера 4 (с fon6.png) - разрешаем перенос заголовка */
@@ -193,6 +217,15 @@ onUnmounted(() => {
   white-space: normal; /* разрешаем перенос для четвертого баннера */
   line-height: 1.1; /* уменьшаем межстрочный интервал */
   max-width: 500px; /* ограничиваем ширину для переноса */
+  -webkit-text-stroke: 0 !important;
+  text-stroke: 0 !important;
+  -webkit-text-stroke-width: 0 !important;
+  -webkit-text-stroke-color: transparent !important;
+  text-stroke-width: 0 !important;
+  text-stroke-color: transparent !important;
+  paint-order: fill !important;
+  outline: none !important;
+  text-outline: none !important;
 }
 
 .hero-slide:nth-child(4) .banner-char {
@@ -210,6 +243,15 @@ onUnmounted(() => {
   line-height: 1.1; /* уменьшаем межстрочный интервал */
   max-width: 500px; /* ограничиваем ширину для переноса */
   font-size: 48px; /* уменьшенный размер шрифта */
+  -webkit-text-stroke: 0 !important;
+  text-stroke: 0 !important;
+  -webkit-text-stroke-width: 0 !important;
+  -webkit-text-stroke-color: transparent !important;
+  text-stroke-width: 0 !important;
+  text-stroke-color: transparent !important;
+  paint-order: fill !important;
+  outline: none !important;
+  text-outline: none !important;
 }
 
 
@@ -243,7 +285,7 @@ onUnmounted(() => {
   position: absolute;
   right: 40px;
   bottom: 0; /* по нижней границе баннера */
-  height: 540px; /* увеличена на 40% (было 384px) */
+  height: 486px; /* уменьшена на 10% (было 540px) */
   object-fit: contain;
   z-index: 2; /* над фоном, под шапкой */
   pointer-events: none; /* не перекрывает клики по меню */
@@ -251,9 +293,9 @@ onUnmounted(() => {
 
 
 @media (max-width: 768px) {
-  .hero-container { width: 95%; height: 360px; }
+  .hero-container { width: 95%; height: 324px; } /* уменьшена на 10% (было 360px) */
   .banner-content { width: 55%; padding: 16px; }
-  .banner-char { right: 10px; height: 432px; bottom: 0; }
+  .banner-char { right: 10px; height: 389px; bottom: 0; } /* уменьшена на 10% (было 432px) */
   .banner-title { font-size: 44px; }
   .banner-description { font-size: 20px; }
   .banner-button { font-size: 28px; padding: 6px 12px; border-radius: 18px; }
@@ -289,9 +331,9 @@ onUnmounted(() => {
 }
 
 @media (max-width: 480px) {
-  .hero-container { height: 315px; }
+  .hero-container { height: 284px; } /* уменьшена на 10% (было 315px) */
   .banner-content { width: 60%; }
-  .banner-char { height: 378px; }
+  .banner-char { height: 340px; } /* уменьшена на 10% (было 378px) */
   .banner-title { font-size: 32px; }
   .banner-description { font-size: 16px; }
   .banner-button { font-size: 20px; padding: 4px 8px; border-radius: 12px; }

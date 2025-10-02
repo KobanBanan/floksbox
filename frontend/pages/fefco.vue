@@ -735,6 +735,7 @@ useHead({
   gap: 15px;
   margin-bottom: 30px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .order-btn {
@@ -747,21 +748,21 @@ useHead({
   transition: all 0.3s ease;
   
   &.primary {
-    background: #00d4aa;
+    background: #5e3085;
     color: white;
     
     &:hover {
-      background: #00b894;
+      background: #4a2a6b;
       transform: translateY(-2px);
     }
   }
   
   &.secondary {
-    background: #5e3085;
-    color: white;
+    background: #d5ff92;
+    color: #333;
     
     &:hover:not(:disabled) {
-      background: #4a2a6b;
+      background: #c5ef82;
       transform: translateY(-2px);
     }
     

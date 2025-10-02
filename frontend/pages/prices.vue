@@ -51,45 +51,6 @@
         </div>
       </div>
       
-      <!-- Дополнительная информация -->
-      <div class="scroll-reveal scroll-reveal-fade-up scroll-reveal-delay-1 info-section">
-        <div class="info-container">
-          <div class="info-card">
-            <div class="info-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <h3>Индивидуальные цены</h3>
-            <p>Для крупных заказов и постоянных клиентов мы предоставляем специальные условия и скидки</p>
-          </div>
-          
-          <div class="info-card">
-            <div class="info-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-                <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <h3>Актуальные цены</h3>
-            <p>Прайс-лист обновляется регулярно. Для получения точной стоимости свяжитесь с нами</p>
-          </div>
-          
-          <div class="info-card consultation-card" @click="openContactForm">
-            <div class="info-icon">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2"/>
-              </svg>
-            </div>
-            <h3>Бесплатная консультация</h3>
-            <p>Наши специалисты помогут подобрать оптимальное решение и рассчитать стоимость</p>
-            <div class="consultation-hint">Нажмите для связи с нами</div>
-          </div>
-        </div>
-      </div>
     </main>
     
     <!-- Footer такой же как на главной -->
@@ -177,7 +138,7 @@ useHead({
 .page-header {
   background: transparent;
   color: #333;
-  padding: 100px 0 80px 0;
+  padding: 60px 0 80px 0;
   position: relative;
   text-align: center;
 }
@@ -282,59 +243,6 @@ useHead({
   display: block;
 }
 
-.info-section {
-  margin-bottom: 80px;
-}
-
-.info-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 40px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 32px;
-}
-
-.info-card {
-  background: #fff;
-  padding: 32px 24px;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid #f0f0f0;
-}
-
-.info-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-}
-
-.info-icon {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-}
-
-.info-card h3 {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 16px;
-  color: #333;
-}
-
-.info-card p {
-  font-size: 16px;
-  line-height: 1.6;
-  color: #666;
-  margin: 0;
-}
 
 /* Адаптивность */
 @media (max-width: 768px) {
@@ -372,14 +280,6 @@ useHead({
     height: 500px;
   }
   
-  .info-container {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-  
-  .info-card {
-    padding: 24px 20px;
-  }
 }
 
 @media (max-width: 480px) {
@@ -400,22 +300,11 @@ useHead({
     height: 400px;
   }
   
-  .info-card {
-    padding: 20px 16px;
-  }
-  
-  .info-card h3 {
-    font-size: 18px;
-  }
-  
-  .info-card p {
-    font-size: 14px;
-  }
 }
 
 /* Отступ перед футером */
 .footer-wrapper {
-  margin-top: 80px;
+  margin-top: 120px;
 }
 
 @media (max-width: 768px) {
@@ -430,47 +319,6 @@ useHead({
   }
 }
 
-/* Стили для интерактивной карточки консультации */
-.consultation-card {
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-
-.consultation-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
-  transition: left 0.5s ease;
-}
-
-.consultation-card:hover::before {
-  left: 100%;
-}
-
-.consultation-hint {
-  margin-top: 12px;
-  font-size: 14px;
-  color: #667eea;
-  font-weight: 500;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.3s ease;
-}
-
-.consultation-card:hover .consultation-hint {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.consultation-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.15);
-}
 
 /* Стили для модального окна */
 .modal-overlay {
