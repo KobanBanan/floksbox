@@ -62,18 +62,10 @@
         </div>
       </div>
       <div class="action-buttons">
-        <button class="constructor-btn" @click="showConstructor = true">Конструктор</button>
         <button class="request-btn" @click="showModal = true">Оставить заявку</button>
       </div>
     </div>
   </header>
-
-  <!-- Модальное окно конструктора -->
-  <div v-if="showConstructor" class="modal-overlay" @click.self="showConstructor = false">
-    <div class="constructor-modal">
-      <BoxConstructor @close="showConstructor = false" />
-    </div>
-  </div>
 
   <!-- Модальное окно заявки -->
   <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">
@@ -100,9 +92,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import BoxConstructor from './BoxConstructor.vue'
 const showModal = ref(false)
-const showConstructor = ref(false)
 const form = ref({ name: '', phone: '', message: '' })
 function submitRequest() {
   // Здесь будет логика отправки формы
@@ -318,7 +308,6 @@ function submitRequest() {
   margin-left: 60px;
 }
 
-.constructor-btn,
 .request-btn {
   padding: 12px 28px;
   font-size: 1.1rem;
@@ -328,16 +317,6 @@ function submitRequest() {
   cursor: pointer;
   transition: background 0.3s, transform 0.2s;
   box-shadow: 0 2px 8px rgba(71,0,159,0.08);
-}
-
-.constructor-btn {
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-  color: #fff;
-}
-
-.constructor-btn:hover {
-  background: linear-gradient(135deg, #218838 0%, #1ba085 100%);
-  transform: translateY(-2px) scale(1.04);
 }
 
 .request-btn {

@@ -65,15 +65,16 @@
         </div>
       </div>
 
-
+      
     </div>
 
 
   </header>
+  
 </template>
 
 <script setup>
-// Пустой скрипт, поскольку вся функциональность удалена
+// Пусто — без конструктора в шапке
 </script>
 
 <style scoped>
@@ -266,6 +267,8 @@
   height: 20px;
   object-fit: contain;
 }
+
+/* удалены стили конструктора в шапке */
 
 /* Адаптивность */
 @media (max-width: 768px) {

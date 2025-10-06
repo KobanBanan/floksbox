@@ -57,128 +57,7 @@
       <div class="constructor-page-container">
         <h2 class="constructor-page-title">Конструктор круглых коробок</h2>
         <p class="constructor-page-subtitle">Создайте коробку по вашим размерам</p>
-        <div class="constructor-wrapper">
-          <div class="constructor-container">
-            <div class="constructor-content">
-              <div class="constructor-left">
-                <!-- Параметры коробки -->
-                <div class="parameter-group">
-                  <div class="parameter">
-                    <label class="parameter-label">высота коробки</label>
-                    <div class="slider-container">
-                      <input 
-                        type="range" 
-                        v-model="constructorHeight" 
-                        :min="4" 
-                        :max="50" 
-                        step="1"
-                        class="slider"
-                        :style="{ '--slider-progress': heightProgress + '%' }"
-                      />
-                      <div class="input-with-unit">
-                        <input 
-                          type="number" 
-                          v-model="constructorHeight" 
-                          :min="4" 
-                          :max="50" 
-                          step="1"
-                          class="manual-input"
-                        />
-                        <span class="unit-label">см</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div class="parameter">
-                    <label class="parameter-label">диаметр коробки</label>
-                    <div class="slider-container">
-                      <input 
-                        type="range" 
-                        v-model="constructorDiameter" 
-                        :min="12" 
-                        :max="30" 
-                        step="2"
-                        class="slider"
-                        :style="{ '--slider-progress': diameterProgress + '%' }"
-                      />
-                      <div class="input-with-unit">
-                        <input 
-                          type="number" 
-                          v-model="constructorDiameter" 
-                          :min="12" 
-                          :max="30" 
-                          step="2"
-                          class="manual-input"
-                        />
-                        <span class="unit-label">см</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <!-- Материалы -->
-                <div class="material-group">
-                  <label class="material-label">Материал</label>
-                  <div class="material-options">
-                    <label class="material-option">
-                      <input type="radio" v-model="constructorMaterial" value="d" />
-                      <span>Дизайнерская бумага</span>
-                    </label>
-                    <label class="material-option">
-                      <input type="radio" v-model="constructorMaterial" value="b" />
-                      <span>Бархатная</span>
-                    </label>
-                  </div>
-                </div>
-                
-                <!-- Дополнительные опции -->
-                <div class="options-group">
-                  <div class="lid-option">
-                    <label class="switch">
-                      <input type="checkbox" v-model="constructorWithLid" />
-                      <span class="switch-slider"></span>
-                    </label>
-                    <span class="lid-label">С крышкой</span>
-                  </div>
-                </div>
-                
-                <!-- Тираж -->
-                <div class="circulation-group">
-                  <label class="circulation-label">Тираж (от 300 штук)</label>
-                  <div class="circulation-input">
-                    <input 
-                      type="number" 
-                      v-model="constructorCirculation" 
-                      :min="300" 
-                      class="circulation-field"
-                    />
-                    <span class="unit-label">шт.</span>
-                  </div>
-                </div>
-                
-                <!-- Кнопка заказа -->
-                <button class="order-button" @click="handleConstructorOrder">
-                  Оформить заказ у менеджера
-                </button>
-              </div>
-              
-              <!-- Визуализация коробки -->
-              <div class="constructor-right">
-                <div class="box-visualization">
-                  <div class="constructor-image-wrapper" :style="imageWrapperStyle">
-                    <img
-                      class="constructor-image"
-                      :style="imageStyle"
-                      :src="displayedImageSrc"
-                      alt="Круглая коробка"
-                      @click="openFullImage"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <BoxConstructor />
       </div>
     </section>
 
@@ -233,6 +112,7 @@
 <script setup>
 import HeaderSimple from '../../components/HeaderSimple.vue'
 import FooterNew from '../../components/FooterNew.vue'
+import BoxConstructor from '../../components/BoxConstructor.vue'
 
 const route = useRoute()
 const router = useRouter()

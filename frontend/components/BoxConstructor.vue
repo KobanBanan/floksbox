@@ -1,6 +1,5 @@
 <template>
   <div class="constructor-container">
-    <button class="close-btn" @click="$emit('close')">×</button>
     
     <div class="constructor-content">
       <div class="constructor-left">
@@ -35,7 +34,7 @@
           </div>
           
           <div class="parameter">
-            <label class="parameter-label">диаметр коробки</label>
+            <label class="parameter-label">ширина коробки</label>
             <div class="slider-container">
               <input 
                 type="range" 
@@ -117,11 +116,7 @@
           />
         </div>
         
-        <!-- Итоговая цена -->
-        <div class="price-section">
-          <div class="price-label">Итого:</div>
-          <div class="price-value">{{ calculatedPrice }}</div>
-        </div>
+        
         
         <!-- Кнопка заказа -->
         <button class="order-btn" @click="handleOrder">
@@ -131,14 +126,21 @@
       
       <!-- Визуализация коробки -->
       <div class="constructor-right">
-        <div class="box-visualization">
+        <div class="box-visualization" ref="viewportRef">
           <div 
-            class="box-image" 
-            :class="{ 'with-lid': withLid, [material]: true }"
-            :style="boxStyle"
+            class="box-stage" 
+            :style="stageStyle"
           >
-            <div class="box-main"></div>
-            <div v-if="withLid" class="box-lid"></div>
+            <!-- Нижний слой: основа коробки (B.png) -->
+            <img class="layer base-layer" src="/assets/images/B.png" alt="base" />
+            <!-- Второй слой: дно (N.png), всегда у дна -->
+            <img class="layer bottom-layer" src="/assets/images/N.png" alt="bottom" />
+            <!-- Третий слой: верх (K.png/V.png) -->
+            <img 
+              class="layer top-layer" 
+              :src="withLid ? '/assets/images/K.png' : '/assets/images/V.png'" 
+              alt="top"
+            />
           </div>
         </div>
       </div>
@@ -147,13 +149,13 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 
 const emit = defineEmits(['close'])
 
 // Параметры коробки
-const height = ref(25)
-const diameter = ref(20)
+const height = ref(25) // см
+const diameter = ref(20) // см (ширина)
 const material = ref('paper')
 const withLid = ref(false)
 const circulation = ref(300)
@@ -170,10 +172,61 @@ const maxHeight = 50
 const minDiameter = 12
 const maxDiameter = 30
 
-// Вычисляемые свойства
-const boxStyle = computed(() => ({
-  height: `${Math.max(150, height.value * 6)}px`,
-  width: `${Math.max(150, diameter.value * 8)}px`,
+// Карта: см → px (визуальные размеры слоя основы до масштабирования)
+// Ширина: 12см → 280px, 20см → 450px, 30см → 800px (кусочно-линейная интерполяция)
+function mapWidthCmToPx(cm) {
+  const clamped = Math.min(Math.max(cm, minDiameter), maxDiameter)
+  if (clamped <= 20) {
+    const t = (clamped - 12) / (20 - 12)
+    return 280 + t * (450 - 280)
+  }
+  const t = (clamped - 20) / (30 - 20)
+  return 450 + t * (800 - 450)
+}
+
+// Высота: 4см → 180px, 50см → 1125px (линейная интерполяция)
+function mapHeightCmToPx(cm) {
+  const clamped = Math.min(Math.max(cm, minHeight), maxHeight)
+  const t = (clamped - 4) / (50 - 4)
+  return 180 + t * (1125 - 180)
+}
+
+// Вьюпорт и масштабирование: вписываем сцену в доступную область по актуальным размерам
+const viewportRef = ref(null)
+const stageWidthPx = computed(() => mapWidthCmToPx(diameter.value))
+const stageHeightPx = computed(() => mapHeightCmToPx(height.value))
+const scale = ref(1)
+
+function updateScale() {
+  const el = viewportRef.value
+  if (!el) return
+  const padding = 16 // внутренние отступы безопасности
+  const availableW = Math.max(0, el.clientWidth - padding)
+  const availableH = Math.max(0, el.clientHeight - padding)
+  const sx = availableW / stageWidthPx.value
+  const sy = availableH / stageHeightPx.value
+  // Масштабируем вниз/вверх так, чтобы всегда влезало и занимало максимум пространства
+  scale.value = Math.max(0.1, Math.min(sx, sy))
+}
+
+let resizeObserver
+onMounted(() => {
+  updateScale()
+  resizeObserver = new ResizeObserver(() => updateScale())
+  if (viewportRef.value) resizeObserver.observe(viewportRef.value)
+})
+
+onBeforeUnmount(() => {
+  if (resizeObserver && viewportRef.value) resizeObserver.unobserve(viewportRef.value)
+})
+
+watch([stageWidthPx, stageHeightPx], () => updateScale())
+
+const stageStyle = computed(() => ({
+  width: stageWidthPx.value + 'px',
+  height: stageHeightPx.value + 'px',
+  transform: `scale(${scale.value})`,
+  transformOrigin: 'center center'
 }))
 
 // Прогресс ползунков для активной области
@@ -187,32 +240,7 @@ const diameterProgress = computed(() => {
   return Math.min(100, Math.max(0, progress))
 })
 
-const calculatedPrice = computed(() => {
-  let basePrice = 50
-  
-  // Базовая цена зависит от размеров (значения теперь в см)
-  const sizeMultiplier = (height.value * diameter.value) / 80
-  basePrice *= sizeMultiplier
-  
-  // Материал
-  if (material.value === 'velvet') {
-    basePrice *= 1.5
-  }
-  
-  // Крышка
-  if (withLid.value) {
-    basePrice *= 1.3
-  }
-  
-  // Тираж (чем больше, тем дешевле за штуку)
-  const circulationDiscount = Math.max(0.7, 300 / circulation.value)
-  basePrice *= circulationDiscount
-  
-  // Общая стоимость за весь тираж
-  const totalPrice = Math.round(basePrice * circulation.value)
-  
-  return totalPrice.toLocaleString('ru-RU')
-})
+// расчёт цены удалён по требованию — блок Итого скрыт
 
 function isValidDiameter(value) {
   const num = parseInt(value)
@@ -318,30 +346,15 @@ function handleOrder() {
 .constructor-container {
   position: relative;
   padding: 40px;
-  max-width: 1000px;
+  max-width: 1200px;
   width: 100%;
 }
 
-.close-btn {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  background: none;
-  border: none;
-  font-size: 2rem;
-  color: #999;
-  cursor: pointer;
-  transition: color 0.3s;
-  z-index: 10;
-}
 
-.close-btn:hover {
-  color: #333;
-}
 
 .constructor-content {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 420px 1fr; /* фиксируем ширину левой колонки */
   gap: 60px;
   align-items: start;
 }
@@ -350,6 +363,7 @@ function handleOrder() {
   display: flex;
   flex-direction: column;
   gap: 25px;
+  min-width: 420px; /* не сужать левую часть */
 }
 
 .constructor-title {
@@ -642,26 +656,7 @@ function handleOrder() {
   border-color: #6B4C93;
 }
 
-.price-section {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 20px 0;
-  border-top: 2px solid #f0f0f0;
-  margin-top: 10px;
-}
 
-.price-label {
-  font-size: 18px;
-  color: #333;
-  font-weight: 600;
-}
-
-.price-value {
-  font-size: 28px;
-  font-weight: bold;
-  color: #6B4C93;
-}
 
 .order-btn {
   background: #d0ff0a;
@@ -689,6 +684,7 @@ function handleOrder() {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-width: 560px; /* гарантируем место под визуализацию */
 }
 
 .box-visualization {
@@ -700,42 +696,48 @@ function handleOrder() {
   align-items: center;
 }
 
-.box-image {
+/* Сцена и слои */
+.box-stage {
   position: relative;
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  transition: transform 0.2s ease;
 }
 
-.box-main {
-  background: linear-gradient(145deg, #e3f2fd 0%, #bbdefb 100%);
-  border: 2px solid #90caf9;
-  border-radius: 10px;
+
+.layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  image-rendering: auto;
+  max-width: none;
+  pointer-events: none;
+}
+
+/* Нижний слой основание: растягивается по ширине и высоте согласно картам */
+.base-layer {
+  bottom: 0;
   width: 100%;
-  height: 80%;
-  position: relative;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  object-fit: fill;
+  z-index: 2;
 }
 
-.box-image.velvet .box-main {
-  background: linear-gradient(145deg, #f3e5f5 0%, #e1bee7 100%);
-  border-color: #ce93d8;
+/* Дно: всегда прижато к низу, ширина = 100%, высота авто */
+.bottom-layer {
+  bottom: 0;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  z-index: 3;
 }
 
-.box-lid {
-  background: linear-gradient(145deg, #c5e1a5 0%, #aed581 100%);
-  border: 2px solid #9ccc65;
-  border-radius: 8px;
-  width: 105%;
-  height: 15%;
-  margin-top: -5px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.box-image.velvet .box-lid {
-  background: linear-gradient(145deg, #d1c4e9 0%, #b39ddb 100%);
-  border-color: #9575cd;
+/* Крышка/верх: сверху, масштабируется пропорционально ширине */
+.top-layer {
+  top: 0;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  z-index: 4;
 }
 
 @media (max-width: 768px) {
