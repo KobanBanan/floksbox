@@ -28,7 +28,7 @@
             <NuxtLink to="/catalog" class="nav-link">Каталог</NuxtLink>
           </li>
           <li class="nav-item">
-            <NuxtLink to="/promotions" class="nav-link">Акции</NuxtLink>
+            <NuxtLink to="/promotions" class="nav-link">Условия</NuxtLink>
           </li>
           <li class="nav-item">
             <NuxtLink to="/fefco" class="nav-link">FEFCO</NuxtLink>

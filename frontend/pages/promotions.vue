@@ -3,113 +3,17 @@
     <!-- Шапка сайта -->
     <HeaderSimple />
     
-    <!-- Основной контент страницы акций -->
-    <div class="scroll-reveal scroll-reveal-fade-up promotions-content">
+    <!-- Основной контент страницы доставки -->
+    <div class="scroll-reveal scroll-reveal-fade-up delivery-content">
       <div class="container">
-        <h1 class="page-title">Акции и специальные предложения</h1>
-        
-        <!-- Секция с активными акциями -->
-        <div class="promotions-grid">
-          <div class="promotion-card">
-            <div class="promotion-image">
-              <img src="/assets/images/icecream.png" alt="Скидка на первый заказ" />
-            </div>
-            <div class="promotion-content">
-              <h3 class="promotion-title">Скидка 15% на первый заказ</h3>
-              <p class="promotion-description">
-                Новым клиентам предоставляется скидка 15% на первый заказ упаковки. 
-                Воспользуйтесь промокодом FIRST15 при оформлении заказа.
-              </p>
-              <div class="promotion-code">
-                <span class="code-label">Промокод:</span>
-                <span class="code-value">FIRST15</span>
-              </div>
-              <div class="promotion-validity">
-                Действует до 31.12.2024
-              </div>
-            </div>
-          </div>
-
-          <div class="promotion-card">
-            <div class="promotion-image">
-              <img src="/assets/images/gmanman4.png" alt="Скидка при заказе от 10000 рублей" />
-            </div>
-            <div class="promotion-content">
-              <h3 class="promotion-title">Скидка 10% при заказе от 10 000₽</h3>
-              <p class="promotion-description">
-                При заказе упаковки на сумму от 10 000 рублей действует автоматическая 
-                скидка 10%. Скидка применяется в корзине при достижении суммы заказа.
-              </p>
-              <div class="promotion-code">
-                <span class="code-label">Условие:</span>
-                <span class="code-value">Сумма заказа от 10 000₽</span>
-              </div>
-              <div class="promotion-validity">
-                Постоянная акция
-              </div>
-            </div>
-          </div>
-
-          <div class="promotion-card">
-            <div class="promotion-image">
-              <img src="/assets/images/gmanman7.png" alt="Бесплатная доставка" />
-            </div>
-            <div class="promotion-content">
-              <h3 class="promotion-title">Бесплатная доставка от 5 000₽</h3>
-              <p class="promotion-description">
-                Бесплатная доставка по Москве и области при заказе упаковки 
-                на сумму от 5 000 рублей. Доставка осуществляется в течение 2-3 дней.
-              </p>
-              <div class="promotion-code">
-                <span class="code-label">Условие:</span>
-                <span class="code-value">Сумма заказа от 5 000₽</span>
-              </div>
-              <div class="promotion-validity">
-                Постоянная акция
-              </div>
-            </div>
-          </div>
-
-          <div class="promotion-card special">
-            <div class="promotion-image">
-              <img src="/assets/images/gmanman8.jpg" alt="Индивидуальный дизайн" />
-            </div>
-            <div class="promotion-content">
-              <h3 class="promotion-title">Бесплатная разработка дизайна</h3>
-              <p class="promotion-description">
-                При заказе брендированной упаковки от 20 000 рублей - разработка 
-                индивидуального дизайна абсолютно бесплатно!
-              </p>
-              <div class="promotion-code">
-                <span class="code-label">Условие:</span>
-                <span class="code-value">Заказ от 20 000₽</span>
-              </div>
-              <div class="promotion-validity">
-                Ограниченное предложение
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Дополнительная информация -->
-        <div class="promotions-info">
-          <h2>Условия акций</h2>
-          <ul>
-            <li>Акции не суммируются между собой</li>
-            <li>Скидки действуют только на новые заказы</li>
-            <li>Промокоды действительны только при оформлении заказа через сайт</li>
-            <li>Компания оставляет за собой право изменить условия акций</li>
-          </ul>
-        </div>
-
-        <!-- Призыв к действию -->
-        <div class="cta-section">
-          <h2>Готовы воспользоваться выгодным предложением?</h2>
-          <p>Свяжитесь с нами для консультации и оформления заказа</p>
-          <div class="cta-buttons">
-            <NuxtLink to="/catalog" class="cta-btn primary">Перейти в каталог</NuxtLink>
-            <a href="tel:+79602543323" class="cta-btn secondary">Позвонить</a>
-          </div>
+        <h1 class="page-title">Доставка гофроупаковки: быстро, надежно, по всей стране!</h1>
+        <div class="delivery-text">
+          <p>
+            Мы понимаем, насколько важна своевременная и бережная доставка гофроупаковки для вашего бизнеса. Именно поэтому мы предлагаем комплексные логистические решения, охватывающие Москву, Московскую область и всю Россию. Независимо от того, нужен ли вам крупногабаритный груз для производственных нужд или компактная партия для небольшого магазина, мы подберем оптимальный вариант доставки. Наш автопарк включает разнообразные типы транспортных средств – от малотоннажных автомобилей для экспресс-доставки по городу до мощных фур для дальних перевозок. Мы гарантируем, что ваша гофроупаковка будет доставлена точно в срок и в идеальном состоянии, сохраняя свою целостность и функциональность.
+          </p>
+          <p>
+            Наша цель – сделать процесс получения упаковочных материалов максимально простым и удобным для вас. Мы заботимся о каждом этапе доставки, от момента оформления заказа до вручения вам продукции. Благодаря развитой логистической сети и опыту наших специалистов, мы готовы оперативно реагировать на ваши потребности, предлагая гибкие тарифы и прозрачные условия сотрудничества. Выбирая нас, вы выбираете надежного партнера, который поможет вашему бизнесу расти и процветать, обеспечивая бесперебойные поставки качественной гофроупаковки в любую точку страны.
+          </p>
         </div>
       </div>
     </div>
@@ -127,15 +31,15 @@ import FooterNew from '../components/FooterNew.vue'
 
 // Настройка мета-данных страницы
 useHead({
-  title: 'Акции и скидки - Floksbox',
+  title: 'Доставка гофроупаковки - Floksbox',
   meta: [
-    { 
-      name: 'description', 
-      content: 'Актуальные акции и специальные предложения от Floksbox. Скидки на упаковку, бесплатная доставка, промокоды для новых клиентов.' 
+    {
+      name: 'description',
+      content: 'Доставка гофроупаковки по Москве, области и всей России: оперативно, бережно, на любом транспорте. Гибкие тарифы и прозрачные условия.'
     },
     {
       name: 'keywords',
-      content: 'акции, скидки, промокоды, floksbox, упаковка, специальные предложения, бесплатная доставка'
+      content: 'доставка, гофроупаковка, логистика, Floksbox, Москва, Московская область, Россия, поставки'
     }
   ]
 })
@@ -153,6 +57,25 @@ useHead({
   margin-top: 40px;
   margin-bottom: 80px;
   padding: 40px 0;
+}
+
+/* Доставка: отступы и типографика в духе сайта */
+.delivery-content {
+  margin-top: 40px;
+  margin-bottom: 120px; /* дополнительный отступ от футера */
+  padding: 40px 0;
+}
+
+.delivery-text {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.delivery-text p {
+  color: #666;
+  line-height: 1.7;
+  font-size: 1rem;
+  margin-bottom: 18px;
 }
 
 .container {
@@ -384,6 +307,16 @@ useHead({
     padding: 20px 0;
   }
 
+  .delivery-content {
+    margin-top: 30px;
+    margin-bottom: 100px; /* чуть меньше на планшетах */
+    padding: 20px 0;
+  }
+
+  .delivery-text p {
+    font-size: 0.95rem;
+  }
+
   .page-title {
     font-size: 2rem;
     margin-bottom: 40px;
@@ -468,6 +401,10 @@ useHead({
 
   .cta-section h2 {
     font-size: 1.4rem;
+  }
+
+  .delivery-content {
+    margin-bottom: 80px; /* компактнее на мобильных */
   }
 }
 </style>

@@ -40,7 +40,7 @@ const banners = [
     title: 'Пусть о Вас говорит Ваша упаковка',
     description: 'Коробки и упаковка для общепита. Не кусается!',
     cta: 'Перейти',
-    href: '/akcii' // TODO: обновить когда страница Акции будет создана
+    href: '/promotions'
   },
   {
     fon: '/assets/hero/fon4.png',

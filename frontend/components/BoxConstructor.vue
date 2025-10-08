@@ -131,15 +131,21 @@
             class="box-stage" 
             :style="stageStyle"
           >
-            <!-- Нижний слой: основа коробки (B.png) -->
-            <img class="layer base-layer" src="/assets/images/B.png" alt="base" />
-            <!-- Второй слой: дно (N.png), всегда у дна -->
-            <img class="layer bottom-layer" src="/assets/images/N.png" alt="bottom" />
-            <!-- Третий слой: верх (K.png/V.png) -->
+            <!-- Нижний слой: основа коробки (B.png/BB.png) -->
+            <img 
+              class="layer base-layer" 
+              :src="baseImageSrc" 
+              alt="base" 
+              :style="[ { clipPath: 'inset(' + clipTopPx + 'px 0 0 0)' }, baseImageFitStyle ]" 
+            />
+            <!-- Второй слой: дно (N.png/BN.png), всегда у дна -->
+            <img class="layer bottom-layer" :src="bottomImageSrc" alt="bottom" />
+            <!-- Третий слой: верх (K.png/V.png | BK.png/BV.png) -->
             <img 
               class="layer top-layer" 
-              :src="withLid ? '/assets/images/K.png' : '/assets/images/V.png'" 
+              :src="topImageSrc" 
               alt="top"
+              :style="{ clipPath: 'inset(' + clipTopPx + 'px 0 0 0)' }"
             />
           </div>
         </div>
@@ -184,11 +190,11 @@ function mapWidthCmToPx(cm) {
   return 450 + t * (800 - 450)
 }
 
-// Высота: 4см → 180px, 50см → 1125px (линейная интерполяция)
+// Высота: 3см → 380px, 50см → 1125px (линейная интерполяция)
 function mapHeightCmToPx(cm) {
   const clamped = Math.min(Math.max(cm, minHeight), maxHeight)
-  const t = (clamped - 4) / (50 - 4)
-  return 180 + t * (1125 - 180)
+  const t = (clamped - 3) / (50 - 3)
+  return 380 + t * (1125 - 380)
 }
 
 // Вьюпорт и масштабирование: вписываем сцену в доступную область по актуальным размерам
@@ -196,6 +202,15 @@ const viewportRef = ref(null)
 const stageWidthPx = computed(() => mapWidthCmToPx(diameter.value))
 const stageHeightPx = computed(() => mapHeightCmToPx(height.value))
 const scale = ref(1)
+const isScaledReady = ref(false)
+
+// Динамический срез верхней кромки: больше при ширине ближе к максимуму
+const clipTopPx = computed(() => {
+  // Интерполируем от 3px (w=12см) до 7px (w=30см)
+  const w = Math.min(Math.max(diameter.value, minDiameter), maxDiameter)
+  const t = (w - minDiameter) / (maxDiameter - minDiameter)
+  return Math.round(3 + t * (7 - 3))
+})
 
 function updateScale() {
   const el = viewportRef.value
@@ -207,6 +222,7 @@ function updateScale() {
   const sy = availableH / stageHeightPx.value
   // Масштабируем вниз/вверх так, чтобы всегда влезало и занимало максимум пространства
   scale.value = Math.max(0.1, Math.min(sx, sy))
+  if (!isScaledReady.value) isScaledReady.value = true
 }
 
 let resizeObserver
@@ -226,8 +242,28 @@ const stageStyle = computed(() => ({
   width: stageWidthPx.value + 'px',
   height: stageHeightPx.value + 'px',
   transform: `scale(${scale.value})`,
-  transformOrigin: 'center center'
+  transformOrigin: 'center center',
+  visibility: isScaledReady.value ? 'visible' : 'hidden'
 }))
+
+// Материал и источники изображений
+const isVelvet = computed(() => material.value === 'velvet')
+
+const baseImageSrc = computed(() => isVelvet.value ? '/assets/images/BB.png' : '/assets/images/B.png')
+const bottomImageSrc = computed(() => isVelvet.value ? '/assets/images/BN.png' : '/assets/images/N.png')
+const topImageSrc = computed(() => {
+  if (withLid.value) {
+    return isVelvet.value ? '/assets/images/BK.png' : '/assets/images/K.png'
+  }
+  return isVelvet.value ? '/assets/images/BV.png' : '/assets/images/V.png'
+})
+
+// Для бархата нижний фон не растягивается: центр и обрезка
+const baseImageFitStyle = computed(() => (
+  isVelvet.value 
+    ? { objectFit: 'cover', objectPosition: 'center center' }
+    : { objectFit: 'fill' }
+))
 
 // Прогресс ползунков для активной области
 const heightProgress = computed(() => {
@@ -737,6 +773,7 @@ function handleOrder() {
   width: 100%;
   height: auto;
   object-fit: contain;
+  object-position: center -1px; /* смещаем изображение на 1px вверх, убирая линию */
   z-index: 4;
 }
 

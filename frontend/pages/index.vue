@@ -21,12 +21,6 @@
       <MenuGrid />
     </div>
     
-    
-    
-    <!-- Process Section (над производством) -->
-    <div class="scroll-reveal scroll-reveal-scale scroll-reveal-delay-1">
-      <ProcessSection />
-    </div>
 
     <!-- Production Section -->
     <div class="scroll-reveal scroll-reveal-fade-right scroll-reveal-delay-2">
@@ -63,7 +57,6 @@ import HeaderSimple from '../components/HeaderSimple.vue'
 import HeroBanner from '../components/HeroBanner.vue'
 import MenuGrid from '../components/MenuGrid.vue'
  
-import ProcessSection from '../components/ProcessSection.vue'
 import ProductionSection from '../components/ProductionSection.vue'
 import ProductCarousel from '../components/ProductCarousel.vue'
 import OrderForm from '../components/OrderForm.vue'
