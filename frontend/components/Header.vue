@@ -2,7 +2,7 @@
   <header class="header">
     <!-- Фоновое видео -->
     <div class="header-background">
-      <video class="header-video" autoplay muted loop playsinline>
+      <video class="header-video" autoplay muted loop playsinline poster="/assets/hero/fon1.png">
         <source src="/assets/hero/tudasuda.mp4" type="video/mp4">
         Ваш браузер не поддерживает видео.
       </video>
@@ -134,7 +134,7 @@ function submitRequest() {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: transparent;
     z-index: 0;
   }
 }

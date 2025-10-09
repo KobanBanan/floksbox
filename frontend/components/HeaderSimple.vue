@@ -2,7 +2,7 @@
   <header class="header">
     <!-- Фоновое видео -->
     <div class="header-background">
-      <video class="header-video" autoplay muted loop playsinline>
+      <video class="header-video" autoplay muted loop playsinline poster="/assets/hero/fon1.png">
         <source src="/assets/hero/tudasuda.mp4" type="video/mp4">
         Ваш браузер не поддерживает видео.
       </video>
@@ -48,7 +48,7 @@
           </div>
           <!-- Время работы -->
           <div class="working-hours">
-            <span class="hours-text">ежедневно с 9 до 19</span>
+            <span class="hours-text">ежедневно с 9:00 до 19:00</span>
           </div>
           <!-- Иконки связи -->
           <div class="contact-icons">
@@ -110,7 +110,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: transparent;
     z-index: 0;
   }
 }

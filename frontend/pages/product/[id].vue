@@ -106,14 +106,14 @@
     </div>
     
     <!-- Footer -->
-    <FooterMap />
+    <FooterNew class="footer-gap" />
   </div>
 </template>
 
 <script setup>
 import HeaderSimple from '~/components/HeaderSimple.vue'
 import ProductCard from '~/components/ProductCard.vue'
-import FooterMap from '~/components/FooterMap.vue'
+import FooterNew from '~/components/FooterNew.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -224,7 +224,11 @@ watch(() => route.params.id, async (newId) => {
 <style scoped>
 .product-page {
   min-height: 100vh;
-  background: #ffffff;
+  background: transparent;
+}
+
+.footer-gap {
+  margin-top: 200px; /* ensure footer wave does not overlap content */
 }
 
 .product-details {
@@ -379,7 +383,12 @@ watch(() => route.params.id, async (newId) => {
 
 .recommended-products {
   padding: 80px 0;
-  background: #f8f9fa;
+  /* Match global site background */
+  background-image: url('/assets/footer/bg ok.png');
+  background-size: cover;
+  background-position: top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 .section-title {
