@@ -221,7 +221,8 @@ function updateScale() {
   const sx = availableW / stageWidthPx.value
   const sy = availableH / stageHeightPx.value
   // Масштабируем вниз/вверх так, чтобы всегда влезало и занимало максимум пространства
-  scale.value = Math.max(0.1, Math.min(sx, sy))
+  const upscaleLimit = 1.1 // не увеличиваем больше чем на 10%
+  scale.value = Math.max(0.1, Math.min(upscaleLimit, Math.min(sx, sy)))
   if (!isScaledReady.value) isScaledReady.value = true
 }
 

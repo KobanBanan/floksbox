@@ -10,9 +10,9 @@
         <div class="banner-background" :style="{ backgroundImage: `url(${banner.fon})` }" @click="handleBannerClick"></div>
         
         <div class="banner-content" @click="handleBannerClick">
-          <h1 class="banner-title" :class="{ 'banner-title-small': index === 1, 'banner-title-preline': banner.title && banner.title.includes('\n') }">{{ banner.title }}</h1>
+          <h1 class="banner-title" :class="{ 'banner-title-first': index === 0, 'banner-title-small': index === 1, 'banner-title-preline': banner.title && banner.title.includes('\n') }">{{ banner.title }}</h1>
           <p class="banner-description">{{ banner.description }}</p>
-          <a :href="banner.href" class="banner-button" :class="{ 'banner-button-lower': index === 1 }" @click.stop="handleButtonClick(banner.href)">{{ banner.cta }}</a>
+          <a v-if="banner.cta !== 'Узнать подробности'" :href="banner.href" class="banner-button" :class="{ 'banner-button-lower': index === 1 }" @click.stop="handleButtonClick(banner.href)">{{ banner.cta }}</a>
         </div>
 
         <img :src="banner.char" alt="Персонаж" class="banner-char" @click="handleBannerClick" />
@@ -162,6 +162,10 @@ onUnmounted(() => {
   paint-order: fill !important;
   outline: none !important;
   text-outline: none !important;
+}
+
+.banner-title-first {
+  font-size: 50px;
 }
 
 .banner-title-small {

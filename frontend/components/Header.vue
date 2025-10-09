@@ -28,13 +28,13 @@
             <NuxtLink to="/catalog" class="nav-link">Каталог</NuxtLink>
           </li>
           <li class="nav-item">
-            <NuxtLink to="/promotions" class="nav-link">Условия</NuxtLink>
+            <NuxtLink to="/prices" class="nav-link">Цены</NuxtLink>
           </li>
           <li class="nav-item">
             <NuxtLink to="/fefco" class="nav-link">FEFCO</NuxtLink>
           </li>
           <li class="nav-item">
-            <NuxtLink to="/prices" class="nav-link">Цены</NuxtLink>
+            <NuxtLink to="/promotions" class="nav-link">Доставка</NuxtLink>
           </li>
           <li class="nav-item">
             <NuxtLink to="/contacts" class="nav-link">Контакты</NuxtLink>
