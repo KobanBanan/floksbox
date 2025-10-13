@@ -12,7 +12,7 @@
         <div class="banner-content" @click="handleBannerClick">
           <h1 class="banner-title" :class="{ 'banner-title-first': index === 0, 'banner-title-small': index === 1, 'banner-title-preline': banner.title && banner.title.includes('\n') }">{{ banner.title }}</h1>
           <p class="banner-description">{{ banner.description }}</p>
-          <a v-if="banner.cta !== 'Узнать подробности'" :href="banner.href" class="banner-button" :class="{ 'banner-button-lower': index === 1 }" @click.stop="handleButtonClick(banner.href)">{{ banner.cta }}</a>
+          <a v-if="banner.cta !== 'Узнать подробности'" :href="banner.href" class="banner-button" :class="{ 'banner-button-lower': index === 1 }" @click.stop="handleButtonClick(banner)">{{ banner.cta }}</a>
         </div>
 
         <img :src="banner.char" alt="Персонаж" class="banner-char" @click="handleBannerClick" />
@@ -40,21 +40,22 @@ const banners = [
     title: 'Пусть о Вас говорит Ваша упаковка',
     description: 'Коробки и упаковка для общепита. Не кусается!',
     cta: 'Перейти',
-    href: '/promotions'
+    href: '#',
+    productName: 'коробка для пиццы'
   },
   {
     fon: '/assets/hero/fon4.png',
     char: '/assets/hero/char4.png',
-    title: 'Сделай шляпную\nкоробку сам',
-    description: 'Работаем на клиента',
-    cta: 'Попробовать',
+    title: 'Шляпные коробки\nна любой вкус',
+    description: 'Создайте свою!',
+    cta: 'Создать',
     href: '/category/hat-boxes'
   },
   {
-    fon: '/assets/hero/fon6.png',
+    fon: '/assets/hero/fon6.jpg',
     char: '/assets/hero/char6.png',
     title: 'Доставляем\nдо двери',
-    description: 'Работаем на клиента',
+    description: 'По Москве, регионам \nи всей России!',
     cta: 'Узнать подробности',
     href: '#'
   }
@@ -63,6 +64,7 @@ const banners = [
 
 const currentSlide = ref(0)
 let slideInterval = null
+const router = useRouter()
 
 const nextSlide = () => {
   currentSlide.value = (currentSlide.value + 1) % banners.length
@@ -72,9 +74,48 @@ const handleBannerClick = () => {
   nextSlide()
 }
 
-const handleButtonClick = (href) => {
+const handleButtonClick = async (bannerOrHref) => {
+  let href = null
+  let productName = null
+  if (typeof bannerOrHref === 'string') {
+    href = bannerOrHref
+  } else if (bannerOrHref && typeof bannerOrHref === 'object') {
+    href = bannerOrHref.href
+    productName = bannerOrHref.productName
+  }
+
+  if (productName) {
+    try {
+      const config = useRuntimeConfig()
+      const apiBase = config.public.apiBase
+      let response = await $fetch(`${apiBase}/api/products/`, {
+        params: {
+          search: productName,
+          active_only: true,
+          page_size: 1
+        }
+      })
+      let productId = response?.results?.[0]?.id
+
+      if (!productId) {
+        response = await $fetch(`${apiBase}/api/products/`, {
+          params: { active_only: true, page_size: 100 }
+        })
+        const found = (response?.results || []).find(p => (p.name || '').toLowerCase().includes(productName.toLowerCase()))
+        productId = found?.id
+      }
+
+      if (productId) {
+        router.push(`/product/${productId}`)
+        return
+      }
+    } catch (e) {
+      console.error('Не удалось найти товар по названию', e)
+    }
+  }
+
   if (href && href !== '#') {
-    window.location.href = href
+    router.push(href)
   }
 }
 
@@ -212,7 +253,7 @@ onUnmounted(() => {
   text-outline: none !important;
 }
 
-/* Специальные стили для баннера 4 (с fon6.png) - разрешаем перенос заголовка */
+/* Специальные стили для баннера 4 (с fon6.jpg) - разрешаем перенос заголовка */
 .hero-slide:nth-child(4) .banner-content {
   padding-right: 200px; /* добавляем отступ справа для персонажа */
 }
@@ -232,6 +273,11 @@ onUnmounted(() => {
   text-outline: none !important;
 }
 
+/* Усиливаем читаемость описания на баннере 4 (fon6.jpg) чёрным свечением */
+.hero-slide:nth-child(4) .banner-description {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.65), 0 0 8px rgba(0, 0, 0, 0.7), 0 0 14px rgba(0, 0, 0, 0.5);
+}
+
 .hero-slide:nth-child(4) .banner-char {
   right: 20px; /* сдвигаем персонажа еще правее */
 }
@@ -243,7 +289,7 @@ onUnmounted(() => {
 }
 
 .hero-slide:nth-child(3) .banner-title {
-  white-space: normal; /* разрешаем перенос для третьего баннера */
+  white-space: pre-line; /* перенос по \n для третьего баннера */
   line-height: 1.1; /* уменьшаем межстрочный интервал */
   max-width: 500px; /* ограничиваем ширину для переноса */
   font-size: 48px; /* уменьшенный размер шрифта */
