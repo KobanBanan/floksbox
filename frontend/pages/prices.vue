@@ -89,7 +89,7 @@ import HeaderSimple from '../components/HeaderSimple.vue'
 import FooterNew from '../components/FooterNew.vue'
 
 // Путь к PDF файлу
-const pdfUrl = '/assets/images/Прайс FloksBox.pdf'
+const pdfUrl = '/assets/images/price_floksbox.pdf'
 
 // Состояние модального окна формы
 const showModal = ref(false)
