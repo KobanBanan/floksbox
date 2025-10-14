@@ -243,7 +243,7 @@ const stageStyle = computed(() => ({
   width: stageWidthPx.value + 'px',
   height: stageHeightPx.value + 'px',
   transform: `scale(${scale.value})`,
-  transformOrigin: 'center center',
+  transformOrigin: 'center bottom',
   visibility: isScaledReady.value ? 'visible' : 'hidden'
 }))
 
@@ -259,12 +259,10 @@ const topImageSrc = computed(() => {
   return isVelvet.value ? '/assets/images/BV.png' : '/assets/images/V.png'
 })
 
-// Для бархата нижний фон не растягивается: центр и обрезка
-const baseImageFitStyle = computed(() => (
-  isVelvet.value 
-    ? { objectFit: 'cover', objectPosition: 'center center' }
-    : { objectFit: 'fill' }
-))
+// Выравнивание основания для обоих материалов одинаково: заполняем контейнер
+const baseImageFitStyle = computed(() => ({ objectFit: 'fill' }))
+
+// (revert) убрана кастомная логика topImageStyle
 
 // Прогресс ползунков для активной области
 const heightProgress = computed(() => {
@@ -730,7 +728,7 @@ function handleOrder() {
   height: 400px;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end; /* якорим сцену по дну контейнера */
 }
 
 /* Сцена и слои */
