@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Модель слоёв</title>
+<style>
+  :root {
+    --container-w: 220px;
+    --container-h: 470px;
+    --rb-bottom-h: 87px;  /* высота нижнего слоя (по умолчанию) */
+    --rb-top-h: 286px;     /* высота верхнего слоя (по умолчанию) */
+  }
+
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+  }
+
+  /* Размер контейнера для точного позиционирования */
+  .container {
+    position: relative;
+    width: var(--container-w);
+    height: var(--container-h);
+    min-height: var(--container-h); /* минимальная высота 305px */
+  }
+
+  /* Общие стили для слоёв */
+  .layer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  /* 1. Самый дальний слой (фон) */
+  #rb_back {
+    top: 0;
+    bottom: 0;
+    z-index: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #rb_back img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;     /* обрезка по высоте/ширине */
+    object-position: center; /* центрирование изображения */
+    display: block;
+  }
+
+  /* 2. Нижний слой (снизу) */
+  #rb_bottom {
+    bottom: 0;
+    height: 87(--rb-bottom-h); /* по умолчанию 87px, можно изменить в CSS */
+    width: 100%;
+    z-index: 1;
+  }
+
+  #rb_bottom img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* 3. Верхний слой (накладывается сверху) */
+  #rb_top {
+    top: 0;
+    height: 286(--rb-top-h); /* по умолчанию 286px, можно изменить в CSS */
+    width: 100%;
+    z-index: 2;
+  }
+
+  #rb_top img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <!-- Самый дальний слой -->
+    <div id="rb_back" class="layer">
+      <img src="Back_barhat.png" alt="Фон" />
+    </div>
+    <!-- Нижний слой -->
+    <div id="rb_bottom" class="layer">
+      <img src="bottom_barhat.png" alt="Нижний слой" />
+    </div>
+    <!-- Верхний слой -->
+    <div id="rb_top" class="layer">
+      <img src="top_on_barhat.png" alt="Верхний слой" />
+    </div>
+  </div>
+</body>
+</html>

@@ -12,7 +12,7 @@
             <div class="slider-container">
               <input 
                 type="range" 
-                v-model="height" 
+           v-model.number="height" 
                 :min="minHeight" 
                 :max="maxHeight" 
                 step="1"
@@ -22,7 +22,7 @@
               <div class="input-with-unit">
                 <input 
                   type="number" 
-                  v-model="height" 
+                  v-model.number="height" 
                   :min="minHeight" 
                   :max="maxHeight" 
                   step="1"
@@ -38,7 +38,7 @@
             <div class="slider-container">
               <input 
                 type="range" 
-                v-model="diameter" 
+                v-model.number="diameter" 
                 :min="minDiameter" 
                 :max="maxDiameter" 
                 step="2"
@@ -124,29 +124,19 @@
         </button>
       </div>
       
-      <!-- Визуализация коробки -->
+      <!-- Визуализация коробки: 3-слойный контейнер -->
       <div class="constructor-right">
         <div class="box-visualization" ref="viewportRef">
-          <div 
-            class="box-stage" 
-            :style="stageStyle"
-          >
-            <!-- Нижний слой: основа коробки (B.png/BB.png) -->
-            <img 
-              class="layer base-layer" 
-              :src="baseImageSrc" 
-              alt="base" 
-              :style="[ { clipPath: 'inset(' + clipTopPx + 'px 0 0 0)' }, baseImageFitStyle ]" 
-            />
-            <!-- Второй слой: дно (N.png/BN.png), всегда у дна -->
-            <img class="layer bottom-layer" :src="bottomImageSrc" alt="bottom" />
-            <!-- Третий слой: верх (K.png/V.png | BK.png/BV.png) -->
-            <img 
-              class="layer top-layer" 
-              :src="topImageSrc" 
-              alt="top"
-              :style="{ clipPath: 'inset(' + clipTopPx + 'px 0 0 0)' }"
-            />
+          <div class="layers-container" :style="containerStyle">
+            <div id="rb_back" class="layer">
+              <img :src="layerBackSrc" alt="Фон" />
+            </div>
+            <div id="rb_bottom" class="layer" :style="{ height: bottomLayerHeightPx + 'px' }">
+              <img :src="layerBottomSrc" alt="Нижний слой" />
+            </div>
+            <div id="rb_top" class="layer" :style="{ height: topLayerHeightPx + 'px' }">
+              <img :src="layerTopSrc" alt="Верхний слой" />
+            </div>
           </div>
         </div>
       </div>
@@ -155,7 +145,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 
 const emit = defineEmits(['close'])
 
@@ -178,68 +168,139 @@ const maxHeight = 50
 const minDiameter = 12
 const maxDiameter = 30
 
-// Карта: см → px (визуальные размеры слоя основы до масштабирования)
-// Ширина: 12см → 280px, 20см → 450px, 30см → 800px (кусочно-линейная интерполяция)
+// Новая карта ширины: точные соответствия см → пиксели
 function mapWidthCmToPx(cm) {
   const clamped = Math.min(Math.max(cm, minDiameter), maxDiameter)
-  if (clamped <= 20) {
-    const t = (clamped - 12) / (20 - 12)
-    return 280 + t * (450 - 280)
+  const even = clamped % 2 === 0 ? clamped : clamped - 1
+  const widthMap = {
+    12: 268,
+    14: 314,
+    16: 359,
+    18: 405,
+    20: 450,
+    22: 496,
+    24: 541,
+    26: 587,
+    28: 632,
+    30: 678
   }
-  const t = (clamped - 20) / (30 - 20)
-  return 450 + t * (800 - 450)
+  return widthMap[even]
 }
 
-// Высота: 3см → 380px, 50см → 1125px (линейная интерполяция)
+// Новая карта высоты: точные соответствия см → пиксели
 function mapHeightCmToPx(cm) {
   const clamped = Math.min(Math.max(cm, minHeight), maxHeight)
-  const t = (clamped - 3) / (50 - 3)
-  return 380 + t * (1125 - 380)
+  const heightMap = {
+    3: 305,
+    4: 312,
+    5: 319,
+    6: 325,
+    7: 332,
+    8: 339,
+    9: 346,
+    10: 352,
+    11: 359,
+    12: 366,
+    13: 379,
+    14: 392,
+    15: 405,
+    16: 418,
+    17: 431,
+    18: 444,
+    19: 457,
+    20: 470,
+    21: 479,
+    22: 488,
+    23: 497,
+    24: 506,
+    25: 515,
+    26: 524,
+    27: 533,
+    28: 542,
+    29: 551,
+    30: 560,
+    31: 569,
+    32: 578,
+    33: 587,
+    34: 596,
+    35: 605,
+    36: 614,
+    37: 623,
+    38: 632,
+    39: 641,
+    40: 650,
+    41: 659,
+    42: 668,
+    43: 677,
+    44: 686,
+    45: 695,
+    46: 704,
+    47: 713,
+    48: 722,
+    49: 731,
+    50: 740
+  }
+  return heightMap[clamped]
 }
 
-// Вьюпорт и масштабирование: вписываем сцену в доступную область по актуальным размерам
+const stageWidthPx = computed(() => Math.round(mapWidthCmToPx(diameter.value)))
+const stageHeightPx = computed(() => Math.round(mapHeightCmToPx(height.value)))
+
+// Зум отключен: прямоугольник отображается в фактическом масштабе
+
+// Контейнер слоёв
 const viewportRef = ref(null)
-const stageWidthPx = computed(() => mapWidthCmToPx(diameter.value))
-const stageHeightPx = computed(() => mapHeightCmToPx(height.value))
 const scale = ref(1)
 const isScaledReady = ref(false)
-
-// Динамический срез верхней кромки: больше при ширине ближе к максимуму
-const clipTopPx = computed(() => {
-  // Интерполируем от 3px (w=12см) до 7px (w=30см)
-  const w = Math.min(Math.max(diameter.value, minDiameter), maxDiameter)
-  const t = (w - minDiameter) / (maxDiameter - minDiameter)
-  return Math.round(3 + t * (7 - 3))
-})
+const needsZoom = computed(() => height.value > 30)
+const needsMinorZoom = computed(() => height.value >= 17 && height.value <= 31)
 
 function updateScale() {
   const el = viewportRef.value
   if (!el) return
-  const padding = 16 // внутренние отступы безопасности
-  const availableW = Math.max(0, el.clientWidth - padding)
-  const availableH = Math.max(0, el.clientHeight - padding)
-  const sx = availableW / stageWidthPx.value
-  const sy = availableH / stageHeightPx.value
-  // Масштабируем вниз/вверх так, чтобы всегда влезало и занимало максимум пространства
-  const upscaleLimit = 1.1 // не увеличиваем больше чем на 10%
-  scale.value = Math.max(0.1, Math.min(upscaleLimit, Math.min(sx, sy)))
+  // базовые размеры сцены
+  const sceneW = stageWidthPx.value
+  const sceneH = stageHeightPx.value
+  // доступная область (минус небольшой паддинг безопасности)
+  const pad = 8
+  const availW = Math.max(0, el.clientWidth - pad)
+  const availH = Math.max(0, el.clientHeight - pad)
+  // единый масштаб = min по осям, чтобы сохранять пропорции
+  const s = Math.min(availW / sceneW, availH / sceneH)
+  if (needsZoom.value) {
+    // для >30 всегда вписываем сцену
+    scale.value = Math.min(1, Math.max(0.1, s))
+  } else if (needsMinorZoom.value) {
+    // для 17..31 уменьшаем ТОЛЬКО если вылезает за пределы
+    scale.value = s < 1 ? Math.min(1, Math.max(0.1, s)) : 1
+  } else {
+    scale.value = 1
+  }
   if (!isScaledReady.value) isScaledReady.value = true
 }
 
 let resizeObserver
-onMounted(() => {
+onMounted(async () => {
+  // Ждём отрисовку DOM, затем считаем масштаб несколько раз для надёжности
+  await nextTick()
   updateScale()
+  requestAnimationFrame(() => updateScale())
+  window.addEventListener('load', updateScale, { once: true })
   resizeObserver = new ResizeObserver(() => updateScale())
   if (viewportRef.value) resizeObserver.observe(viewportRef.value)
 })
 
 onBeforeUnmount(() => {
-  if (resizeObserver && viewportRef.value) resizeObserver.unobserve(viewportRef.value)
+  if (resizeObserver) {
+    resizeObserver.disconnect()
+    resizeObserver = null
+  }
+  window.removeEventListener('load', updateScale)
 })
 
-watch([stageWidthPx, stageHeightPx], () => updateScale())
+watch([stageWidthPx, stageHeightPx, needsZoom, needsMinorZoom], () => updateScale())
 
-const stageStyle = computed(() => ({
+const containerStyle = computed(() => ({
   width: stageWidthPx.value + 'px',
   height: stageHeightPx.value + 'px',
   transform: `scale(${scale.value})`,
@@ -247,22 +308,26 @@ const stageStyle = computed(() => ({
   visibility: isScaledReady.value ? 'visible' : 'hidden'
 }))
 
-// Материал и источники изображений
-const isVelvet = computed(() => material.value === 'velvet')
+// Высоты верхнего и нижнего слоёв фиксированы
+const bottomLayerHeightPx = 89
+const topLayerHeightPx = 286
 
-const baseImageSrc = computed(() => isVelvet.value ? '/assets/images/BB.png' : '/assets/images/B.png')
-const bottomImageSrc = computed(() => isVelvet.value ? '/assets/images/BN.png' : '/assets/images/N.png')
-const topImageSrc = computed(() => {
-  if (withLid.value) {
-    return isVelvet.value ? '/assets/images/BK.png' : '/assets/images/K.png'
+// Источники изображений: переключение между бархатом и дизайнерской бумагой
+const isDesign = computed(() => material.value === 'paper')
+const layerBackSrc = computed(() => isDesign.value ? '/assets/images/Back_design.png' : '/assets/images/Back_barhat.png')
+const layerBottomSrc = computed(() => isDesign.value ? '/assets/images/bottom_design.png' : '/assets/images/bottom_barhat.png')
+const layerTopSrc = computed(() => {
+  if (!withLid.value) {
+    // без крышки — выбираем по ширине
+    const even = Math.max(minDiameter, Math.min(maxDiameter, diameter.value))
+    const size = even % 2 === 0 ? even : even - 1
+    return `/assets/images/top_off_${size}.png`
   }
-  return isVelvet.value ? '/assets/images/BV.png' : '/assets/images/V.png'
+  // с крышкой — зависящий от материала файл
+  return isDesign.value ? '/assets/images/top_on_design.png' : '/assets/images/top_on_barhat.png'
 })
 
-// Выравнивание основания для обоих материалов одинаково: заполняем контейнер
-const baseImageFitStyle = computed(() => ({ objectFit: 'fill' }))
-
-// (revert) убрана кастомная логика topImageStyle
+// Крышка пока не влияет на набор картинок
 
 // Прогресс ползунков для активной области
 const heightProgress = computed(() => {
@@ -729,51 +794,64 @@ function handleOrder() {
   display: flex;
   justify-content: center;
   align-items: flex-end; /* якорим сцену по дну контейнера */
+  overflow: hidden;      /* ⟵ добавлено */
 }
 
-/* Сцена и слои */
-.box-stage {
+/* 3-слойный контейнер */
+.layers-container {
   position: relative;
-  transition: transform 0.2s ease;
 }
-
 
 .layer {
   position: absolute;
   left: 0;
   right: 0;
-  margin: 0 auto;
-  image-rendering: auto;
-  max-width: none;
-  pointer-events: none;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
-/* Нижний слой основание: растягивается по ширине и высоте согласно картам */
-.base-layer {
+#rb_back {
+  top: 0;
   bottom: 0;
+  z-index: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#rb_back img {
   width: 100%;
   height: 100%;
   object-fit: fill;
+  object-position: center;
+  display: block;
+}
+
+#rb_bottom {
+  bottom: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+#rb_bottom img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  display: block;
+}
+
+#rb_top {
+  top: 0;
+  width: 100%;
   z-index: 2;
 }
 
-/* Дно: всегда прижато к низу, ширина = 100%, высота авто */
-.bottom-layer {
-  bottom: 0;
+#rb_top img {
   width: 100%;
-  height: auto;
-  object-fit: contain;
-  z-index: 3;
-}
-
-/* Крышка/верх: сверху, масштабируется пропорционально ширине */
-.top-layer {
-  top: 0;
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-  object-position: center -1px; /* смещаем изображение на 1px вверх, убирая линию */
-  z-index: 4;
+  height: 100%;
+  object-fit: fill;
+  display: block;
 }
 
 @media (max-width: 768px) {

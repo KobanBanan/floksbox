@@ -24,6 +24,22 @@ export default defineNuxtConfig({
         'all'
       ],
       strictPort: false,
+      // More resilient file watching on Windows/OneDrive
+      watch: {
+        usePolling: true,
+        interval: 300,
+        awaitWriteFinish: {
+          stabilityThreshold: 500,
+          pollInterval: 300
+        }
+      },
+      // Stabilize HMR websocket to avoid ECONNRESET during restarts
+      hmr: {
+        protocol: 'ws',
+        host: '127.0.0.1',
+        port: 24678,
+        clientPort: 24678
+      },
       // Прокси для API запросов
       proxy: {
         '/api': {
