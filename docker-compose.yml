@@ -10,6 +10,7 @@ services:
     working_dir: /app
     volumes:
       - ./backend/media:/app/media
+      - ./backend/db.sqlite3:/app/db.sqlite3
     ports:
       - "8000:8000"
     environment:
