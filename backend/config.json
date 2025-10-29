@@ -4,10 +4,10 @@
     "chat_id": "281063413"
   },
   "email": {
-    "smtp_server": "smtp.gmail.com",
-    "smtp_port": 587,
-    "email": "your-email@gmail.com",
-    "password": "your-app-password",
-    "recipient": "recipient@gmail.com"
+    "smtp_server": "host.docker.internal",
+    "smtp_port": 1025,
+    "email": "floksbox@protonmail.com",
+    "password": "FrVuS622zPQyWYm",
+    "recipient": "floksbox@protonmail.com"
   }
 } 
