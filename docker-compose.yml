@@ -18,6 +18,10 @@ services:
       - DJANGO_DEBUG=0
       - DJANGO_SQLITE_NAME=/data/db.sqlite3
       - DJANGO_SECURE_SSL_REDIRECT=0
+      - DJANGO_SESSION_COOKIE_SECURE=0
+      - DJANGO_CSRF_COOKIE_SECURE=0
+      - DJANGO_ALLOWED_HOSTS=91.229.8.43,backend,localhost,127.0.0.1
+      - DJANGO_CSRF_TRUSTED_ORIGINS=http://91.229.8.43:8000,http://91.229.8.43,https://91.229.8.43
     restart: unless-stopped
 
   frontend:
