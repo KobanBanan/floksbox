@@ -1,5 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { defineNuxtConfig } from 'nuxt/config'
+
+const isDev = process.env.NODE_ENV !== 'production'
+const defaultBackendUrl = isDev ? 'http://localhost:8000' : 'http://backend:8000'
+const backendUrl = process.env.BACKEND_URL || defaultBackendUrl
+const publicApiBase = process.env.NUXT_PUBLIC_API_BASE ?? ''
+const publicMediaBase = process.env.NUXT_PUBLIC_MEDIA_BASE ?? ''
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
@@ -41,18 +47,20 @@ export default defineNuxtConfig({
         clientPort: 24678
       },
       // Прокси для API запросов
-      proxy: {
-        '/api': {
-          target: 'http://localhost:8000',
-          changeOrigin: true,
-          rewrite: (path) => path
-        },
-        '/media': {
-          target: 'http://localhost:8000',
-          changeOrigin: true,
-          rewrite: (path) => path
-        }
-      }
+      proxy: isDev
+        ? {
+            '/api': {
+              target: backendUrl,
+              changeOrigin: true,
+              rewrite: (path) => path
+            },
+            '/media': {
+              target: backendUrl,
+              changeOrigin: true,
+              rewrite: (path) => path
+            }
+          }
+        : undefined
     }
   },
   
@@ -79,14 +87,17 @@ export default defineNuxtConfig({
   // Runtime configuration
   runtimeConfig: {
     public: {
-      // Пустая база => `${apiBase}/api/...` даст `/api/...` на текущем хосте (ngrok)
-      apiBase: ''
+      apiBase: publicApiBase,
+      mediaBase: publicMediaBase
     }
   },
 
   // Настройки сборки
   nitro: {
     preset: 'node-server',
-    
+    routeRules: {
+      '/api/**': { proxy: `${backendUrl}/api/**` },
+      '/media/**': { proxy: `${backendUrl}/media/**` },
+    }
   }
 })

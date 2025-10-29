@@ -17,7 +17,9 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 # Copy backend source only
 COPY backend/ /app
 
+RUN chmod +x /app/docker-entrypoint.sh
+
 EXPOSE 8000
 
 # Default command: run migrations, collect static, and start Gunicorn
-CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn floksbox_backend.wsgi:application --bind 0.0.0.0:8000 --workers 3"]
+CMD ["/app/docker-entrypoint.sh"]

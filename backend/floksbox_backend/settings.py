@@ -32,7 +32,7 @@ SECRET_KEY = env('DJANGO_SECRET_KEY', default='django-insecure-change-this-in-pr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DJANGO_DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = env('DJANGO_ALLOWED_HOSTS', default='localhost,127.0.0.1,0.0.0.0', cast=Csv())
+ALLOWED_HOSTS = env('DJANGO_ALLOWED_HOSTS', default='localhost,127.0.0.1,0.0.0.0,backend', cast=Csv())
 CSRF_TRUSTED_ORIGINS = env('DJANGO_CSRF_TRUSTED_ORIGINS', default='', cast=Csv())
 
 # Application definition
@@ -85,10 +85,12 @@ WSGI_APPLICATION = 'floksbox_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+SQLITE_DB_NAME = env('DJANGO_SQLITE_NAME', default=str(BASE_DIR / 'db.sqlite3'))
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': SQLITE_DB_NAME,
     }
 }
 
@@ -157,8 +159,8 @@ CORS_ALLOW_CREDENTIALS = True
 # Security hardening for production
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
-SESSION_COOKIE_SECURE = not DEBUG
-CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_SECURE = env('DJANGO_SESSION_COOKIE_SECURE', default=not DEBUG, cast=bool)
+CSRF_COOKIE_SECURE = env('DJANGO_CSRF_COOKIE_SECURE', default=not DEBUG, cast=bool)
 SECURE_SSL_REDIRECT = env('DJANGO_SECURE_SSL_REDIRECT', default=not DEBUG, cast=bool)
 SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
 SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG

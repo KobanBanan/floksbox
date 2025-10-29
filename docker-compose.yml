@@ -6,16 +6,18 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     container_name: floksbox-backend
-    command: sh -c "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn floksbox_backend.wsgi:application --bind 0.0.0.0:8000 --workers 3"
+    command: ["/app/docker-entrypoint.sh"]
     working_dir: /app
     volumes:
+      - backend_db_data:/data
       - ./backend/media:/app/media
-      - ./backend/db.sqlite3:/app/db.sqlite3
     ports:
       - "8000:8000"
     environment:
       - DJANGO_SETTINGS_MODULE=floksbox_backend.settings
       - DJANGO_DEBUG=0
+      - DJANGO_SQLITE_NAME=/data/db.sqlite3
+      - DJANGO_SECURE_SSL_REDIRECT=0
     restart: unless-stopped
 
   frontend:
@@ -29,6 +31,7 @@ services:
     environment:
       - NITRO_HOST=0.0.0.0
       - NITRO_PORT=3000
+      - BACKEND_URL=http://backend:8000
     depends_on:
       - backend
     restart: unless-stopped
@@ -37,4 +40,5 @@ networks:
   default:
     name: floksbox-net
 
-
+volumes:
+  backend_db_data:
