@@ -24,6 +24,5 @@ urlpatterns = [
     path('', include('requests_app.urls')),
 ]
 
-# Добавляем обслуживание медиа файлов в режиме разработки
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Временно обслуживаем медиа-файлы напрямую приложением (для окружений без nginx)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
