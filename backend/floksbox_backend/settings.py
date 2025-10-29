@@ -167,6 +167,10 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
 SECURE_HSTS_PRELOAD = not DEBUG
 X_FRAME_OPTIONS = 'DENY'
 
+# Respect SSL terminated at reverse proxy (Nginx)
+# Ensures request.is_secure() works and secure cookies/CSRF behave correctly
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # Basic logging
 LOGGING = {
     'version': 1,
