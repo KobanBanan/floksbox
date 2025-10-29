@@ -314,7 +314,7 @@ const topLayerHeightPx = 286
 
 // Источники изображений: переключение между бархатом и дизайнерской бумагой
 const isDesign = computed(() => material.value === 'paper')
-const layerBackSrc = computed(() => isDesign.value ? '/assets/images/Back_design.png' : '/assets/images/Back_barhat.png')
+const layerBackSrc = computed(() => isDesign.value ? '/assets/images/Back_design.png' : '/assets/images/back_barhat.png')
 const layerBottomSrc = computed(() => isDesign.value ? '/assets/images/bottom_design.png' : '/assets/images/bottom_barhat.png')
 const layerTopSrc = computed(() => {
   if (!withLid.value) {
