@@ -13,6 +13,7 @@ urlpatterns = [
     
     # Существующие URL
     path('sent_request/', views.sent_request, name='sent_request'),
+    path('api/sent_request/', views.sent_request, name='sent_request_api'),
     path('health/', views.health_check, name='health_check'),
     
     # API маршруты для товаров и категорий
