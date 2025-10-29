@@ -349,7 +349,7 @@ const submitForm = async () => {
   try {
     const config = useRuntimeConfig()
     const apiBase = (config.public.apiBase || '').replace(/\/+$/, '')
-    const url = `${apiBase}/sent_request/`
+    const url = `${apiBase}/api/sent_request/`
     const response = await $fetch(url, {
       method: 'POST',
       headers: {
