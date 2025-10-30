@@ -8,7 +8,7 @@
         playsinline
         class="production-video"
       >
-        <source src="/assets/production/Автоматическая_линия_для_гофроящиков_｜_2_флексопечати_+_ротор_слоттер.mp4" type="video/mp4">
+        <source src="/assets/production/main_page_video.mp4" type="video/mp4">
         Ваш браузер не поддерживает видео.
       </video>
     </div>
