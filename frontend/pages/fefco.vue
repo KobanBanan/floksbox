@@ -57,8 +57,13 @@
               
               <!-- Область слайдера -->
                <ScrollRevealWrapper type="fade-up" :delay="1">
-                 <div class="slider-area">
-                   <div class="slider-container" :class="{ 'inactive': !selectedDrawing }">
+                 <div class="slider-area" ref="sliderRef">
+                   <div
+                     class="slider-container"
+                     :class="{ 'inactive': !selectedDrawing }"
+                     @mouseenter="pauseAutoSlide(5000)"
+                     @mouseleave="startAutoSlide"
+                   >
                      <div v-if="!selectedDrawing" class="slider-placeholder">
                        <p>Выберите чертеж для просмотра</p>
                      </div>
@@ -177,7 +182,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import HeaderSimple from '../components/HeaderSimple.vue'
 import FooterNew from '../components/FooterNew.vue'
 
@@ -190,6 +195,10 @@ const fullscreenImage = ref(null)
 const selectedItems = ref([]) // Для накопления выбранных позиций
 const currentPage = ref(1) // Текущая страница пагинации
 const itemsPerPage = 15 // Количество чертежей на странице
+const sliderRef = ref(null)
+let scrollTimer = null
+let slideInterval = null
+let resumeTimer = null
 
 // Меню
 const menuItems = [
@@ -358,8 +367,10 @@ const selectSection = (sectionId) => {
   // Автоматически выбираем первый чертеж нового раздела
   const drawings = drawingsBySection[sectionId] || []
   if (drawings.length > 0) {
-    selectDrawing(drawings[0])
+    const initial = drawings[0] === '0100' && drawings.length > 1 ? drawings[1] : drawings[0]
+    selectDrawing(initial)
   }
+  startAutoSlide()
 }
 
 // Методы пагинации
@@ -372,6 +383,8 @@ const goToPage = (page) => {
 const selectDrawing = (drawing) => {
   selectedDrawing.value = drawing
   currentSlide.value = 0
+  scrollToSlider()
+  startAutoSlide()
 }
 
 const prevSlide = () => {
@@ -380,6 +393,7 @@ const prevSlide = () => {
   } else {
     currentSlide.value = currentImages.value.length - 1
   }
+  pauseAutoSlide(10000)
 }
 
 const nextSlide = () => {
@@ -388,10 +402,57 @@ const nextSlide = () => {
   } else {
     currentSlide.value = 0
   }
+  pauseAutoSlide(10000)
 }
 
 const goToSlide = (index) => {
   currentSlide.value = index
+  pauseAutoSlide(10000)
+}
+
+const scrollToSlider = () => {
+  if (scrollTimer) {
+    clearTimeout(scrollTimer)
+  }
+  scrollTimer = setTimeout(async () => {
+    await nextTick()
+    if (sliderRef.value) {
+      sliderRef.value.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      })
+    }
+    scrollTimer = null
+  }, 900)
+}
+
+// Автослайд с паузами
+const startAutoSlide = () => {
+  stopAutoSlide()
+  if (selectedDrawing.value && currentImages.value.length > 1) {
+    slideInterval = setInterval(() => {
+      nextSlide()
+    }, 3000)
+  }
+}
+
+const stopAutoSlide = () => {
+  if (slideInterval) {
+    clearInterval(slideInterval)
+    slideInterval = null
+  }
+}
+
+const pauseAutoSlide = (delayMs) => {
+  stopAutoSlide()
+  if (resumeTimer) {
+    clearTimeout(resumeTimer)
+    resumeTimer = null
+  }
+  resumeTimer = setTimeout(() => {
+    startAutoSlide()
+    resumeTimer = null
+  }, delayMs)
 }
 
 const openFullscreen = (image) => {
@@ -425,26 +486,23 @@ const orderMessage = computed(() => {
 
 
 
-// Автоматическое переключение слайдов
-let slideInterval = null
-
 onMounted(() => {
   // Автоматически выбираем первый чертеж из текущего раздела
   if (availableDrawings.value.length > 0) {
-    selectDrawing(availableDrawings.value[0])
+    const first = availableDrawings.value[0]
+    const initial = first === '0100' && availableDrawings.value.length > 1 ? availableDrawings.value[1] : first
+    selectDrawing(initial)
   }
-  
-  // Автоматическое переключение каждые 3 секунды
-  slideInterval = setInterval(() => {
-    if (selectedDrawing.value && currentImages.value.length > 1) {
-      nextSlide()
-    }
-  }, 3000)
+  startAutoSlide()
 })
 
 onUnmounted(() => {
-  if (slideInterval) {
-    clearInterval(slideInterval)
+  stopAutoSlide()
+  if (resumeTimer) {
+    clearTimeout(resumeTimer)
+  }
+  if (scrollTimer) {
+    clearTimeout(scrollTimer)
   }
 })
 

@@ -70,8 +70,22 @@ const nextSlide = () => {
   currentSlide.value = (currentSlide.value + 1) % banners.length
 }
 
+const startSlideShow = () => {
+  slideInterval = setInterval(() => {
+    nextSlide()
+  }, 4000)
+}
+
+const resetSlideShow = () => {
+  if (slideInterval) {
+    clearInterval(slideInterval)
+  }
+  startSlideShow()
+}
+
 const handleBannerClick = () => {
   nextSlide()
+  resetSlideShow() // сбрасываем таймер автопереключения после клика
 }
 
 const handleButtonClick = async (bannerOrHref) => {
@@ -116,13 +130,8 @@ const handleButtonClick = async (bannerOrHref) => {
 
   if (href && href !== '#') {
     router.push(href)
+    resetSlideShow()
   }
-}
-
-const startSlideShow = () => {
-  slideInterval = setInterval(() => {
-    nextSlide()
-  }, 4000)
 }
 
 onMounted(() => {
@@ -179,21 +188,27 @@ onUnmounted(() => {
 .banner-content {
   position: relative;
   z-index: 2;
-  width: 600px; /* увеличиваем область текста для размещения заголовка в одну строку */
+  width: 55%;
+  max-width: 540px;
   height: 100%;
-  padding: 40px 15px 20px 44px; /* увеличиваем верхний отступ для лучшего позиционирования в увеличенном баннере */
+  padding: 40px 220px 20px 44px; /* справа оставляем место под персонажа */
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+/* Первый слайд: уменьшаем правый отступ, чтобы текст не уходил слишком влево */
+.hero-slide:nth-child(1) .banner-content {
+  padding-right: 160px;
 }
 
 .banner-title {
   font-family: 'Days One', cursive;
   font-size: 56px;
   color: #cbff07;
-  margin: 0 0 8px 0;
-  white-space: nowrap;
-  text-shadow: none;
+  margin: 0 0 10px 0;
+  white-space: normal;
+  text-shadow: 0 3px 10px rgba(0,0,0,0.25);
   -webkit-text-stroke: 0 !important;
   text-stroke: 0 !important;
   -webkit-text-stroke-width: 0 !important;
@@ -234,24 +249,9 @@ onUnmounted(() => {
 }
 
 /* Специальные стили для второго баннера */
-.hero-slide:nth-child(2) .banner-content {
-  padding-right: 200px; /* добавляем отступ справа для персонажа */
-}
-
-.hero-slide:nth-child(2) .banner-title {
-  white-space: normal;
-  line-height: 1.1;
-  max-width: 500px;
-  -webkit-text-stroke: 0 !important;
-  text-stroke: 0 !important;
-  -webkit-text-stroke-width: 0 !important;
-  -webkit-text-stroke-color: transparent !important;
-  text-stroke-width: 0 !important;
-  text-stroke-color: transparent !important;
-  paint-order: fill !important;
-  outline: none !important;
-  text-outline: none !important;
-}
+  .hero-slide:nth-child(2) .banner-content {
+    padding-right: 120px; /* компактнее, без искусственного переноса */
+  }
 
 /* Специальные стили для баннера 4 (с fon6.jpg) - разрешаем перенос заголовка */
 .hero-slide:nth-child(4) .banner-content {
@@ -342,14 +342,53 @@ onUnmounted(() => {
 }
 
 
+@media (max-width: 900px) {
+  .hero-banner {
+    margin-top: 60px;
+    margin-bottom: 50px;
+  }
+  .hero-container {
+    max-width: 100%;
+    height: 330px;
+  }
+  .banner-background {
+    width: 100%;
+    left: 0;
+    border-radius: 32px;
+  }
+  .banner-content {
+    width: 60%;
+    padding: 24px 160px 14px 24px;
+  }
+  .hero-slide:nth-child(1) .banner-content {
+    padding-right: 120px;
+  }
+  .banner-char {
+    right: 14px;
+    height: 320px;
+  }
+  .banner-title { font-size: 40px; }
+  .banner-description { font-size: 18px; }
+  .banner-button { font-size: 22px; padding: 6px 12px; border-radius: 16px; }
+}
+
 @media (max-width: 768px) {
-  .hero-container { width: 95%; height: 324px; } /* уменьшена на 10% (было 360px) */
-  .banner-content { width: 55%; padding: 16px; }
-  .banner-char { right: 10px; height: 389px; bottom: 0; } /* уменьшена на 10% (было 432px) */
-  .banner-title { font-size: 44px; }
-  .banner-description { font-size: 20px; }
-  .banner-button { font-size: 28px; padding: 6px 12px; border-radius: 18px; }
-  
+  .hero-banner {
+    margin-top: 46px;
+    margin-bottom: 42px;
+  }
+  .hero-container { width: 100%; height: 300px; }
+  .banner-content { width: 62%; padding: 18px 120px 12px 20px; }
+  .hero-slide:nth-child(1) .banner-content { padding-right: 90px; }
+  .banner-char { right: 6px; height: 270px; bottom: 0; }
+  .banner-title { font-size: 34px; }
+  .banner-description { font-size: 17px; }
+  .banner-button { font-size: 19px; padding: 6px 12px; border-radius: 14px; }
+
+  .banner-background {
+    border-radius: 26px;
+  }
+
   /* Адаптивные стили для второго баннера */
   .hero-slide:nth-child(2) .banner-content {
     padding-right: 16px; /* убираем лишний отступ на мобильных */
@@ -365,14 +404,13 @@ onUnmounted(() => {
     padding-right: 16px; /* убираем лишний отступ на мобильных */
   }
   
-  
   .banner-title-small {
     max-width: 100%; /* на мобильных используем всю доступную ширину */
   }
   
   .hero-slide:nth-child(3) .banner-title {
     max-width: 100%; /* на мобильных используем всю доступную ширину */
-    font-size: 38px; /* адаптивный размер для планшетов */
+    font-size: 30px; /* адаптивный размер для планшетов */
   }
   
   .hero-slide:nth-child(4) .banner-title {
@@ -381,28 +419,33 @@ onUnmounted(() => {
 }
 
 @media (max-width: 480px) {
-  .hero-container { height: 284px; } /* уменьшена на 10% (было 315px) */
-  .banner-content { width: 60%; }
-  .banner-char { height: 340px; } /* уменьшена на 10% (было 378px) */
-  .banner-title { font-size: 32px; }
-  .banner-description { font-size: 16px; }
-  .banner-button { font-size: 20px; padding: 4px 8px; border-radius: 12px; }
+  .hero-banner {
+    margin-top: 32px;
+    margin-bottom: 32px;
+  }
+  .hero-container { height: 260px; }
+  .banner-content { width: 64%; padding: 14px 100px 10px 14px; }
+  .hero-slide:nth-child(1) .banner-content { padding-right: 80px; }
+  .banner-char { height: 210px; right: 0; }
+  .banner-title { font-size: 26px; }
+  .banner-description { font-size: 15px; }
+  .banner-button { font-size: 16px; padding: 5px 10px; border-radius: 12px; }
+  .banner-background { border-radius: 22px; }
   
   /* Адаптивные стили для второго баннера */
   .hero-slide:nth-child(2) .banner-content {
-    padding-right: 16px;
+    padding-right: 12px;
   }
   
   /* Адаптивные стили для третьего баннера */
   .hero-slide:nth-child(3) .banner-content {
-    padding-right: 16px;
+    padding-right: 12px;
   }
   
   /* Адаптивные стили для четвертого баннера */
   .hero-slide:nth-child(4) .banner-content {
-    padding-right: 16px;
+    padding-right: 12px;
   }
-  
   
   .banner-title-small {
     max-width: 100%;
@@ -410,7 +453,7 @@ onUnmounted(() => {
   
   .hero-slide:nth-child(3) .banner-title {
     max-width: 100%;
-    font-size: 28px; /* адаптивный размер для мобильных */
+    font-size: 24px; /* адаптивный размер для мобильных */
   }
   
   .hero-slide:nth-child(4) .banner-title {

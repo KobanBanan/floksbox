@@ -9,6 +9,9 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 import os
 import json
@@ -90,7 +93,7 @@ SQLITE_DB_NAME = env('DJANGO_SQLITE_NAME', default=str(BASE_DIR / 'db.sqlite3'))
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': SQLITE_DB_NAME,
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -160,8 +163,8 @@ CORS_ALLOW_CREDENTIALS = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 SESSION_COOKIE_SECURE = env('DJANGO_SESSION_COOKIE_SECURE', default=not DEBUG, cast=bool)
-CSRF_COOKIE_SECURE = env('DJANGO_CSRF_COOKIE_SECURE', default=not DEBUG, cast=bool)
-SECURE_SSL_REDIRECT = env('DJANGO_SECURE_SSL_REDIRECT', default=not DEBUG, cast=bool)
+CSRF_COOKIE_SECURE = False
+SECURE_SSL_REDIRECT = False
 SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
 SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
 SECURE_HSTS_PRELOAD = not DEBUG
