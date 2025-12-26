@@ -4,7 +4,9 @@ WORKDIR /app
 
 COPY package*.json /app/
 
-RUN npm ci
+# Use npm install instead of npm ci for better compatibility
+# npm ci requires exact lock file match, npm install is more flexible
+RUN npm install --legacy-peer-deps || npm install
 
 COPY . /app
 
