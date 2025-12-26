@@ -20,6 +20,9 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
 }
 
 body {
@@ -27,6 +30,8 @@ body {
   color: vars.$color-black;
   line-height: 1.6;
   overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
   background-image: url('/assets/footer/bg ok.png');
   background-size: cover;
   background-position: center center;
@@ -306,5 +311,22 @@ a {
 @media (max-width: vars.$breakpoint-mobile) {
   .scroll-reveal-visible {
     animation-duration: 0.5s;
+  }
+  
+  // Предотвращаем горизонтальную прокрутку на мобильных
+  html, body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    position: relative;
+  }
+  
+  * {
+    max-width: 100%;
+  }
+  
+  img, video, iframe {
+    max-width: 100%;
+    height: auto;
   }
 } 

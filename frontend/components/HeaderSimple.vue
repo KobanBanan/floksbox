@@ -10,7 +10,10 @@
         loop 
         playsinline
         webkit-playsinline
+        x-webkit-airplay="allow"
         preload="auto"
+        disablePictureInPicture
+        controlsList="nodownload nofullscreen noremoteplayback"
       >
         <source src="/assets/hero/tudasuda.mp4" type="video/mp4">
         Ваш браузер не поддерживает видео.
@@ -120,10 +123,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 const isMenuOpen = ref(false)
 const videoRef = ref(null)
+let checkVideoPlaybackInterval = null
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
@@ -136,35 +140,107 @@ const closeMenu = () => {
 // Принудительный запуск видео для iOS/Safari
 onMounted(() => {
   const video = videoRef.value
-  if (video) {
-    // Устанавливаем атрибуты для iOS
-    video.setAttribute('playsinline', '')
-    video.setAttribute('webkit-playsinline', '')
-    video.muted = true
+  if (!video) return
+
+  // Устанавливаем все необходимые атрибуты для iOS/Safari
+  video.setAttribute('playsinline', '')
+  video.setAttribute('webkit-playsinline', '')
+  video.setAttribute('x-webkit-airplay', 'allow')
+  video.muted = true
+  video.playsInline = true
+  
+  // Функция для попытки запуска видео
+  const attemptPlay = () => {
+    if (!video) return
     
-    // Пытаемся запустить видео
     const playPromise = video.play()
     if (playPromise !== undefined) {
       playPromise
         .then(() => {
-          // Видео успешно запущено
-          console.log('Video playing')
+          console.log('Video playing successfully')
+          // Убеждаемся, что видео продолжает играть
+          if (video.paused) {
+            video.play().catch(() => {})
+          }
         })
         .catch((error) => {
-          // Если автоплей заблокирован, пробуем еще раз после взаимодействия пользователя
-          console.log('Autoplay blocked, will retry on user interaction:', error)
-          
-          // Слушаем первое взаимодействие пользователя
-          const tryPlay = () => {
-            video.play().catch(() => {})
-            document.removeEventListener('touchstart', tryPlay)
-            document.removeEventListener('click', tryPlay)
-          }
-          
-          document.addEventListener('touchstart', tryPlay, { once: true })
-          document.addEventListener('click', tryPlay, { once: true })
+          console.log('Video play attempt failed:', error)
+          // Пробуем еще раз через небольшую задержку
+          setTimeout(() => {
+            if (video && video.paused) {
+              video.play().catch(() => {})
+            }
+          }, 100)
         })
     }
+  }
+
+  // Пытаемся запустить сразу
+  attemptPlay()
+
+  // Пытаемся запустить после загрузки метаданных
+  const onLoadedMetadata = () => {
+    attemptPlay()
+    video.removeEventListener('loadedmetadata', onLoadedMetadata)
+  }
+  video.addEventListener('loadedmetadata', onLoadedMetadata)
+
+  // Пытаемся запустить когда видео готово к воспроизведению
+  const onCanPlay = () => {
+    attemptPlay()
+    video.removeEventListener('canplay', onCanPlay)
+  }
+  video.addEventListener('canplay', onCanPlay)
+
+  // Пытаемся запустить когда загружены первые данные
+  const onLoadedData = () => {
+    attemptPlay()
+    video.removeEventListener('loadeddata', onLoadedData)
+  }
+  video.addEventListener('loadeddata', onLoadedData)
+
+  // Если видео уже загружено, пытаемся запустить сразу
+  if (video.readyState >= 2) {
+    attemptPlay()
+  }
+
+  // Используем requestAnimationFrame для более надежного запуска
+  requestAnimationFrame(() => {
+    attemptPlay()
+  })
+
+  // Дополнительная попытка через небольшую задержку
+  setTimeout(() => {
+    attemptPlay()
+  }, 200)
+
+  // Слушаем первое взаимодействие пользователя для Safari
+  const tryPlayOnInteraction = () => {
+    if (video && video.paused) {
+      attemptPlay()
+    }
+    document.removeEventListener('touchstart', tryPlayOnInteraction)
+    document.removeEventListener('click', tryPlayOnInteraction)
+    document.removeEventListener('scroll', tryPlayOnInteraction)
+  }
+  
+  document.addEventListener('touchstart', tryPlayOnInteraction, { once: true, passive: true })
+  document.addEventListener('click', tryPlayOnInteraction, { once: true })
+  document.addEventListener('scroll', tryPlayOnInteraction, { once: true, passive: true })
+
+  // Периодически проверяем и перезапускаем видео, если оно остановилось (для Safari)
+  checkVideoPlaybackInterval = setInterval(() => {
+    if (video && video.paused && video.readyState >= 2) {
+      attemptPlay()
+    }
+  }, 1000)
+})
+
+// Очищаем интервал при размонтировании
+onUnmounted(() => {
+  if (checkVideoPlaybackInterval) {
+    clearInterval(checkVideoPlaybackInterval)
+    checkVideoPlaybackInterval = null
   }
 })
 </script>

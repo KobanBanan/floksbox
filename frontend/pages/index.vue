@@ -159,7 +159,9 @@ useHead({
 <style scoped>
 .homepage {
   width: 100%;
+  max-width: 100%;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 .form-notification {
