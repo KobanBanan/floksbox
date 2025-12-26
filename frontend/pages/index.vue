@@ -16,6 +16,11 @@
       <HeroBanner />
     </div>
     
+    <!-- Stories Bar -->
+    <div class="scroll-reveal scroll-reveal-fade-up scroll-reveal-delay-1">
+      <StoriesBar />
+    </div>
+    
     <!-- Меню (заменяет старую сетку товаров) -->
     <div class="scroll-reveal scroll-reveal-fade-up scroll-reveal-delay-1">
       <MenuGrid />
@@ -59,6 +64,7 @@ import MenuGrid from '../components/MenuGrid.vue'
  
 import ProductionSection from '../components/ProductionSection.vue'
 import ProductCarousel from '../components/ProductCarousel.vue'
+import StoriesBar from '../components/StoriesBar.vue'
 import OrderForm from '../components/OrderForm.vue'
 import MapSection from '../components/MapSection.vue'
 import FooterNew from '../components/FooterNew.vue'
@@ -223,7 +229,7 @@ useHead({
 }
 
 .map-wrapper {
-  margin-bottom: 80px;
+  margin-bottom: 40px;
 }
 
 @media (max-width: 768px) {

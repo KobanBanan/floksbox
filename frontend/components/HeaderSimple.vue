@@ -2,7 +2,7 @@
   <header class="header">
     <!-- Фоновое видео -->
     <div class="header-background">
-      <video class="header-video" autoplay muted loop playsinline poster="/assets/hero/fon1.png">
+      <video class="header-video" autoplay muted loop playsinline>
         <source src="/assets/hero/tudasuda.mp4" type="video/mp4">
         Ваш браузер не поддерживает видео.
       </video>
@@ -131,6 +131,7 @@ const closeMenu = () => {
   min-height: 120px; /* минимальная высота для отображения видео */
   z-index: 10;
   width: 100%;
+  background: #ffffff;
 }
 
 /* Фоновое видео */
@@ -141,6 +142,7 @@ const closeMenu = () => {
   width: 100%;
   height: 100%;
   z-index: -1;
+  background: #ffffff;
   
   .header-video {
     width: 100%;
@@ -158,7 +160,7 @@ const closeMenu = () => {
     left: 0;
     width: 100%;
     height: 100%;
-    background: transparent;
+    background: #ffffff;
     z-index: 0;
   }
 }

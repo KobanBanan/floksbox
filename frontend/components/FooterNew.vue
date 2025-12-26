@@ -257,10 +257,10 @@ const currentYear = computed(() => new Date().getFullYear())
 }
 
 .footer-bottom {
-  background: #f8f9fa;
+  background: #e0ebff;
   margin-top: 32px;
   padding: 20px 0;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .footer-bottom-content {
