@@ -37,7 +37,7 @@ const banners = [
   {
     fon: '/assets/hero/fon2.png',
     char: '/assets/hero/char2.png',
-    title: 'Эта упаковка скажет\u00A0за\u00A0вас',
+    title: 'Эта\u00A0Упаковка\nСкажет\u00A0за\nВас!',
     description: 'Упаковка для общепита',
     cta: 'Перейти',
     href: '#',
@@ -187,7 +187,7 @@ onUnmounted(() => {
 
 .banner-content {
   position: relative;
-  z-index: 2;
+  z-index: 10; /* Текст поверх персонажа */
   width: 55%;
   max-width: 540px;
   height: 100%;
@@ -207,8 +207,8 @@ onUnmounted(() => {
   font-size: 56px;
   color: #cbff07;
   margin: 0 0 10px 0;
-  white-space: normal;
-  text-shadow: 0 3px 10px rgba(0,0,0,0.25);
+  white-space: pre-line; /* для переносов \n */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.65), 0 0 8px rgba(0, 0, 0, 0.7), 0 0 14px rgba(0, 0, 0, 0.5);
   -webkit-text-stroke: 0 !important;
   text-stroke: 0 !important;
   -webkit-text-stroke-width: 0 !important;
@@ -226,9 +226,10 @@ onUnmounted(() => {
 
 .banner-title-small {
   font-size: 44px;
-  white-space: normal; /* разрешаем перенос для второго баннера */
+  white-space: pre-line; /* для переносов \n */
   line-height: 1.1; /* уменьшаем межстрочный интервал */
   max-width: 500px; /* ограничиваем ширину для переноса */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.65), 0 0 8px rgba(0, 0, 0, 0.7), 0 0 14px rgba(0, 0, 0, 0.5);
   -webkit-text-stroke: 0 !important;
   text-stroke: 0 !important;
   -webkit-text-stroke-width: 0 !important;
@@ -246,9 +247,10 @@ onUnmounted(() => {
 }
 
 /* Специальные стили для второго баннера */
-  .hero-slide:nth-child(2) .banner-content {
-    padding-right: 120px; /* компактнее, без искусственного переноса */
-  }
+.hero-slide:nth-child(2) .banner-content {
+  padding-right: 200px; /* единый стиль со всеми баннерами */
+  padding-left: 44px; /* единый стиль */
+}
 
 /* Специальные стили для баннера 4 (с fon6.jpg) - разрешаем перенос заголовка */
 .hero-slide:nth-child(4) .banner-content {
@@ -256,9 +258,10 @@ onUnmounted(() => {
 }
 
 .hero-slide:nth-child(4) .banner-title {
-  white-space: normal; /* разрешаем перенос для четвертого баннера */
+  white-space: pre-line; /* для переносов \n */
   line-height: 1.1; /* уменьшаем межстрочный интервал */
   max-width: 500px; /* ограничиваем ширину для переноса */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.65), 0 0 8px rgba(0, 0, 0, 0.7), 0 0 14px rgba(0, 0, 0, 0.5);
   -webkit-text-stroke: 0 !important;
   text-stroke: 0 !important;
   -webkit-text-stroke-width: 0 !important;
@@ -270,26 +273,23 @@ onUnmounted(() => {
   text-outline: none !important;
 }
 
-/* Усиливаем читаемость описания на баннере 4 (fon6.jpg) чёрным свечением */
-.hero-slide:nth-child(4) .banner-description {
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.65), 0 0 8px rgba(0, 0, 0, 0.7), 0 0 14px rgba(0, 0, 0, 0.5);
-}
 
 .hero-slide:nth-child(4) .banner-char {
   right: 20px; /* сдвигаем персонажа еще правее */
 }
 
-/* Специальные стили для баннера 3 (с fon4.png) - разрешаем перенос заголовка */
+/* Специальные стили для баннера 3 (с fon4.png) - единый стиль */
 .hero-slide:nth-child(3) .banner-content {
-  padding-right: 200px; /* добавляем отступ справа для персонажа */
-  padding-left: 80px; /* сдвигаем текст правее */
+  padding-right: 200px; /* единый стиль со всеми баннерами */
+  padding-left: 44px; /* единый стиль */
 }
 
 .hero-slide:nth-child(3) .banner-title {
   white-space: normal; /* автоматический перенос */
   line-height: 1.1; /* уменьшаем межстрочный интервал */
   max-width: 500px; /* ограничиваем ширину для переноса */
-  font-size: 48px; /* уменьшенный размер шрифта */
+  font-size: 56px; /* единый размер как у всех */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.65), 0 0 8px rgba(0, 0, 0, 0.7), 0 0 14px rgba(0, 0, 0, 0.5);
   -webkit-text-stroke: 0 !important;
   text-stroke: 0 !important;
   -webkit-text-stroke-width: 0 !important;
@@ -308,6 +308,7 @@ onUnmounted(() => {
   font-size: 27px;
   color: #ffffff;
   margin: 0 0 14px 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.65), 0 0 8px rgba(0, 0, 0, 0.7), 0 0 14px rgba(0, 0, 0, 0.5);
 }
 
 .banner-button {
@@ -334,7 +335,7 @@ onUnmounted(() => {
   bottom: 0; /* по нижней границе баннера */
   height: 486px; /* уменьшена на 10% (было 540px) */
   object-fit: contain;
-  z-index: 2; /* над фоном, под шапкой */
+  z-index: 1; /* под текстом, но над фоном */
   pointer-events: none; /* не перекрывает клики по меню */
 }
 
@@ -364,11 +365,12 @@ onUnmounted(() => {
     padding-right: calc(160px * 0.7);
   }
   .hero-slide:nth-child(2) .banner-content {
-    padding-right: calc(120px * 0.7);
+    padding-right: calc(200px * 0.7);
+    padding-left: calc(44px * 0.7);
   }
   .hero-slide:nth-child(3) .banner-content {
     padding-right: calc(200px * 0.7);
-    padding-left: calc(80px * 0.7);
+    padding-left: calc(44px * 0.7);
   }
   .hero-slide:nth-child(4) .banner-content {
     padding-right: calc(200px * 0.7);
@@ -380,6 +382,16 @@ onUnmounted(() => {
   .banner-title { 
     font-size: calc(56px * 0.7); /* 39.2px */
   }
+  /* Первый баннер: уменьшенные размеры */
+  .hero-slide:nth-child(1) .banner-title {
+    font-size: calc(50px * 0.65); /* 32.5px - меньше чем обычно */
+  }
+  .hero-slide:nth-child(1) .banner-description {
+    font-size: calc(27px * 0.65); /* 17.55px - меньше чем обычно */
+  }
+  .hero-slide:nth-child(1) .banner-button {
+    font-size: calc(36px * 0.65); /* 23.4px - меньше чем обычно */
+  }
   .banner-title-first {
     font-size: calc(50px * 0.7); /* 35px */
   }
@@ -387,12 +399,7 @@ onUnmounted(() => {
     font-size: calc(44px * 0.7); /* 30.8px */
   }
   .hero-slide:nth-child(3) .banner-title {
-    font-size: calc(48px * 0.7); /* 33.6px */
-  }
-  /* Четвертый баннер: перенос между "Доставляем" и "до двери" */
-  .hero-slide:nth-child(4) .banner-title {
-    white-space: normal;
-    max-width: none;
+    font-size: calc(56px * 0.7); /* 39.2px - единый размер */
   }
   .banner-description { 
     font-size: calc(27px * 0.7); /* 18.9px */
@@ -428,11 +435,12 @@ onUnmounted(() => {
     padding-right: calc(160px * 0.6);
   }
   .hero-slide:nth-child(2) .banner-content {
-    padding-right: calc(120px * 0.6);
+    padding-right: calc(200px * 0.6);
+    padding-left: calc(44px * 0.6);
   }
   .hero-slide:nth-child(3) .banner-content {
     padding-right: calc(200px * 0.6);
-    padding-left: calc(80px * 0.6);
+    padding-left: calc(44px * 0.6);
   }
   .hero-slide:nth-child(4) .banner-content {
     padding-right: calc(200px * 0.6);
@@ -448,6 +456,16 @@ onUnmounted(() => {
   .banner-title { 
     font-size: calc(56px * 0.6); /* 33.6px */
   }
+  /* Первый баннер: уменьшенные размеры */
+  .hero-slide:nth-child(1) .banner-title {
+    font-size: calc(50px * 0.55); /* 27.5px - меньше чем обычно */
+  }
+  .hero-slide:nth-child(1) .banner-description {
+    font-size: calc(27px * 0.55); /* 14.85px - меньше чем обычно */
+  }
+  .hero-slide:nth-child(1) .banner-button {
+    font-size: calc(36px * 0.55); /* 19.8px - меньше чем обычно */
+  }
   .banner-title-first {
     font-size: calc(50px * 0.6); /* 30px */
   }
@@ -455,12 +473,7 @@ onUnmounted(() => {
     font-size: calc(44px * 0.6); /* 26.4px */
   }
   .hero-slide:nth-child(3) .banner-title {
-    font-size: calc(48px * 0.6); /* 28.8px */
-  }
-  /* Четвертый баннер: перенос между "Доставляем" и "до двери" */
-  .hero-slide:nth-child(4) .banner-title {
-    white-space: normal;
-    max-width: none;
+    font-size: calc(56px * 0.6); /* 33.6px - единый размер */
   }
   .banner-description { 
     font-size: calc(27px * 0.6); /* 16.2px */
@@ -495,11 +508,12 @@ onUnmounted(() => {
     padding-right: calc(160px * 0.5);
   }
   .hero-slide:nth-child(2) .banner-content {
-    padding-right: calc(120px * 0.5);
+    padding-right: calc(200px * 0.5);
+    padding-left: calc(44px * 0.5);
   }
   .hero-slide:nth-child(3) .banner-content {
     padding-right: calc(200px * 0.5);
-    padding-left: calc(80px * 0.5);
+    padding-left: calc(44px * 0.5);
   }
   .hero-slide:nth-child(4) .banner-content {
     padding-right: calc(200px * 0.5);
@@ -514,6 +528,16 @@ onUnmounted(() => {
   .banner-title { 
     font-size: calc(56px * 0.5); /* 28px */
   }
+  /* Первый баннер: уменьшенные размеры */
+  .hero-slide:nth-child(1) .banner-title {
+    font-size: calc(50px * 0.45); /* 22.5px - меньше чем обычно */
+  }
+  .hero-slide:nth-child(1) .banner-description {
+    font-size: calc(27px * 0.45); /* 12.15px - меньше чем обычно */
+  }
+  .hero-slide:nth-child(1) .banner-button {
+    font-size: calc(36px * 0.45); /* 16.2px - меньше чем обычно */
+  }
   .banner-title-first {
     font-size: calc(50px * 0.5); /* 25px */
   }
@@ -521,12 +545,7 @@ onUnmounted(() => {
     font-size: calc(44px * 0.5); /* 22px */
   }
   .hero-slide:nth-child(3) .banner-title {
-    font-size: calc(48px * 0.5); /* 24px */
-  }
-  /* Четвертый баннер: перенос между "Доставляем" и "до двери" */
-  .hero-slide:nth-child(4) .banner-title {
-    white-space: normal;
-    max-width: none;
+    font-size: calc(56px * 0.5); /* 28px - единый размер */
   }
   .banner-description { 
     font-size: calc(27px * 0.5); /* 13.5px */
