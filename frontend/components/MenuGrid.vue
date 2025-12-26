@@ -350,47 +350,47 @@ const navigateToCategory = (route) => {
 
 @media (max-width: 768px) {
   .menu-grid { 
-    width: 90%; 
-    grid-template-columns: repeat(2, 1fr); 
-    gap: 30px 12px; /* еще больше увеличено с 20px до 30px */
+    width: 95%; 
+    grid-template-columns: repeat(3, minmax(90px, 1fr)); 
+    gap: 18px 10px;
   }
   .parallax-box { 
     display: none; 
     /* Фон скрыт на мобильных устройствах */
   }
   .menu-item { 
-    max-width: 160px; 
-    height: 180px; 
+    max-width: 140px; 
+    height: 160px; 
   }
-  .item-frame { min-height: 180px; }
-  .item-image-container { height: 130px; }
-  .item-image { width: 88px; height: 88px; } /* увеличено на 10% (80px + 8px) */
+  .item-frame { min-height: 160px; }
+  .item-image-container { height: 110px; }
+  .item-image { width: 82px; height: 82px; }
   .item-text { 
-    font-size: 10px; /* уменьшено для лучшего размещения */
-    height: 50px;
-    padding: 8px 4px;
+    font-size: 10px;
+    height: 46px;
+    padding: 6px 4px;
   }
 }
 
 @media (max-width: 480px) {
   .menu-grid { 
     width: 95%; 
-    grid-template-columns: 1fr; 
-    gap: 25px; /* еще больше увеличено с 18px до 25px */
+    grid-template-columns: repeat(3, minmax(90px, 1fr)); 
+    gap: 16px 8px;
   }
   .menu-section { padding: 20px 0; }
   .menu-item { 
-    max-width: 250px; 
-    height: 200px;
-    margin: 0 auto; /* центрирование для одноколоночного макета */
+    max-width: 130px; 
+    height: 150px;
+    margin: 0 auto;
   }
-  .item-frame { min-height: 200px; }
-  .item-image-container { height: 150px; }
-  .item-image { width: 110px; height: 110px; } /* увеличено на 10% (100px + 10px) */
+  .item-frame { min-height: 150px; }
+  .item-image-container { height: 100px; }
+  .item-image { width: 76px; height: 76px; }
   .item-text { 
-    font-size: 11px; /* увеличено для лучшей читаемости */
-    height: 50px;
-    padding: 10px 8px;
+    font-size: 10px;
+    height: 44px;
+    padding: 6px 4px;
   }
 }
 </style>

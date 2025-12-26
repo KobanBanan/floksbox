@@ -70,6 +70,45 @@ frontend/.nitro/
 frontend/.cache/
 frontend/.fleet/
 
+# Backend specific
+backend/venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/*.pyd
+backend/.Python
+backend/db.sqlite3
+backend/db*.sqlite3
+backend/staticfiles/
+backend/media/products/*
+!backend/media/products/.gitkeep
+backend/*.log
+
+# Python
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
 # Video files (until we need them)
 # *.mp4
 *.avi
@@ -77,4 +116,15 @@ frontend/.fleet/
 
 # Large image files that might be temporary
 *.psd
-*.ai 
+*.ai
+
+# Docker
+.dockerignore
+
+# IDE
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db 

@@ -106,7 +106,7 @@
 
 .map-section {
   background: transparent;
-  padding: 80px 0;
+  padding: 40px 0;
   position: relative;
 }
 
@@ -291,7 +291,7 @@
 
 @media (max-width: 768px) {
   .map-section {
-    padding: 60px 0;
+    padding: 30px 0;
   }
   
   .map-container {
@@ -341,7 +341,7 @@
 
 @media (max-width: 480px) {
   .map-section {
-    padding: 40px 0;
+    padding: 20px 0;
   }
   
   .map-container {

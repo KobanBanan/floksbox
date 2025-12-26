@@ -402,7 +402,7 @@ const closeError = () => {
 
 .order-form-section {
   background: transparent;
-  padding: 120px 0;
+  padding: 60px 0;
   min-height: 800px;
 }
 

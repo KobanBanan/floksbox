@@ -111,26 +111,26 @@ const currentYear = computed(() => new Date().getFullYear())
 .footer-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 0 32px 48px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
-  align-items: start;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 40px;
+  align-items: flex-start;
 }
 
 .footer-left {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 40px;
+  gap: 28px;
 }
 
 .footer-title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   color: vars.$color-black;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 .links-list {
@@ -139,19 +139,19 @@ const currentYear = computed(() => new Date().getFullYear())
   margin: 0;
   
   li {
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 }
 
 .footer-link {
   color: #666666;
   text-decoration: none;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   transition: all vars.$transition-medium;
   border-radius: vars.$border-radius-small;
-  padding: 8px 12px;
-  margin: -8px -12px;
+  padding: 6px 8px;
+  margin: -6px -8px;
   display: inline-block;
   
   &:hover {
@@ -166,6 +166,7 @@ const currentYear = computed(() => new Date().getFullYear())
   flex-direction: column;
   align-items: center;
   text-align: center;
+  gap: 12px;
 }
 
 .logo-container {
@@ -173,14 +174,14 @@ const currentYear = computed(() => new Date().getFullYear())
 }
 
 .footer-logo {
-  max-width: 200px;
+  max-width: 180px;
   height: auto;
 }
 
 .footer-tagline {
-  font-size: 18px;
+  font-size: 16px;
   color: #666666;
-  margin-bottom: 32px;
+  margin-bottom: 20px;
   font-style: italic;
   max-width: 280px;
   line-height: 1.4;
@@ -191,24 +192,24 @@ const currentYear = computed(() => new Date().getFullYear())
 }
 
 .social-title {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
-  margin-bottom: 20px;
+  margin-bottom: 14px;
   color: vars.$color-black;
 }
 
 .social-icons {
   display: flex;
   justify-content: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .social-link {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   background: rgba(71, 0, 159, 0.1);
   border-radius: 50%;
   color: vars.$color-primary;
@@ -251,21 +252,21 @@ const currentYear = computed(() => new Date().getFullYear())
 }
 
 .social-icon {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
 }
 
 .footer-bottom {
-  background: #f8f9fa;
-  margin-top: 48px;
-  padding: 24px 0;
-  border-top: 1px solid #e5e7eb;
+  background: #e0ebff;
+  margin-top: 32px;
+  padding: 20px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .footer-bottom-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 0 32px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -300,12 +301,13 @@ const currentYear = computed(() => new Date().getFullYear())
 @media (max-width: 968px) {
   .footer-content {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 32px;
+    padding: 0 24px 40px;
   }
   
   .footer-left {
     grid-template-columns: 1fr 1fr;
-    gap: 30px;
+    gap: 20px;
   }
   
   .footer-right {
@@ -319,27 +321,27 @@ const currentYear = computed(() => new Date().getFullYear())
   }
   
   .footer-content {
-    gap: 32px;
-    padding: 0 20px;
+    gap: 24px;
+    padding: 0 20px 32px;
   }
   
   .footer-left {
-    grid-template-columns: 1fr;
-    gap: 24px;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
   }
   
   .footer-title {
-    font-size: 18px;
-    margin-bottom: 16px;
+    font-size: 16px;
+    margin-bottom: 12px;
   }
   
   .footer-logo {
-    max-width: 160px;
+    max-width: 140px;
   }
   
   .footer-tagline {
-    font-size: 16px;
-    margin-bottom: 24px;
+    font-size: 14px;
+    margin-bottom: 16px;
   }
   
   .social-icons {
@@ -347,13 +349,13 @@ const currentYear = computed(() => new Date().getFullYear())
   }
   
   .social-link {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
   }
   
   .social-icon {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
   }
   
   .footer-bottom-content {
@@ -370,52 +372,52 @@ const currentYear = computed(() => new Date().getFullYear())
 
 @media (max-width: 480px) {
   .footer-content {
-    padding: 0 20px;
+    padding: 0 16px 28px;
   }
   
   .footer-bottom-content {
-    padding: 0 20px;
+    padding: 0 16px;
   }
   
   .footer-left {
-    gap: 20px;
+    gap: 12px;
   }
   
   .footer-title {
-    font-size: 16px;
-    margin-bottom: 12px;
+    font-size: 14px;
+    margin-bottom: 10px;
   }
   
   .footer-link {
-    font-size: 14px;
+    font-size: 13px;
   }
   
   .footer-logo {
-    max-width: 140px;
+    max-width: 130px;
   }
   
   .footer-tagline {
-    font-size: 14px;
-    margin-bottom: 20px;
+    font-size: 13px;
+    margin-bottom: 14px;
   }
   
   .social-title {
-    font-size: 16px;
-    margin-bottom: 16px;
+    font-size: 14px;
+    margin-bottom: 12px;
   }
   
   .social-icons {
-    gap: 10px;
+    gap: 8px;
   }
   
   .social-link {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
   }
   
   .social-icon {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
   }
   
   .footer-legal {
