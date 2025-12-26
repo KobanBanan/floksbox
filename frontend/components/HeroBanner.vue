@@ -147,10 +147,8 @@ onUnmounted(() => {
 .hero-banner {
   position: relative;
   width: 100%;
-  max-width: 100%;
   display: flex;
   justify-content: center;
-  overflow-x: hidden; /* предотвращаем горизонтальную прокрутку */
   overflow-y: visible; /* персонаж может выходить вверх */
   margin-top: 85px; /* поднят на 15px (было 100px) */
   margin-bottom: 80px; /* увеличенный отступ до следующего раздела */
@@ -161,9 +159,7 @@ onUnmounted(() => {
   max-width: 990px; /* уменьшена на 10% (было 1100px) */
   margin: 0 auto; /* центрирование */
   width: 100%;
-  max-width: 100%;
   height: 405px; /* уменьшена на 10% (было 450px) */
-  overflow-x: hidden; /* предотвращаем горизонтальную прокрутку */
 }
 
 .hero-slide {

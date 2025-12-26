@@ -84,9 +84,6 @@ const closeViewer = () => {
 .stories-bar {
   padding: 20px 0;
   background: transparent;
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
 }
 
 .container {

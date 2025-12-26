@@ -137,7 +137,7 @@ const closeMenu = () => {
   isMenuOpen.value = false
 }
 
-// Принудительный запуск видео для iOS/Safari
+// Принудительный запуск видео для iOS/Safari (агрессивный подход)
 onMounted(() => {
   const video = videoRef.value
   if (!video) return
@@ -148,92 +148,106 @@ onMounted(() => {
   video.setAttribute('x-webkit-airplay', 'allow')
   video.muted = true
   video.playsInline = true
+  video.defaultMuted = true
   
-  // Функция для попытки запуска видео
+  // Принудительно загружаем видео
+  video.load()
+  
+  // Функция для попытки запуска видео (более агрессивная)
   const attemptPlay = () => {
     if (!video) return
+    
+    // Убеждаемся, что видео muted
+    if (!video.muted) {
+      video.muted = true
+    }
     
     const playPromise = video.play()
     if (playPromise !== undefined) {
       playPromise
         .then(() => {
           console.log('Video playing successfully')
-          // Убеждаемся, что видео продолжает играть
-          if (video.paused) {
-            video.play().catch(() => {})
-          }
         })
         .catch((error) => {
           console.log('Video play attempt failed:', error)
-          // Пробуем еще раз через небольшую задержку
-          setTimeout(() => {
-            if (video && video.paused) {
-              video.play().catch(() => {})
-            }
-          }, 100)
         })
     }
   }
 
-  // Пытаемся запустить сразу
-  attemptPlay()
+  // Множественные попытки запуска с разными задержками
+  const attempts = [0, 100, 200, 500, 1000, 1500, 2000]
+  attempts.forEach((delay) => {
+    setTimeout(() => {
+      attemptPlay()
+    }, delay)
+  })
 
   // Пытаемся запустить после загрузки метаданных
   const onLoadedMetadata = () => {
     attemptPlay()
-    video.removeEventListener('loadedmetadata', onLoadedMetadata)
   }
-  video.addEventListener('loadedmetadata', onLoadedMetadata)
+  video.addEventListener('loadedmetadata', onLoadedMetadata, { once: true })
 
   // Пытаемся запустить когда видео готово к воспроизведению
   const onCanPlay = () => {
     attemptPlay()
-    video.removeEventListener('canplay', onCanPlay)
   }
-  video.addEventListener('canplay', onCanPlay)
+  video.addEventListener('canplay', onCanPlay, { once: true })
+  video.addEventListener('canplaythrough', onCanPlay, { once: true })
 
   // Пытаемся запустить когда загружены первые данные
   const onLoadedData = () => {
     attemptPlay()
-    video.removeEventListener('loadeddata', onLoadedData)
   }
-  video.addEventListener('loadeddata', onLoadedData)
+  video.addEventListener('loadeddata', onLoadedData, { once: true })
 
   // Если видео уже загружено, пытаемся запустить сразу
   if (video.readyState >= 2) {
     attemptPlay()
   }
 
-  // Используем requestAnimationFrame для более надежного запуска
-  requestAnimationFrame(() => {
-    attemptPlay()
-  })
+  // Используем requestAnimationFrame для более надежного запуска (несколько раз)
+  for (let i = 0; i < 5; i++) {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        attemptPlay()
+      }, i * 100)
+    })
+  }
 
-  // Дополнительная попытка через небольшую задержку
-  setTimeout(() => {
-    attemptPlay()
-  }, 200)
-
-  // Слушаем первое взаимодействие пользователя для Safari
-  const tryPlayOnInteraction = () => {
+  // Агрессивно слушаем ЛЮБОЕ взаимодействие пользователя для Safari
+  const tryPlayOnInteraction = (e) => {
     if (video && video.paused) {
       attemptPlay()
     }
-    document.removeEventListener('touchstart', tryPlayOnInteraction)
-    document.removeEventListener('click', tryPlayOnInteraction)
-    document.removeEventListener('scroll', tryPlayOnInteraction)
   }
   
-  document.addEventListener('touchstart', tryPlayOnInteraction, { once: true, passive: true })
-  document.addEventListener('click', tryPlayOnInteraction, { once: true })
-  document.addEventListener('scroll', tryPlayOnInteraction, { once: true, passive: true })
+  // Слушаем все возможные события взаимодействия
+  const events = ['touchstart', 'touchend', 'click', 'scroll', 'mousedown', 'mouseup', 'keydown', 'keyup', 'focus']
+  events.forEach(eventType => {
+    document.addEventListener(eventType, tryPlayOnInteraction, { once: false, passive: true })
+    window.addEventListener(eventType, tryPlayOnInteraction, { once: false, passive: true })
+  })
+
+  // Используем Intersection Observer для запуска когда видео видно
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && video.paused) {
+          attemptPlay()
+        }
+      })
+    }, { threshold: 0.1 })
+    
+    observer.observe(video)
+  }
 
   // Периодически проверяем и перезапускаем видео, если оно остановилось (для Safari)
   checkVideoPlaybackInterval = setInterval(() => {
     if (video && video.paused && video.readyState >= 2) {
       attemptPlay()
     }
-  }, 1000)
+  }, 500) // Увеличил частоту проверки до 500ms
 })
 
 // Очищаем интервал при размонтировании

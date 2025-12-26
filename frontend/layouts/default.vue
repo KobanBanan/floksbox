@@ -27,16 +27,10 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
 }
 
 main {
   flex: 1;
   padding: 0;
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
 }
 </style> 
