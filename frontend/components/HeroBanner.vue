@@ -10,7 +10,7 @@
         <div class="banner-background" :style="{ backgroundImage: `url(${banner.fon})` }" @click="handleBannerClick"></div>
         
         <div class="banner-content" @click="handleBannerClick">
-          <h1 class="banner-title" :class="{ 'banner-title-first': index === 0, 'banner-title-small': index === 1, 'banner-title-preline': banner.title && banner.title.includes('\n') }">{{ banner.title }}</h1>
+          <h1 class="banner-title" :class="{ 'banner-title-first': index === 0, 'banner-title-small': index === 1 }">{{ banner.title }}</h1>
           <p class="banner-description">{{ banner.description }}</p>
           <a v-if="banner.cta !== 'Узнать подробности'" :href="banner.href" class="banner-button" :class="{ 'banner-button-lower': index === 1 }" @click.stop="handleButtonClick(banner)">{{ banner.cta }}</a>
         </div>
@@ -37,8 +37,8 @@ const banners = [
   {
     fon: '/assets/hero/fon2.png',
     char: '/assets/hero/char2.png',
-    title: 'Пусть о Вас говорит Ваша упаковка',
-    description: 'Коробки и упаковка для общепита. Не кусается!',
+    title: 'Эта упаковка скажет\u00A0за\u00A0вас',
+    description: 'Упаковка для общепита',
     cta: 'Перейти',
     href: '#',
     productName: 'коробка для пиццы'
@@ -46,7 +46,7 @@ const banners = [
   {
     fon: '/assets/hero/fon4.png',
     char: '/assets/hero/char4.png',
-    title: 'Шляпные коробки\nна любой вкус',
+    title: 'Шляпные коробки',
     description: 'Создайте свою!',
     cta: 'Создать',
     href: '/category/hat-boxes'
@@ -54,8 +54,8 @@ const banners = [
   {
     fon: '/assets/hero/fon6.jpg',
     char: '/assets/hero/char6.png',
-    title: 'Доставляем\nдо двери',
-    description: 'По Москве, регионам \nи всей России!',
+    title: 'Доставляем до\u00A0двери',
+    description: 'По Москве, регионам и всей России!',
     cta: 'Узнать подробности',
     href: '#'
   }
@@ -240,9 +240,6 @@ onUnmounted(() => {
   text-outline: none !important;
 }
 
-.banner-title-preline {
-  white-space: pre-line;
-}
 
 .banner-button-lower {
   margin-top: 4px;
@@ -289,7 +286,7 @@ onUnmounted(() => {
 }
 
 .hero-slide:nth-child(3) .banner-title {
-  white-space: pre-line; /* перенос по \n для третьего баннера */
+  white-space: normal; /* автоматический перенос */
   line-height: 1.1; /* уменьшаем межстрочный интервал */
   max-width: 500px; /* ограничиваем ширину для переноса */
   font-size: 48px; /* уменьшенный размер шрифта */
@@ -342,122 +339,202 @@ onUnmounted(() => {
 }
 
 
+/* Мобильная версия - пропорциональное уменьшение всех элементов */
 @media (max-width: 900px) {
+  /* Коэффициент масштабирования: ~0.7 для экранов до 900px */
   .hero-banner {
-    margin-top: 60px;
-    margin-bottom: 50px;
+    margin-top: calc(85px * 0.7);
+    margin-bottom: calc(80px * 0.7);
   }
   .hero-container {
     max-width: 100%;
-    height: 330px;
+    height: calc(405px * 0.7); /* 283.5px */
   }
   .banner-background {
-    width: 100%;
-    left: 0;
-    border-radius: 32px;
+    width: 110%;
+    left: -5%;
+    border-radius: calc(50px * 0.7); /* 35px */
   }
   .banner-content {
-    width: 60%;
-    padding: 24px 160px 14px 24px;
+    width: 55%;
+    max-width: calc(540px * 0.7);
+    padding: calc(40px * 0.7) calc(220px * 0.7) calc(20px * 0.7) calc(44px * 0.7);
   }
   .hero-slide:nth-child(1) .banner-content {
-    padding-right: 120px;
+    padding-right: calc(160px * 0.7);
+  }
+  .hero-slide:nth-child(2) .banner-content {
+    padding-right: calc(120px * 0.7);
+  }
+  .hero-slide:nth-child(3) .banner-content {
+    padding-right: calc(200px * 0.7);
+    padding-left: calc(80px * 0.7);
+  }
+  .hero-slide:nth-child(4) .banner-content {
+    padding-right: calc(200px * 0.7);
   }
   .banner-char {
-    right: 14px;
-    height: 320px;
+    right: calc(40px * 0.7);
+    height: calc(486px * 0.7); /* 340.2px */
   }
-  .banner-title { font-size: 40px; }
-  .banner-description { font-size: 18px; }
-  .banner-button { font-size: 22px; padding: 6px 12px; border-radius: 16px; }
+  .banner-title { 
+    font-size: calc(56px * 0.7); /* 39.2px */
+  }
+  .banner-title-first {
+    font-size: calc(50px * 0.7); /* 35px */
+  }
+  .banner-title-small {
+    font-size: calc(44px * 0.7); /* 30.8px */
+  }
+  .hero-slide:nth-child(3) .banner-title {
+    font-size: calc(48px * 0.7); /* 33.6px */
+  }
+  /* Четвертый баннер: перенос между "Доставляем" и "до двери" */
+  .hero-slide:nth-child(4) .banner-title {
+    white-space: normal;
+    max-width: none;
+  }
+  .banner-description { 
+    font-size: calc(27px * 0.7); /* 18.9px */
+  }
+  .banner-button { 
+    font-size: calc(36px * 0.7); /* 25.2px */
+    padding: calc(8px * 0.7) calc(16px * 0.7);
+    border-radius: calc(24px * 0.7); /* 16.8px */
+  }
 }
 
 @media (max-width: 768px) {
+  /* Коэффициент масштабирования: ~0.6 для экранов до 768px */
   .hero-banner {
-    margin-top: 46px;
-    margin-bottom: 42px;
+    margin-top: calc(85px * 0.6);
+    margin-bottom: calc(80px * 0.6);
   }
-  .hero-container { width: 100%; height: 300px; }
-  .banner-content { width: 62%; padding: 18px 120px 12px 20px; }
-  .hero-slide:nth-child(1) .banner-content { padding-right: 90px; }
-  .banner-char { right: 6px; height: 270px; bottom: 0; }
-  .banner-title { font-size: 34px; }
-  .banner-description { font-size: 17px; }
-  .banner-button { font-size: 19px; padding: 6px 12px; border-radius: 14px; }
-
+  .hero-container { 
+    width: 100%; 
+    height: calc(405px * 0.6); /* 243px */
+  }
   .banner-background {
-    border-radius: 26px;
+    width: 110%;
+    left: -5%;
+    border-radius: calc(50px * 0.6); /* 30px */
   }
-
-  /* Адаптивные стили для второго баннера */
+  .banner-content { 
+    width: 55%;
+    max-width: calc(540px * 0.6);
+    padding: calc(40px * 0.6) calc(220px * 0.6) calc(20px * 0.6) calc(44px * 0.6);
+  }
+  .hero-slide:nth-child(1) .banner-content { 
+    padding-right: calc(160px * 0.6);
+  }
   .hero-slide:nth-child(2) .banner-content {
-    padding-right: 16px; /* убираем лишний отступ на мобильных */
+    padding-right: calc(120px * 0.6);
   }
-  
-  /* Адаптивные стили для третьего баннера */
   .hero-slide:nth-child(3) .banner-content {
-    padding-right: 16px; /* убираем лишний отступ на мобильных */
+    padding-right: calc(200px * 0.6);
+    padding-left: calc(80px * 0.6);
   }
-  
-  /* Адаптивные стили для четвертого баннера */
   .hero-slide:nth-child(4) .banner-content {
-    padding-right: 16px; /* убираем лишний отступ на мобильных */
+    padding-right: calc(200px * 0.6);
   }
-  
+  .banner-char { 
+    right: calc(40px * 0.6);
+    height: calc(486px * 0.6); /* 291.6px */
+    bottom: 0;
+  }
+  .hero-slide:nth-child(4) .banner-char {
+    right: calc(20px * 0.6);
+  }
+  .banner-title { 
+    font-size: calc(56px * 0.6); /* 33.6px */
+  }
+  .banner-title-first {
+    font-size: calc(50px * 0.6); /* 30px */
+  }
   .banner-title-small {
-    max-width: 100%; /* на мобильных используем всю доступную ширину */
+    font-size: calc(44px * 0.6); /* 26.4px */
   }
-  
   .hero-slide:nth-child(3) .banner-title {
-    max-width: 100%; /* на мобильных используем всю доступную ширину */
-    font-size: 30px; /* адаптивный размер для планшетов */
+    font-size: calc(48px * 0.6); /* 28.8px */
   }
-  
+  /* Четвертый баннер: перенос между "Доставляем" и "до двери" */
   .hero-slide:nth-child(4) .banner-title {
-    max-width: 100%; /* на мобильных используем всю доступную ширину */
+    white-space: normal;
+    max-width: none;
+  }
+  .banner-description { 
+    font-size: calc(27px * 0.6); /* 16.2px */
+  }
+  .banner-button { 
+    font-size: calc(36px * 0.6); /* 21.6px */
+    padding: calc(8px * 0.6) calc(16px * 0.6);
+    border-radius: calc(24px * 0.6); /* 14.4px */
   }
 }
 
 @media (max-width: 480px) {
+  /* Коэффициент масштабирования: ~0.5 для экранов до 480px */
   .hero-banner {
-    margin-top: 32px;
-    margin-bottom: 32px;
+    margin-top: calc(85px * 0.5);
+    margin-bottom: calc(80px * 0.5);
   }
-  .hero-container { height: 260px; }
-  .banner-content { width: 64%; padding: 14px 100px 10px 14px; }
-  .hero-slide:nth-child(1) .banner-content { padding-right: 80px; }
-  .banner-char { height: 210px; right: 0; }
-  .banner-title { font-size: 26px; }
-  .banner-description { font-size: 15px; }
-  .banner-button { font-size: 16px; padding: 5px 10px; border-radius: 12px; }
-  .banner-background { border-radius: 22px; }
-  
-  /* Адаптивные стили для второго баннера */
+  .hero-container { 
+    height: calc(405px * 0.5); /* 202.5px */
+  }
+  .banner-background {
+    width: 110%;
+    left: -5%;
+    border-radius: calc(50px * 0.5); /* 25px */
+  }
+  .banner-content { 
+    width: 55%;
+    max-width: calc(540px * 0.5);
+    padding: calc(40px * 0.5) calc(220px * 0.5) calc(20px * 0.5) calc(44px * 0.5);
+  }
+  .hero-slide:nth-child(1) .banner-content { 
+    padding-right: calc(160px * 0.5);
+  }
   .hero-slide:nth-child(2) .banner-content {
-    padding-right: 12px;
+    padding-right: calc(120px * 0.5);
   }
-  
-  /* Адаптивные стили для третьего баннера */
   .hero-slide:nth-child(3) .banner-content {
-    padding-right: 12px;
+    padding-right: calc(200px * 0.5);
+    padding-left: calc(80px * 0.5);
   }
-  
-  /* Адаптивные стили для четвертого баннера */
   .hero-slide:nth-child(4) .banner-content {
-    padding-right: 12px;
+    padding-right: calc(200px * 0.5);
   }
-  
+  .banner-char { 
+    height: calc(486px * 0.5); /* 243px */
+    right: calc(40px * 0.5);
+  }
+  .hero-slide:nth-child(4) .banner-char {
+    right: calc(20px * 0.5);
+  }
+  .banner-title { 
+    font-size: calc(56px * 0.5); /* 28px */
+  }
+  .banner-title-first {
+    font-size: calc(50px * 0.5); /* 25px */
+  }
   .banner-title-small {
-    max-width: 100%;
+    font-size: calc(44px * 0.5); /* 22px */
   }
-  
   .hero-slide:nth-child(3) .banner-title {
-    max-width: 100%;
-    font-size: 24px; /* адаптивный размер для мобильных */
+    font-size: calc(48px * 0.5); /* 24px */
   }
-  
+  /* Четвертый баннер: перенос между "Доставляем" и "до двери" */
   .hero-slide:nth-child(4) .banner-title {
-    max-width: 100%;
+    white-space: normal;
+    max-width: none;
+  }
+  .banner-description { 
+    font-size: calc(27px * 0.5); /* 13.5px */
+  }
+  .banner-button { 
+    font-size: calc(36px * 0.5); /* 18px */
+    padding: calc(8px * 0.5) calc(16px * 0.5);
+    border-radius: calc(24px * 0.5); /* 12px */
   }
 }
 </style>

@@ -2,7 +2,16 @@
   <header class="header">
     <!-- Фоновое видео -->
     <div class="header-background">
-      <video class="header-video" autoplay muted loop playsinline>
+      <video 
+        ref="videoRef"
+        class="header-video" 
+        autoplay 
+        muted 
+        loop 
+        playsinline
+        webkit-playsinline
+        preload="auto"
+      >
         <source src="/assets/hero/tudasuda.mp4" type="video/mp4">
         Ваш браузер не поддерживает видео.
       </video>
@@ -111,9 +120,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 const isMenuOpen = ref(false)
+const videoRef = ref(null)
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
@@ -122,6 +132,41 @@ const toggleMenu = () => {
 const closeMenu = () => {
   isMenuOpen.value = false
 }
+
+// Принудительный запуск видео для iOS/Safari
+onMounted(() => {
+  const video = videoRef.value
+  if (video) {
+    // Устанавливаем атрибуты для iOS
+    video.setAttribute('playsinline', '')
+    video.setAttribute('webkit-playsinline', '')
+    video.muted = true
+    
+    // Пытаемся запустить видео
+    const playPromise = video.play()
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          // Видео успешно запущено
+          console.log('Video playing')
+        })
+        .catch((error) => {
+          // Если автоплей заблокирован, пробуем еще раз после взаимодействия пользователя
+          console.log('Autoplay blocked, will retry on user interaction:', error)
+          
+          // Слушаем первое взаимодействие пользователя
+          const tryPlay = () => {
+            video.play().catch(() => {})
+            document.removeEventListener('touchstart', tryPlay)
+            document.removeEventListener('click', tryPlay)
+          }
+          
+          document.addEventListener('touchstart', tryPlay, { once: true })
+          document.addEventListener('click', tryPlay, { once: true })
+        })
+    }
+  }
+})
 </script>
 
 <style scoped>
