@@ -262,9 +262,10 @@ function updateScale() {
   const sceneW = stageWidthPx.value
   const sceneH = stageHeightPx.value
   // доступная область (минус небольшой паддинг безопасности)
+  // Используем одинаковый паддинг для всех устройств, чтобы сохранить пропорции
   const pad = 8
-  const availW = Math.max(0, el.clientWidth - pad)
-  const availH = Math.max(0, el.clientHeight - pad)
+  const availW = Math.max(0, el.clientWidth - pad * 2)
+  const availH = Math.max(0, el.clientHeight - pad * 2)
   // единый масштаб = min по осям, чтобы сохранять пропорции
   const s = Math.min(availW / sceneW, availH / sceneH)
   if (needsZoom.value) {
@@ -448,6 +449,22 @@ function handleOrder() {
   padding: 40px;
   max-width: 1200px;
   width: 100%;
+}
+
+@media (max-width: 768px) {
+  .constructor-container {
+    padding: 20px 0;
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .constructor-container {
+    padding: 15px 0;
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 
@@ -858,10 +875,27 @@ function handleOrder() {
   .constructor-content {
     grid-template-columns: 1fr;
     gap: 30px;
+    display: flex;
+    flex-direction: column;
   }
   
   .constructor-container {
     padding: 20px;
+  }
+  
+  .constructor-left {
+    min-width: auto;
+    order: 2; /* Бегунки идут вторыми */
+  }
+  
+  .constructor-right {
+    min-width: auto;
+    width: 100%;
+    padding: 20px 0;
+    order: 1; /* Визуализация коробки идет первой */
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   
   .material-group {
@@ -870,7 +904,49 @@ function handleOrder() {
   }
   
   .box-visualization {
-    height: 300px;
+    height: 400px;
+    min-height: 400px;
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+  }
+  
+  .layers-container {
+    position: relative;
+  }
+  
+  .layer {
+    position: absolute;
+  }
+  
+  .layer img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .box-visualization {
+    height: 400px;
+    min-height: 400px;
+    padding: 0;
+  }
+  
+  .constructor-container {
+    padding: 15px;
+  }
+  
+  .constructor-content {
+    gap: 20px;
+  }
+  
+  .constructor-right {
+    padding: 15px 0;
   }
 }
 </style>

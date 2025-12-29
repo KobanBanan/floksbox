@@ -90,6 +90,20 @@ const handleProductClick = (item, index) => {
   margin: 0 auto;
 }
 
+@media (max-width: 768px) {
+  .product-grid-section {
+    padding: 40px 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .container {
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
 .product-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

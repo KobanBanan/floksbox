@@ -287,10 +287,14 @@ onMounted(() => {
 @media (max-width: 768px) {
   .product-carousel {
     padding: 30px 0;
+    width: 100%;
+    max-width: 100%;
   }
   
   .container {
-    padding: 0 15px;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
   }
   
   .section-title {
@@ -303,6 +307,7 @@ onMounted(() => {
   
   .carousel-wrapper {
     gap: 10px;
+    width: 100%;
   }
   
   .carousel-item {

@@ -445,6 +445,9 @@ useHead({
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  padding: 0;
+  margin: 0;
+  overflow-x: hidden;
 }
 
 .category-hero {
@@ -456,6 +459,29 @@ useHead({
   display: flex;
   align-items: center;
   justify-content: center;
+  left: 0;
+  right: 0;
+}
+
+@media (max-width: 768px) {
+  .category-hero {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .category-page {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
 }
 
 /* Слой 1: Фоновое изображение */
@@ -466,12 +492,15 @@ useHead({
   width: 100%;
   height: 100%;
   z-index: 1;
+  overflow: hidden;
   
   .bg-image {
-    width: 100%;
+    width: 110%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
     transition: opacity 3s ease-in-out;
+    margin-left: -5%; /* Центрируем 110% изображение */
     
     &.bg-image-overlay {
       position: absolute;
@@ -486,6 +515,25 @@ useHead({
     
     &.fade-in {
       opacity: 1;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .background-layer {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    
+    .bg-image {
+      width: 100% !important;
+      margin-left: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
     }
   }
 }
@@ -513,11 +561,32 @@ useHead({
   left: 0;
   width: 100%;
   z-index: 3;
+  overflow: hidden;
   
   .diagonal-image {
-    width: 100%;
+    width: 110%;
     height: auto;
     display: block;
+    margin-left: -5%; /* Центрируем 110% изображение */
+  }
+}
+
+@media (max-width: 768px) {
+  .diagonal-layer {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    
+    .diagonal-image {
+      width: 100% !important;
+      margin-left: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+    }
   }
 }
 
@@ -598,6 +667,21 @@ useHead({
   width: 100%;
 }
 
+@media (max-width: 768px) {
+  .products-section {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  
+  .products-grid {
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
 /* Секция конструктора на странице */
 .constructor-page-section {
   padding: 80px 0;
@@ -609,6 +693,14 @@ useHead({
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 40px;
+}
+
+@media (max-width: 768px) {
+  .constructor-page-container {
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 .constructor-page-title {
@@ -1255,19 +1347,27 @@ useHead({
   
   .products-section {
     padding: 60px 0 130px 0;
+    width: 100%;
+    max-width: 100%;
   }
   
   .products-grid {
-    padding: 0 20px;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
   }
   
   /* Адаптивные стили для конструктора на странице */
   .constructor-page-section {
     padding: 60px 0;
+    width: 100%;
+    max-width: 100%;
   }
   
   .constructor-page-container {
-    padding: 0 20px;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
   }
   
   .constructor-page-title {
@@ -1330,22 +1430,31 @@ useHead({
     }
   }
   
+  .products-section {
+    padding: 40px 0 110px 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  
   .products-grid {
     grid-template-columns: 1fr;
     gap: 15px;
-  }
-  
-  .products-section {
-    padding: 40px 0 110px 0;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
   }
   
   /* Дополнительные адаптивные стили для конструктора на маленьких экранах */
   .constructor-page-section {
     padding: 40px 0;
+    width: 100%;
+    max-width: 100%;
   }
   
   .constructor-page-container {
-    padding: 0 15px;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
   }
   
   .constructor-page-title {
@@ -1362,8 +1471,9 @@ useHead({
   }
   
   .constructor-right {
-    padding: 15px;
+    padding: 15px 0;
     min-height: 250px;
+    width: 100%;
   }
   
   .parameter-label,
