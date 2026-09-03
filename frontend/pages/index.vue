@@ -3,16 +3,8 @@
     <!-- Header -->
     <HeaderSimple />
     
-    <!-- Уведомление о предзаполненной форме -->
-    <div v-if="showFormNotification" class="form-notification" @click="scrollToForm">
-      <div class="notification-content">
-        <span class="notification-text">✓ Форма заказа заполнена. Нажмите, чтобы перейти к форме</span>
-        <button @click.stop="showFormNotification = false" class="notification-close">×</button>
-      </div>
-    </div>
-    
     <!-- Hero Banner с слайдером -->
-    <div class="scroll-reveal scroll-reveal-fade-up">
+    <div class="scroll-reveal scroll-reveal-fade-up hero-reveal-wrap">
       <HeroBanner />
     </div>
     
@@ -23,7 +15,7 @@
     
     <!-- Меню (заменяет старую сетку товаров) -->
     <div class="scroll-reveal scroll-reveal-fade-up scroll-reveal-delay-1">
-      <MenuGrid />
+      <MenuGrid catalog-layout />
     </div>
     
 
@@ -71,14 +63,11 @@ import FooterNew from '../components/FooterNew.vue'
 
 // Scroll reveal эффекты инициализируются автоматически через плагин
 
-// Получаем сообщение из URL параметров
 const route = useRoute()
-const prefilledMessage = computed(() => {
-  return route.query.message ? decodeURIComponent(route.query.message) : ''
-})
+const router = useRouter()
+const { openOrderRequest } = useOrderRequest()
 
-// Показ уведомления о предзаполненной форме
-const showFormNotification = ref(false)
+const prefilledMessage = computed(() => '')
 
 // Агрессивная блокировка скролла и принудительная установка позиции
 const forceScrollToTop = () => {
@@ -94,52 +83,19 @@ const forceScrollToTop = () => {
   }
 }
 
-// Проверяем, есть ли предзаполненное сообщение и показываем уведомление
 onMounted(() => {
-  // Очищаем любые флаги скролла
-  if (process.client) {
-    sessionStorage.removeItem('floksbox_scroll_to_form')
-    
-    // Агрессивно блокируем скролл
-    forceScrollToTop()
-    
-    // Блокируем скролл еще раз через небольшую задержку (для борьбы со scroll-reveal)
-    setTimeout(() => {
-      forceScrollToTop()
-    }, 50)
-    
-    // И еще раз через большую задержку
-    setTimeout(() => {
-      forceScrollToTop()
-      
-      // Восстанавливаем smooth scroll behavior после принудительной установки позиции
-      document.documentElement.style.scrollBehavior = 'smooth'
-      document.body.style.scrollBehavior = 'smooth'
-    }, 500)
-    
-    // Показываем уведомление только если есть сообщение
-    if (route.query.message) {
-      showFormNotification.value = true
-      
-      // Автоматически скрываем уведомление через 5 секунд
-      setTimeout(() => {
-        showFormNotification.value = false
-      }, 5000)
-    }
+  if (!import.meta.client) return
+
+  sessionStorage.removeItem('floksbox_scroll_to_form')
+  forceScrollToTop()
+
+  // Старые ссылки с ?message= — открываем модальное окно без редиректа
+  const legacyMessage = route.query.message
+  if (legacyMessage && typeof legacyMessage === 'string') {
+    openOrderRequest(decodeURIComponent(legacyMessage))
+    router.replace({ path: route.path, query: {} })
   }
 })
-
-// Функция для скролла к форме по клику на уведомление (ТОЛЬКО ПО КЛИКУ)
-const scrollToForm = () => {
-  const orderFormElement = document.getElementById('order-form')
-  if (orderFormElement) {
-    orderFormElement.scrollIntoView({ 
-      behavior: 'smooth',
-      block: 'start'
-    })
-  }
-  showFormNotification.value = false
-}
 
 useHead({
   title: 'Floksbox - Упакуем ваш бизнес',
@@ -160,6 +116,62 @@ useHead({
 .homepage {
   width: 100%;
   min-height: 100vh;
+  overflow: visible;
+}
+
+.homepage :deep(.header) {
+  overflow: visible;
+  background: transparent;
+  z-index: 5;
+}
+
+.homepage :deep(.header-background) {
+  z-index: 1;
+}
+
+.homepage :deep(.header-content) {
+  z-index: 40;
+}
+
+.homepage :deep(.hero-reveal-wrap) {
+  overflow: visible;
+  position: relative;
+  z-index: 10;
+}
+
+.homepage :deep(.hero-banner) {
+  overflow: visible;
+  z-index: 15;
+}
+
+.homepage :deep(.banner-char) {
+  z-index: 30;
+  pointer-events: none;
+}
+
+.homepage :deep(.stories-bar) {
+  padding: 6px 0 10px;
+}
+
+.homepage :deep(.menu-section--catalog) {
+  padding-top: 6px;
+  padding-bottom: 0;
+}
+
+.homepage :deep(.production-section) {
+  padding: 20px 20px 24px;
+}
+
+.homepage :deep(.product-carousel) {
+  padding: 8px 0 24px;
+}
+
+.homepage :deep(.product-carousel .section-header) {
+  margin-bottom: 24px;
+}
+
+.homepage :deep(.product-carousel .section-title) {
+  margin-bottom: 10px;
 }
 
 .form-notification {

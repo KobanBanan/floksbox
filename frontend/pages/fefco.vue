@@ -166,14 +166,6 @@
       <FooterNew />
     </div>
     
-    <!-- Модальное окно заказа -->
-    <div v-if="showOrderForm" class="modal-overlay" @click.self="showOrderForm = false">
-      <div class="modal-content">
-        <OrderForm @close="showOrderForm = false" :prefilled-message="orderMessage" />
-        <button class="close-btn" @click="showOrderForm = false">×</button>
-      </div>
-    </div>
-    
     <!-- Полноэкранный режим -->
     <div v-if="fullscreenImage" class="fullscreen-overlay" @click="closeFullscreen">
       <img :src="fullscreenImage" :alt="`Чертеж ${selectedDrawing}`" />
@@ -190,8 +182,8 @@ import FooterNew from '../components/FooterNew.vue'
 const selectedSection = ref('commercial')
 const selectedDrawing = ref(null)
 const currentSlide = ref(0)
-const showOrderForm = ref(false)
 const fullscreenImage = ref(null)
+const { openOrderRequest } = useOrderRequest()
 const selectedItems = ref([]) // Для накопления выбранных позиций
 const currentPage = ref(1) // Текущая страница пагинации
 const itemsPerPage = 15 // Количество чертежей на странице
@@ -471,7 +463,7 @@ const addToOrder = () => {
 }
 
 const openOrderForm = () => {
-  showOrderForm.value = true
+  openOrderRequest(orderMessage.value)
 }
 
 // Формируем сообщение для заказа

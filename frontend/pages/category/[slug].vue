@@ -4,7 +4,10 @@
     <HeaderSimple />
     
     <!-- Главный баннер категории -->
-    <section class="category-hero">
+    <section
+      class="category-hero"
+      :class="{ 'category-hero--half': categorySlug === 'four-flap-boxes' || categorySlug === 'gift-bags' }"
+    >
       <!-- Слой 1: Фоновое изображение с слайдшоу f1.png и f2.png -->
       <div class="background-layer">
         <img 
@@ -26,29 +29,69 @@
         <img src="/assets/images/oblako.png" alt="Облако" class="cloud-image" />
       </div>
       
-      <!-- Слой 3: Полоса floksbox - diag.png -->
+      <!-- Слой 3: Полоса floksbox - diag.png (замощение по ширине) -->
       <div class="diagonal-layer">
-        <img src="/assets/images/diag.png" alt="Полоса FloksBox" class="diagonal-image" />
+        <div class="diagonal-strip" role="img" aria-label="Полоса FloksBox" />
       </div>
-      
 
-      
+      <!-- Боке: за полосой diag, всплывает снизу -->
+      <HeroBokeh />
+
       <!-- Контейнер для контента с ограничением ширины -->
       <div class="content-container">
         <!-- Слой 5: Текст - выше всего, если длинный, то опускается на диагональную полосу -->
         <div class="text-layer">
           <div class="text-content">
-            <h1 class="category-title">{{ categoryName }}</h1>
-            <p class="category-description">
+            <h1 class="category-title">{{ categoryHeroTitle }}</h1>
+            <template v-if="categoryHeroParagraphs.length">
+              <p
+                v-for="(paragraph, index) in categoryHeroParagraphs"
+                :key="'hero-p-' + index"
+                class="category-description"
+              >
+                {{ paragraph }}
+              </p>
+            </template>
+            <p v-else class="category-description">
               {{ categoryDescription }}
             </p>
           </div>
         </div>
         
-        <!-- Слой 4: Картинка kat1.png внутри контейнера -->
+        <!-- Слой 4: Картинка категории -->
         <div class="product-layer">
-          <img :src="categoryImage" :alt="categoryName" class="product-image" />
+          <KatFloatImage :src="categoryImage" :alt="categoryName" />
         </div>
+      </div>
+    </section>
+
+    <!-- SEO-текст для четырехклапанных коробок -->
+    <section v-if="categoryRichBlocks.length" class="category-rich-section">
+      <div class="category-rich-grid">
+        <div
+          v-for="(block, index) in categoryRichBlocks"
+          :key="'rich-block-' + index"
+          class="category-rich-block"
+          :class="{ 'category-rich-block--full': block.fullWidth }"
+        >
+          <h3 v-if="block.title" class="category-rich-subtitle">{{ block.title }}</h3>
+          <p v-if="block.lead" class="category-rich-paragraph">{{ block.lead }}</p>
+          <ul v-if="block.items?.length" class="category-rich-list">
+            <li v-for="(item, itemIndex) in block.items" :key="'item-' + itemIndex">{{ item }}</li>
+          </ul>
+          <p v-if="block.note" class="category-rich-paragraph">{{ block.note }}</p>
+          <p
+            v-for="(paragraph, pIndex) in block.paragraphs || []"
+            :key="'p-' + pIndex"
+            class="category-rich-paragraph"
+          >
+            {{ paragraph }}
+          </p>
+        </div>
+      </div>
+
+      <div v-if="showFourFlapOrderForm && categorySlug === 'four-flap-boxes'" class="four-flap-order-wrap">
+        <GofroBoxOrder />
       </div>
     </section>
     
@@ -69,7 +112,7 @@
         <p>Загрузка товаров...</p>
       </div>
       
-      <div v-else-if="products.length > 0" class="products-grid">
+      <div v-else-if="products.length > 0" class="products-grid" :class="{ 'products-grid--quadpack': categorySlug === 'four-flap-boxes' || categorySlug === 'gift-bags' || categorySlug === 'flexo-corrugated' }">
         <div 
           v-for="product in products" 
           :key="product.id" 
@@ -90,9 +133,7 @@
           </div>
           <div class="product-info">
             <h3>{{ product.name }}</h3>
-            <p v-if="product.price">{{ formatPrice(product.price) }} ₽</p>
-            <p v-else>Цена по запросу</p>
-            <small v-if="product.dimensions">{{ product.dimensions }}</small>
+            <small v-if="product.dimensions && categorySlug !== 'four-flap-boxes' && categorySlug !== 'gift-bags' && categorySlug !== 'flexo-corrugated'">{{ product.dimensions }}</small>
           </div>
         </div>
       </div>
@@ -113,9 +154,13 @@
 import HeaderSimple from '../../components/HeaderSimple.vue'
 import FooterNew from '../../components/FooterNew.vue'
 import BoxConstructor from '../../components/BoxConstructor.vue'
+import GofroBoxOrder from '../../components/GofroBoxOrder.vue'
 
 const route = useRoute()
 const router = useRouter()
+const { trackImpressions } = useYandexEcommerce()
+
+const showFourFlapOrderForm = false
 
 // Реактивные данные
 const products = ref([])
@@ -154,8 +199,52 @@ const categorySlug = computed(() => route.params.slug)
 const categoryConfig = {
   'four-flap-boxes': {
     name: 'Четырехклапанные коробки',
-    description: 'Это универсальное решение для упаковки, хранения и транспортировки различных товаров. Наша компания предлагает высококачественные гофрокороба, изготовленные по современным технологиям из экологичного материала.',
-    image: '/assets/images/kat1.png'
+    heroTitle: 'Четырехклапанный гофрокороб',
+    description:
+      'Надёжная упаковка для хранения и перевозки. Четыре клапана сверху и снизу — фиксация лентой, скобами или клеем.',
+    heroParagraphs: [
+      'Надёжная упаковка для хранения и перевозки. Четыре клапана сверху и снизу фиксируются лентой, скобами или клеем. Подходит для пищевой, промышленной и торговой отраслей.'
+    ],
+    image: '/assets/images/kat1.png',
+    richContent: {
+      blocks: [
+        {
+          title: 'Преимущества четырехклапанных коробов',
+          items: [
+            'Высокая прочность и устойчивость к механическим воздействиям.',
+            'Надежная защита товара от повреждений и загрязнений.',
+            'Небольшой вес упаковки при высокой несущей способности.',
+            'Удобство хранения и транспортировки в разобранном виде.',
+            'Возможность изготовления любых размеров по требованиям заказчика.',
+            'Нанесение фирменной печати, логотипов и маркировки.'
+          ]
+        },
+        {
+          title: 'Материалы изготовления',
+          lead: 'Для производства используются качественные марки гофрокартона:',
+          items: ['трехслойный', 'пятислойный', 'микрогофрокартон'],
+          note: 'Подбор материала осуществляется с учетом веса, габаритов и условий транспортировки продукции.'
+        },
+        {
+          title: 'Области применения',
+          lead: 'Четырехклапанные гофрокороба подходят для упаковки:',
+          items: [
+            'продуктов питания',
+            'бытовой техники и электроники',
+            'автозапчастей',
+            'текстильной продукции',
+            'строительных и хозяйственных товаров',
+            'товаров интернет-магазинов и маркетплейсов'
+          ]
+        },
+        {
+          fullWidth: true,
+          paragraphs: [
+            'Наша компания изготавливает четырехклапанные гофрокороба стандартных и индивидуальных размеров, обеспечивая высокое качество продукции, точность геометрии и возможность брендирования упаковки под задачи клиента.'
+          ]
+        }
+      ]
+    }
   },
   'corrugated-sheets': {
     name: 'Гофролисты',
@@ -174,8 +263,78 @@ const categoryConfig = {
   },
   'gift-bags': {
     name: 'Подарочные пакеты',
-    description: 'Стильные и прочные подарочные пакеты для любых случаев. Широкий выбор размеров, цветов и дизайнов.',
-    image: '/assets/images/kat5.png'
+    heroTitle: 'Подарочные пакеты с печатью',
+    description:
+      'Стильная упаковка для подарков, розницы и корпоративных наборов. Крафт и ламинированная бумага.',
+    heroParagraphs: [
+      'Стильная упаковка для подарков, розницы и корпоративных наборов. Крафт и ламинированная бумага, ручки на выбор — шнуры, ленты или затяжка. Нанесение логотипа под ваш тираж.'
+    ],
+    image: '/assets/images/kat5.png',
+    richContent: {
+      blocks: [
+        {
+          title: 'Преимущества подарочных пакетов',
+          items: [
+            'Презентабельный вид подарка с первого взгляда.',
+            'Прочная конструкция и надёжные ручки под вес содержимого.',
+            'Экологичные материалы: крафт и бумага с ламинацией.',
+            'Широкий выбор размеров и цветов под задачу.',
+            'Брендирование логотипом, слоганом и фирменной графикой.',
+            'Подходят для розницы, мероприятий и корпоративных подарков.'
+          ]
+        },
+        {
+          title: 'Материалы',
+          lead: 'Работаем с двумя основными типами бумаги:',
+          items: [
+            'крафт — натуральный вид, плотность от 120 г/м²',
+            'ламинированная бумага — мелованная бумага с матовой или глянцевой ламинацией'
+          ],
+          note: 'Полиэтиленовые пакеты не используем — только бумажная упаковка.'
+        },
+        {
+          title: 'Способы нанесения',
+          lead: 'Наносим логотип и графику на пакет и ручки:',
+          items: [
+            'шелкография',
+            'трафаретная печать',
+            'шелкотрансфер',
+            'DTF (полноцвет)',
+            'УФ-печать',
+            'полноцветная печать',
+            'тиснение'
+          ],
+          note: 'Подбор технологии зависит от материала, цветности макета и тиража.'
+        },
+        {
+          title: 'Ручки',
+          lead: 'Три варианта крепления и переноски:',
+          items: [
+            'бумажные шнуры — витые ручки из крафт-шнура',
+            'крафтовые ручки — плоские петли из крафт-бумаги',
+            'ленты — полиэстеровые ленты для премиальных пакетов',
+            'затяжка — мешочек с шнурком-кулиской для мелких подарков'
+          ]
+        },
+        {
+          title: 'Области применения',
+          lead: 'Подарочные пакеты подходят для:',
+          items: [
+            'розничных магазинов и бутиков',
+            'корпоративных подарков и welcome-наборов',
+            'мероприятий, выставок и промоакций',
+            'упаковки косметики, одежды и аксессуаров',
+            'праздничной и сезонной упаковки'
+          ]
+        },
+        {
+          fullWidth: true,
+          paragraphs: [
+            'Изготавливаем подарочные пакеты стандартных и индивидуальных размеров из крафта и ламинированной бумаги. Поможем подобрать тип ручек и способ печати под ваш макет и тираж.'
+          ]
+        }
+      ]
+    }
   },
   'hat-boxes': {
     name: 'Шляпные коробки',
@@ -194,7 +353,12 @@ const categoryConfig = {
   },
   'flexo-corrugated': {
     name: 'Гофроупаковка с флексопечатью',
-    description: 'Качественная печать на гофрокартоне методом флексографии. Экономичное решение для больших тиражей упаковки.',
+    heroTitle: 'Гофроупаковка с флексопечатью',
+    description:
+      'Качественная печать на гофрокартоне методом флексографии. Экономичное решение для больших тиражей упаковки.',
+    heroParagraphs: [
+      'Качественная печать на гофрокартоне методом флексографии. Экономичное решение для больших тиражей упаковки с логотипом и фирменной графикой.'
+    ],
     image: '/assets/images/kat9.png'
   }
 }
@@ -205,8 +369,13 @@ const currentCategory = computed(() => {
 })
 
 const categoryName = computed(() => currentCategory.value.name)
+const categoryHeroTitle = computed(
+  () => currentCategory.value.heroTitle || currentCategory.value.name
+)
+const categoryHeroParagraphs = computed(() => currentCategory.value.heroParagraphs || [])
 const categoryDescription = computed(() => currentCategory.value.description)
 const categoryImage = computed(() => currentCategory.value.image)
+const categoryRichBlocks = computed(() => currentCategory.value.richContent?.blocks || [])
 
 // Вспомогательные вычисления для выбора изображения и кропа
 const effectiveHeightStep = computed(() => {
@@ -335,27 +504,19 @@ const openFullImage = () => {
   window.open(src, '_blank')
 }
 
-// Обработчик заказа из конструктора
-const handleConstructorOrder = () => {
-  // Формируем детальное сообщение для шляпной коробки
-  const materialName = constructorMaterial.value === 'd' ? 'дизайнерской бумаги' : 'бархата'
-  const lidText = constructorWithLid.value ? 'с крышкой' : 'без крышки'
-  
-  const message = `Мне интересна шляпная коробка ${constructorDiameter.value}см в ширину / ${constructorHeight.value}см в высоту, ${lidText}, из ${materialName} в количестве ${constructorCirculation.value}`
-  
-  // Устанавливаем флаг для скролла к форме
-  if (process.client) {
-    sessionStorage.setItem('floksbox_scroll_to_form', 'true')
+// Загрузка товаров по категории
+const sortProductsForCategory = (items, slug) => {
+  if (slug !== 'four-flap-boxes' && slug !== 'flexo-corrugated') return items
+
+  const offsetItems = []
+  const rest = []
+  for (const product of items) {
+    if (/офсет/i.test(product.name)) offsetItems.push(product)
+    else rest.push(product)
   }
-  
-  // Переходим на главную страницу с предзаполненным сообщением
-  router.push({
-    path: '/',
-    query: { message: message }
-  })
+  return [...rest, ...offsetItems]
 }
 
-// Загрузка товаров по категории
 const loadCategoryProducts = async () => {
   try {
     loading.value = true
@@ -369,18 +530,18 @@ const loadCategoryProducts = async () => {
       }
     })
     
-    products.value = response.results || []
+    const loaded = response.results || []
+    products.value = sortProductsForCategory(loaded, categorySlug.value)
+
+    if (products.value.length) {
+      trackImpressions(products.value, categoryName.value)
+    }
   } catch (error) {
     console.error('Ошибка загрузки товаров категории:', error)
     products.value = []
   } finally {
     loading.value = false
   }
-}
-
-// Форматирование цены
-const formatPrice = (price) => {
-  return new Intl.NumberFormat('ru-RU').format(price)
 }
 
 // Обработка ошибки загрузки изображения
@@ -447,7 +608,8 @@ useHead({
   flex-direction: column;
   padding: 0;
   margin: 0;
-  overflow-x: hidden;
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 .category-hero {
@@ -455,12 +617,47 @@ useHead({
   width: 100vw;
   margin-left: calc(-50vw + 50%);
   height: 450px;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   align-items: center;
   justify-content: center;
   left: 0;
   right: 0;
+  --diag-strip-h: clamp(104px, 11vw, 158px);
+  --hero-diag-reserve: var(--diag-strip-h);
+  /* боке: от стыка с текстом до правого края hero */
+  --bokeh-inset-left: 50%;
+  --bokeh-inset-right: 9%;
+  --bokeh-inset-top: 0%;
+}
+
+.category-hero--half {
+  height: 50vh;
+  min-height: 280px;
+  max-height: 420px;
+}
+
+.category-hero--half .text-layer {
+  align-items: flex-start;
+  padding-top: 24px;
+  overflow: hidden;
+}
+
+.category-hero--half .text-content {
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.category-hero--half .category-title {
+  font-size: 1.6rem;
+  margin-bottom: 0.65rem;
+  line-height: 1.15;
+}
+
+.category-hero--half .category-description {
+  font-size: 0.7rem;
+  line-height: 1.45;
+  margin-bottom: 0;
 }
 
 @media (max-width: 768px) {
@@ -472,7 +669,7 @@ useHead({
     right: 0 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
-    overflow: hidden;
+    overflow: visible;
     position: relative;
   }
   
@@ -545,7 +742,7 @@ useHead({
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 2;
+  z-index: 3;
   
   .cloud-image {
     width: 100%;
@@ -554,75 +751,93 @@ useHead({
   }
 }
 
-/* Слой 3: Диагональная полоса */
+/* Слой 3: Диагональная полоса — паттерн на всю ширину */
 .diagonal-layer {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  z-index: 3;
+  z-index: 4;
   overflow: hidden;
-  
-  .diagonal-image {
-    width: 110%;
-    height: auto;
-    display: block;
-    margin-left: -5%; /* Центрируем 110% изображение */
-  }
 }
 
-@media (max-width: 768px) {
-  .diagonal-layer {
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    
-    .diagonal-image {
-      width: 100% !important;
-      margin-left: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-    }
-  }
+.diagonal-strip {
+  width: 100%;
+  height: var(--diag-strip-h, 72px);
+  background-image: url('/assets/images/diag.png');
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+  background-position: left bottom;
 }
 
 /* Контейнер для контента с ограничением ширины */
 .content-container {
   position: relative;
-  max-width: 1200px; /* такая же ширина как у hero-banner */
+  z-index: 6;
+  max-width: 1200px;
   width: 100%;
   height: 100%;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  z-index: 4; /* выше фоновых слоев */
+  overflow: visible;
 }
 
-/* Слой 4: Картинка товара - залезает на диагональную полосу */
+/* Слой 4: Картинка товара — у нижней полосы, может выходить вверх без обрезки */
 .product-layer {
+  position: relative;
+  z-index: 11;
   width: 50%;
   height: 100%;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  
-  .product-image {
-    max-height: 450px; /* больше высоты блока, чтобы залезал на полосу */
-    max-width: 100%;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    transform: translateY(-30px); /* поднимаем изображение вверх */
+  overflow: visible;
+  pointer-events: auto;
+  --kat-max-height: 450px;
+}
+
+.product-layer :deep(.kat-float) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Десктоп: фиксированная сетка hero (не трогать мобильными правками) */
+@media (min-width: 993px) {
+  .category-hero {
+    height: 450px;
+    min-height: 450px;
+  }
+
+  .content-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 0;
+    height: 100%;
+  }
+
+  .text-layer {
+    width: 50%;
+    height: 100%;
+    flex: none;
+    padding: 40px 20px 20px 20px;
+  }
+
+  .product-layer {
+    width: 50%;
+    height: 100%;
+    flex: none;
+    min-height: 0;
+    --kat-max-height: 450px;
   }
 }
 
 /* Слой 5: Текст */
 .text-layer {
+  position: relative;
+  z-index: 5;
   width: 50%;
   height: 100%;
   display: flex;
@@ -656,6 +871,90 @@ useHead({
       z-index: 5; /* выше всех слоев */
       position: relative;
     }
+  }
+}
+
+/* SEO-текст категории — сетка 2 колонки */
+.category-rich-section {
+  padding: 36px 20px 28px;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.category-rich-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 36px;
+  max-width: 1100px;
+  margin: 0 auto;
+  color: #333;
+}
+
+.category-rich-block {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.category-rich-block--full {
+  grid-column: 1 / -1;
+  text-align: left;
+}
+
+.category-rich-subtitle {
+  font-family: 'Days One', cursive;
+  font-size: 16px;
+  font-weight: 400;
+  color: #5e3085;
+  margin: 0 0 10px;
+  line-height: 1.3;
+}
+
+.category-rich-paragraph {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: #444;
+}
+
+.category-rich-list {
+  margin: 0 0 10px 18px;
+  padding: 0;
+}
+
+.category-rich-list li {
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #444;
+}
+
+.four-flap-order-wrap {
+  max-width: 1100px;
+  margin: 32px auto 0;
+  padding: 32px 20px 0;
+  border-top: 1px solid rgba(94, 48, 133, 0.12);
+  position: relative;
+  z-index: 2;
+  transform: none;
+  isolation: isolate;
+}
+
+@media (max-width: 768px) {
+  .category-rich-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .category-hero--half {
+    height: auto;
+    min-height: 300px;
+    max-height: none;
+  }
+
+  .category-hero--half .category-title {
+    font-size: 1.45rem;
+  }
+
+  .category-hero--half .category-description {
+    font-size: 0.68rem;
   }
 }
 
@@ -1109,49 +1408,86 @@ useHead({
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 30px;
-  padding: 0 40px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 32px;
+  padding: 0 32px;
+}
+
+.products-grid--quadpack {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px 36px;
+  align-items: stretch;
+}
+
+.products-grid--quadpack .product-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.products-grid--quadpack .product-image-container {
+  flex-shrink: 0;
+}
+
+.products-grid--quadpack .product-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  padding: 16px 12px 0;
+}
+
+.products-grid--quadpack .product-info h3 {
+  min-height: 3.6em;
+  margin-bottom: 0;
+  font-size: 1.05rem;
+  line-height: 1.25;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
 }
 
 .product-card {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: transparent;
+  border-radius: 0;
+  overflow: visible;
+  box-shadow: none;
+  transition: transform 0.3s ease;
   cursor: pointer;
   
   &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+    box-shadow: none;
   }
 }
 
 .product-image-container {
-  height: 250px;
+  width: 100%;
+  height: 240px;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  overflow: visible;
+  background: transparent;
+  padding: 8px;
 }
 
 .product-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-  
-  &:hover {
-    transform: scale(1.05);
-  }
+  object-fit: contain;
+  object-position: center;
+  filter: none;
 }
 
 .product-image-placeholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1163,7 +1499,7 @@ useHead({
 }
 
 .product-info {
-  padding: 20px;
+  padding: 16px 8px 0;
   
   h3 {
     font-family: 'Days One', cursive;
@@ -1242,8 +1578,7 @@ useHead({
 /* Адаптивность */
 @media (max-width: 1200px) {
   .category-hero {
-    height: 450px; /* сохраняем фиксированную высоту */
-    width: 90%; /* увеличиваем ширину для больших экранов */
+    height: 450px;
   }
   
   .text-layer .text-content {
@@ -1256,36 +1591,41 @@ useHead({
     }
   }
   
-  .product-layer .product-image {
-    max-height: 420px;
-  }
-  
-  .products-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
-    padding: 0 30px;
+  .product-layer {
+    --kat-max-height: 420px;
   }
 }
 
 @media (max-width: 992px) {
   .category-hero {
-    height: 450px; /* сохраняем фиксированную высоту */
+    min-height: 480px;
+    height: auto;
+    --diag-strip-h: clamp(52px, 14vw, 72px);
+    --hero-diag-reserve: var(--diag-strip-h);
+    --bokeh-inset-left: 5%;
+    --bokeh-inset-right: 11%;
+    --bokeh-inset-top: 34%;
   }
   
   .content-container {
     max-width: 95%;
     flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    min-height: 480px;
   }
   
   .text-layer {
     width: 100%;
-    height: 50%;
-    padding: 15px;
+    height: auto;
+    flex: 0 0 44%;
+    min-height: 0;
+    padding: 15px 15px 8px;
     
     .text-content {
       .category-title {
         font-size: 2rem;
-        margin-bottom: 1rem;
+        margin-bottom: 0.75rem;
       }
       
       .category-description {
@@ -1296,11 +1636,10 @@ useHead({
   
   .product-layer {
     width: 100%;
-    height: 50%;
-    
-    .product-image {
-      max-height: 200px;
-    }
+    flex: 1 1 56%;
+    min-height: 220px;
+    height: auto;
+    --kat-max-height: min(300px, 46vh);
   }
   
   .products-grid {
@@ -1311,38 +1650,47 @@ useHead({
 
 @media (max-width: 768px) {
   .category-hero {
-    height: 450px; /* сохраняем фиксированную высоту */
+    min-height: 500px;
+    --diag-strip-h: clamp(48px, 13vw, 58px);
+    --hero-diag-reserve: var(--diag-strip-h);
+    --bokeh-inset-left: 4%;
+    --bokeh-inset-right: 10%;
+    --bokeh-inset-top: 36%;
   }
   
   .content-container {
     max-width: 98%;
     flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    min-height: 500px;
   }
   
   .text-layer {
     width: 100%;
-    height: 60%;
-    padding: 15px;
+    flex: 0 0 42%;
+    height: auto;
+    padding: 12px 15px 6px;
     
     .text-content {
       .category-title {
         font-size: 1.8rem;
-        margin-bottom: 0.8rem;
+        margin-bottom: 0.65rem;
       }
       
       .category-description {
         font-size: 0.85rem;
+        line-height: 1.4;
       }
     }
   }
   
   .product-layer {
     width: 100%;
-    height: 40%;
-    
-    .product-image {
-      max-height: 160px;
-    }
+    flex: 1 1 58%;
+    min-height: 240px;
+    height: auto;
+    --kat-max-height: min(320px, 50vh);
   }
   
   .products-section {
@@ -1396,40 +1744,49 @@ useHead({
 
 @media (max-width: 480px) {
   .category-hero {
-    height: 450px; /* сохраняем фиксированную высоту */
+    min-height: 520px;
+    --diag-strip-h: clamp(44px, 12vw, 52px);
+    --hero-diag-reserve: var(--diag-strip-h);
+    --bokeh-inset-left: 3%;
+    --bokeh-inset-right: 8%;
+    --bokeh-inset-top: 38%;
   }
-  
+
   .content-container {
     max-width: 100%;
     flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    min-height: 520px;
   }
-  
+
   .text-layer {
     width: 100%;
-    height: 65%;
-    padding: 10px;
-    
+    flex: 0 0 40%;
+    height: auto;
+    padding: 10px 12px 4px;
+
     .text-content {
       .category-title {
         font-size: 1.5rem;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.45rem;
       }
-      
+
       .category-description {
         font-size: 0.8rem;
+        line-height: 1.35;
       }
     }
   }
-  
+
   .product-layer {
     width: 100%;
-    height: 35%;
-    
-    .product-image {
-      max-height: 140px;
-    }
+    flex: 1 1 60%;
+    min-height: 260px;
+    height: auto;
+    --kat-max-height: min(340px, 52vh);
   }
-  
+
   .products-section {
     padding: 40px 0 110px 0;
     width: 100%;
@@ -1437,11 +1794,15 @@ useHead({
   }
   
   .products-grid {
-    grid-template-columns: 1fr;
-    gap: 15px;
-    padding: 0;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 0 12px;
     width: 100%;
     max-width: 100%;
+  }
+
+  .product-image-container {
+    height: 180px;
   }
   
   /* Дополнительные адаптивные стили для конструктора на маленьких экранах */

@@ -25,13 +25,16 @@ class NotificationService:
 
             bot = Bot(token=bot_token)
 
-            message = f"""🔔 Новая заявка с сайта FloksBox!
-                    👤 Имя: {user_request.name}
-                    📞 Телефон: {user_request.phone}
-                    📧 Email: {user_request.email or 'Не указан'}
-                    💬 Сообщение: {user_request.message or 'Не указано'}
-                    
-                    📅 Дата: {user_request.created_at.strftime('%d.%m.%Y %H:%M')}"""
+            message = (
+                f"🔔 Новая заявка #{user_request.id} с сайта FloksBox\n\n"
+                f"👤 Имя: {user_request.name}\n"
+                f"📞 Телефон: {user_request.phone or 'Не указан'}\n"
+                f"📧 Email: {user_request.email or 'Не указан'}\n"
+                f"💬 Сообщение: {user_request.message or 'Не указано'}\n"
+                f"📍 Источник: {user_request.source or 'Сайт'}\n\n"
+                f"📅 {user_request.created_at.strftime('%d.%m.%Y %H:%M')}\n"
+                f"Откройте CRM: /crm/orders/{user_request.id}"
+            )
 
             await bot.send_message(chat_id=chat_id, text=message)
             logger.info(f"Telegram уведомление отправлено для заявки {user_request.id}")

@@ -24,6 +24,9 @@ urlpatterns = [
     path('', include('requests_app.urls')),
 ]
 
-# Обслуживание медиа-файлов только в режиме разработки
+# Статика и медиа в режиме разработки (CSS/иконки админки и т.д.)
 if settings.DEBUG:
+    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
+    urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

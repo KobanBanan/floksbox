@@ -1,0 +1,46 @@
+{
+  "section": "Подарочные пакеты",
+  "slug": "gift-bags",
+  "items": [
+  {
+    "sort": 1,
+    "file": "01-kraft-bag-paper-cords.png",
+    "name": "Крафт-пакет с бумажными шнурами"
+  },
+  {
+    "sort": 2,
+    "file": "02-laminated-bag-paper-cords.png",
+    "name": "Ламинированный пакет с бумажными шнурами"
+  },
+  {
+    "sort": 3,
+    "file": "03-bag-ribbon-handles.png",
+    "name": "Пакет на лентах"
+  },
+  {
+    "sort": 4,
+    "file": "04-kraft-drawstring-pouch.png",
+    "name": "Крафт-мешок на затяжке"
+  },
+  {
+    "sort": 5,
+    "file": "05-laminated-fullcolor-bag.png",
+    "name": "Ламинированный пакет с полноцветной печатью"
+  },
+  {
+    "sort": 6,
+    "file": "06-kraft-bag-embossing.png",
+    "name": "Крафт-пакет с тиснением"
+  },
+  {
+    "sort": 7,
+    "file": "07-kraft-bag-kraft-handles.png",
+    "name": "Крафт-пакет с крафтовыми ручками"
+  },
+  {
+    "sort": 8,
+    "file": "08-white-bag-kraft-handles.png",
+    "name": "Белый пакет с крафтовыми ручками"
+  }
+]
+}

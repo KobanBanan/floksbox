@@ -1,7 +1,6 @@
 <template>
   <footer class="footer-new">
     <div class="footer-content">
-      <!-- Левая сторона - Навигационные ссылки -->
       <div class="footer-left">
         <div class="footer-links">
           <h3 class="footer-title">Навигация</h3>
@@ -13,7 +12,7 @@
             <li><NuxtLink to="/contacts" class="footer-link">Контакты</NuxtLink></li>
           </ul>
         </div>
-        
+
         <div class="footer-services">
           <h3 class="footer-title">Услуги</h3>
           <ul class="links-list">
@@ -25,32 +24,29 @@
         </div>
       </div>
 
-      <!-- Правая сторона - Логотип и соцсети -->
       <div class="footer-right">
         <div class="footer-brand">
           <div class="logo-container">
-            <img 
-              src="/assets/logo/floksbox лого.png" 
-              alt="Floksbox Logo" 
+            <img
+              src="/assets/logo/floksbox лого.png"
+              alt="Floksbox Logo"
               class="footer-logo"
             />
           </div>
-          
+
           <p class="footer-tagline">
             Упакуем ваш бизнес профессионально
           </p>
-          
+
           <div class="social-links">
             <h4 class="social-title">Мы в соцсетях</h4>
             <div class="social-icons">
               <a href="mailto:info@floksbox.ru" class="social-link" aria-label="Email">
                 <img src="/assets/icons/p_email.png" alt="Email" class="social-icon" />
               </a>
-              
               <a href="https://t.me/floksbox" target="_blank" class="social-link" aria-label="Telegram">
                 <img src="/assets/icons/p_tg.png" alt="Telegram" class="social-icon" />
               </a>
-              
               <a href="https://wa.me/79602543323" target="_blank" class="social-link" aria-label="WhatsApp">
                 <img src="/assets/icons/p_wa.png" alt="WhatsApp" class="social-icon" />
               </a>
@@ -59,26 +55,20 @@
         </div>
       </div>
     </div>
-    
-    <!-- Нижняя строка с копирайтом -->
+
     <div class="footer-bottom">
       <div class="footer-bottom-content">
         <p class="copyright">
           © {{ currentYear }} Floksbox. Все права защищены.
         </p>
-        <div class="footer-legal">
-          <NuxtLink to="/privacy" class="legal-link">Политика конфиденциальности</NuxtLink>
-          <NuxtLink to="/terms" class="legal-link">Условия использования</NuxtLink>
-        </div>
       </div>
     </div>
   </footer>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 
-// Получаем текущий год для копирайта
 const currentYear = computed(() => new Date().getFullYear())
 </script>
 
@@ -86,21 +76,22 @@ const currentYear = computed(() => new Date().getFullYear())
 @use '~/assets/styles/variables.scss' as vars;
 
 .footer-new {
+  --footer-font-scale: 1;
   background: #e0ebff;
   color: vars.$color-black;
-  padding: 60px 0 0 0;
+  padding: 30px 0 0;
   margin-top: auto;
   border-top: 1px solid #e5e7eb;
   position: relative;
   overflow: visible;
-  
+
   &::before {
     content: '';
     position: absolute;
-    top: -120px;
+    top: -60px;
     left: 0;
     right: 0;
-    height: 120px;
+    height: 60px;
     background: url('/assets/images/wave.png') no-repeat center center;
     background-size: 100% 100%;
     pointer-events: none;
@@ -111,53 +102,53 @@ const currentYear = computed(() => new Date().getFullYear())
 .footer-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 32px 48px;
+  padding: 0 16px 5px;
   display: grid;
   grid-template-columns: 1.2fr 1fr;
-  gap: 40px;
+  gap: 5px;
   align-items: flex-start;
 }
 
 .footer-left {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 28px;
+  gap: 5px;
 }
 
 .footer-title {
-  font-size: 18px;
+  font-size: calc(18px * var(--footer-font-scale));
   font-weight: 700;
-  margin-bottom: 16px;
+  margin: 0 0 5px;
   color: vars.$color-black;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.21px;
 }
 
 .links-list {
   list-style: none;
   padding: 0;
   margin: 0;
-  
+
   li {
-    margin-bottom: 10px;
+    margin: 0;
+    padding: 0;
+    line-height: 1.2;
   }
 }
 
 .footer-link {
   color: #666666;
   text-decoration: none;
-  font-size: 14px;
+  font-size: calc(14px * var(--footer-font-scale));
   font-weight: 500;
-  transition: all vars.$transition-medium;
-  border-radius: vars.$border-radius-small;
-  padding: 6px 8px;
-  margin: -6px -8px;
-  display: inline-block;
-  
+  line-height: 1.2;
+  transition: color vars.$transition-medium;
+  padding: 0;
+  margin: 0;
+  display: block;
+
   &:hover {
     color: vars.$color-primary;
-    background-color: rgba(71, 0, 159, 0.1);
-    transform: translateX(5px);
   }
 }
 
@@ -166,25 +157,25 @@ const currentYear = computed(() => new Date().getFullYear())
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 12px;
+  gap: 5px;
 }
 
 .logo-container {
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 
 .footer-logo {
-  max-width: 180px;
+  max-width: 90px;
   height: auto;
 }
 
 .footer-tagline {
-  font-size: 16px;
+  font-size: calc(16px * var(--footer-font-scale));
   color: #666666;
-  margin-bottom: 20px;
+  margin: 0 0 5px;
   font-style: italic;
-  max-width: 280px;
-  line-height: 1.4;
+  max-width: 140px;
+  line-height: 1.35;
 }
 
 .social-links {
@@ -192,124 +183,87 @@ const currentYear = computed(() => new Date().getFullYear())
 }
 
 .social-title {
-  font-size: 16px;
+  font-size: calc(16px * var(--footer-font-scale));
   font-weight: 600;
-  margin-bottom: 14px;
+  margin: 0 0 5px;
   color: vars.$color-black;
 }
 
 .social-icons {
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: 5px;
 }
 
 .social-link {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 22px;
+  height: 22px;
   background: rgba(71, 0, 159, 0.1);
   border-radius: 50%;
-  color: vars.$color-primary;
   text-decoration: none;
   transition: all vars.$transition-medium;
   border: 1px solid rgba(71, 0, 159, 0.2);
-  position: relative; // чтобы быть поверх декоративных слоев
+  position: relative;
   z-index: 2;
-  
+
   &:hover {
     background: rgba(71, 0, 159, 0.2);
-    color: vars.$color-primary;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(71, 0, 159, 0.3);
+    transform: translateY(-1px);
   }
-  
+
   &:nth-child(1):hover {
     background: #4680c2;
-    color: vars.$color-white;
     border-color: #4680c2;
   }
-  
+
   &:nth-child(2):hover {
     background: #0088cc;
-    color: vars.$color-white;
     border-color: #0088cc;
   }
-  
+
   &:nth-child(3):hover {
     background: #25d366;
-    color: vars.$color-white;
     border-color: #25d366;
-  }
-  
-  &:nth-child(4):hover {
-    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-    color: vars.$color-white;
-    border-color: transparent;
   }
 }
 
 .social-icon {
-  width: 20px;
-  height: 20px;
+  width: 10px;
+  height: 10px;
 }
 
 .footer-bottom {
   background: #e0ebff;
-  margin-top: 32px;
-  padding: 20px 0;
+  margin-top: 5px;
+  padding: 10px 0;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .footer-bottom-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 32px;
+  padding: 0 16px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 }
 
 .copyright {
   color: #666666;
-  font-size: 14px;
+  font-size: calc(14px * var(--footer-font-scale));
   margin: 0;
+  text-align: center;
 }
 
-.footer-legal {
-  display: flex;
-  gap: 24px;
-}
-
-.legal-link {
-  color: #666666;
-  text-decoration: none;
-  font-size: 14px;
-  transition: color vars.$transition-medium;
-  padding: 4px 8px;
-  border-radius: vars.$border-radius-small;
-  
-  &:hover {
-    color: vars.$color-primary;
-    background-color: rgba(71, 0, 159, 0.1);
-  }
-}
-
-// Адаптивность
 @media (max-width: 968px) {
   .footer-content {
     grid-template-columns: 1fr;
-    gap: 32px;
-    padding: 0 24px 40px;
+    padding: 0 12px 5px;
   }
-  
-  .footer-left {
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-  
+
   .footer-right {
     order: -1;
   }
@@ -317,117 +271,62 @@ const currentYear = computed(() => new Date().getFullYear())
 
 @media (max-width: 768px) {
   .footer-new {
-    padding: 40px 0 0 0;
+    padding-top: 20px;
+
+    &::before {
+      top: -40px;
+      height: 40px;
+    }
   }
-  
-  .footer-content {
-    gap: 24px;
-    padding: 0 20px 32px;
-  }
-  
-  .footer-left {
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-  
+
   .footer-title {
-    font-size: 16px;
-    margin-bottom: 12px;
+    font-size: calc(16px * var(--footer-font-scale));
   }
-  
-  .footer-logo {
-    max-width: 140px;
-  }
-  
+
   .footer-tagline {
-    font-size: 14px;
-    margin-bottom: 16px;
+    font-size: calc(14px * var(--footer-font-scale));
   }
-  
-  .social-icons {
-    gap: 12px;
+
+  .footer-logo {
+    max-width: 70px;
   }
-  
-  .social-link {
-    width: 40px;
-    height: 40px;
-  }
-  
-  .social-icon {
-    width: 18px;
-    height: 18px;
-  }
-  
+
   .footer-bottom-content {
-    flex-direction: column;
-    gap: 16px;
-    text-align: center;
-    padding: 0 20px;
-  }
-  
-  .footer-legal {
-    gap: 16px;
+    padding: 0 12px;
   }
 }
 
 @media (max-width: 480px) {
   .footer-content {
-    padding: 0 16px 28px;
+    padding: 0 8px 5px;
   }
-  
+
   .footer-bottom-content {
-    padding: 0 16px;
+    padding: 0 8px;
   }
-  
-  .footer-left {
-    gap: 12px;
-  }
-  
+
   .footer-title {
-    font-size: 14px;
-    margin-bottom: 10px;
+    font-size: calc(14px * var(--footer-font-scale));
   }
-  
+
   .footer-link {
-    font-size: 13px;
+    font-size: calc(13px * var(--footer-font-scale));
   }
-  
-  .footer-logo {
-    max-width: 130px;
-  }
-  
+
   .footer-tagline {
-    font-size: 13px;
-    margin-bottom: 14px;
+    font-size: calc(13px * var(--footer-font-scale));
   }
-  
+
   .social-title {
-    font-size: 14px;
-    margin-bottom: 12px;
+    font-size: calc(14px * var(--footer-font-scale));
   }
-  
-  .social-icons {
-    gap: 8px;
+
+  .copyright {
+    font-size: calc(12px * var(--footer-font-scale));
   }
-  
-  .social-link {
-    width: 36px;
-    height: 36px;
-  }
-  
-  .social-icon {
-    width: 16px;
-    height: 16px;
-  }
-  
-  .footer-legal {
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .copyright,
-  .legal-link {
-    font-size: 12px;
+
+  .footer-logo {
+    max-width: 65px;
   }
 }
 </style>

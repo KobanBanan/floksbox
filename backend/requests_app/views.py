@@ -42,6 +42,7 @@ def sent_request(request):
         phone = data.get('phone', '').strip()
         email = data.get('email', '').strip()
         message = data.get('message', '').strip()
+        source = data.get('source', '').strip()
 
         # Валидация обязательных полей
         if not name:
@@ -50,10 +51,10 @@ def sent_request(request):
                 'error': 'Поле "Имя" обязательно для заполнения'
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        if not phone:
+        if not phone and not email:
             return Response({
                 'success': False,
-                'error': 'Поле "Телефон" обязательно для заполнения'
+                'error': 'Укажите телефон или email для связи'
             }, status=status.HTTP_400_BAD_REQUEST)
 
         # Создаем заявку
@@ -61,7 +62,8 @@ def sent_request(request):
             name=name,
             phone=phone,
             email=email if email else None,
-            message=message if message else None
+            message=message if message else None,
+            source=source,
         )
 
         # Отправляем уведомления

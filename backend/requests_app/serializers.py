@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Product
+from .models import Category, Product, UserRequest
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -35,21 +35,30 @@ class ProductSerializer(serializers.ModelSerializer):
     dimensions = serializers.CharField(read_only=True)
     volume = serializers.FloatField(read_only=True)
     image_url = serializers.SerializerMethodField()
+    image_unfold_url = serializers.SerializerMethodField()
     
     class Meta:
         model = Product
         fields = [
-            'id', 'name', 'description', 'image', 'image_url', 'price',
+            'id', 'name', 'description', 'image', 'image_url', 'image_unfold_url', 'price',
             'height', 'width', 'depth', 'dimensions', 'volume',
             'category', 'category_name', 'is_active',
             'created_at', 'updated_at'
         ]
-        read_only_fields = ['id', 'created_at', 'updated_at', 'dimensions', 'volume', 'image_url']
+        read_only_fields = [
+            'id', 'created_at', 'updated_at', 'dimensions', 'volume',
+            'image_url', 'image_unfold_url',
+        ]
     
     def get_image_url(self, obj):
         """Возвращает относительный URL изображения (от /media), чтобы хост подставлял ngrok"""
         if obj.image:
             return obj.image.url
+        return None
+
+    def get_image_unfold_url(self, obj):
+        if obj.image_unfold:
+            return obj.image_unfold.url
         return None
     
     def validate_image(self, value):
@@ -77,7 +86,7 @@ class ProductListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = [
-            'id', 'name', 'image_url', 'price', 'dimensions',
+            'id', 'name', 'description', 'image_url', 'price', 'dimensions',
             'category', 'category_name', 'is_active'
         ]
     
@@ -114,4 +123,39 @@ class ProductCreateUpdateSerializer(serializers.ModelSerializer):
             if data.get(dimension) <= 0:
                 raise serializers.ValidationError(f"Значение '{dimension}' должно быть больше нуля")
         
-        return data 
+        return data
+
+
+class CrmOrderListSerializer(serializers.ModelSerializer):
+    status_label = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = UserRequest
+        fields = [
+            'id', 'name', 'phone', 'email', 'message', 'source',
+            'status', 'status_label', 'created_at', 'updated_at',
+        ]
+
+
+class CrmOrderDetailSerializer(serializers.ModelSerializer):
+    status_label = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = UserRequest
+        fields = [
+            'id', 'name', 'phone', 'email', 'message', 'source',
+            'status', 'status_label', 'manager_notes',
+            'created_at', 'updated_at', 'is_processed',
+        ]
+
+
+class CrmOrderUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserRequest
+        fields = ['status', 'manager_notes']
+
+    def validate_status(self, value):
+        valid = {choice[0] for choice in UserRequest.Status.choices}
+        if value not in valid:
+            raise serializers.ValidationError('Некорректный статус')
+        return value

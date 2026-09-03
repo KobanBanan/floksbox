@@ -64,6 +64,21 @@ const stories = [
       { type: 'image', src: '/stories/st_2/st2_5.jpg' },
       { type: 'image', src: '/stories/st_2/st2_6.jpg' }
     ]
+  },
+  {
+    icon: '/stories/st_4/ico.png',
+    title: 'Отзывы',
+    subtitle: 'Оценки нашей работы',
+    slides: [
+      { type: 'image', src: '/stories/st_4/st4_1.png' },
+      { type: 'image', src: '/stories/st_4/st4_2.png' },
+      { type: 'image', src: '/stories/st_4/st4_3.png' },
+      { type: 'image', src: '/stories/st_4/st4_4.png' },
+      { type: 'image', src: '/stories/st_4/st4_5.png' },
+      { type: 'image', src: '/stories/st_4/st4_6.png' },
+      { type: 'image', src: '/stories/st_4/st4_7.png' },
+      { type: 'image', src: '/stories/st_4/st4_8.png' }
+    ]
   }
 ]
 
@@ -87,9 +102,11 @@ const closeViewer = () => {
 }
 
 .container {
-  max-width: 990px; /* выравниваем с шириной hero */
+  --stories-gutter: 40px;
+  max-width: calc(1200px - var(--stories-gutter) * 2);
+  width: calc(100% - var(--stories-gutter) * 2);
   margin: 0 auto;
-  padding: 0 20px 0 10px; /* уменьшаем левый отступ для выравнивания с баннером */
+  padding: 0;
 }
 
 .stories-list {
@@ -162,7 +179,21 @@ const closeViewer = () => {
   line-height: 1.3;
 }
 
+@media (max-width: 1024px) {
+  .container {
+    --stories-gutter: 20px;
+    max-width: calc(1200px - var(--stories-gutter) * 2);
+    width: calc(100% - var(--stories-gutter) * 2);
+  }
+}
+
 @media (max-width: 768px) {
+  .container {
+    --stories-gutter: 18px;
+    max-width: calc(1200px - var(--stories-gutter) * 2);
+    width: calc(100% - var(--stories-gutter) * 2);
+  }
+
   .stories-list {
     gap: 15px;
   }
@@ -190,6 +221,12 @@ const closeViewer = () => {
 }
 
 @media (max-width: 480px) {
+  .container {
+    --stories-gutter: 14px;
+    max-width: calc(1200px - var(--stories-gutter) * 2);
+    width: calc(100% - var(--stories-gutter) * 2);
+  }
+
   .stories-list {
     gap: 12px;
   }

@@ -15,7 +15,7 @@ export default defineNuxtConfig({
   
   // Настройки сервера разработки
   devServer: {
-    host: '0.0.0.0',
+    host: 'localhost',
     port: 3000
   },
   
@@ -72,6 +72,12 @@ export default defineNuxtConfig({
       title: 'Floksbox',
       meta: [
         { name: 'description', content: 'Floksbox - ваш надежный партнер' }
+      ],
+      noscript: [
+        {
+          children:
+            '<div><img src="https://mc.yandex.ru/watch/109642461" style="position:absolute; left:-9999px;" alt="" /></div>',
+        },
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },

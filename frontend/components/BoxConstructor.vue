@@ -64,6 +64,21 @@
           </div>
         </div>
         
+        <!-- Цвет коробки -->
+        <div class="color-group">
+          <label class="parameter-label" for="box-color">цвет коробки</label>
+          <div class="color-picker-row">
+            <input
+              id="box-color"
+              v-model="boxColor"
+              type="color"
+              class="color-input"
+              aria-label="Выбор цвета коробки"
+            />
+            <span class="color-value">{{ boxColor }}</span>
+          </div>
+        </div>
+        
         <!-- Материалы -->
         <div class="material-group">
           <div class="material-option">
@@ -124,18 +139,35 @@
         </button>
       </div>
       
-      <!-- Визуализация коробки: 3-слойный контейнер -->
+      <!-- Визуализация коробки: один контейнер, PNG слоями -->
       <div class="constructor-right">
         <div class="box-visualization" ref="viewportRef">
-          <div class="layers-container" :style="containerStyle">
-            <div id="rb_back" class="layer">
-              <img :src="layerBackSrc" alt="Фон" />
-            </div>
-            <div id="rb_bottom" class="layer" :style="{ height: bottomLayerHeightPx + 'px' }">
-              <img :src="layerBottomSrc" alt="Нижний слой" />
-            </div>
-            <div id="rb_top" class="layer" :style="{ height: topLayerHeightPx + 'px' }">
-              <img :src="layerTopSrc" alt="Верхний слой" />
+          <div class="layers-zoom" :style="zoomStyle">
+            <div class="layers-container" :style="stageStyle">
+              <img
+                id="rb_back"
+                :src="layerBackSrc"
+                alt=""
+                class="box-layer box-layer--back"
+              />
+              <img
+                id="rb_bottom"
+                :src="layerBottomSrc"
+                alt=""
+                class="box-layer box-layer--bottom"
+              />
+              <div
+                v-if="withLid"
+                class="box-layer box-layer--top-fill"
+                :style="topColorFillStyle"
+                aria-hidden="true"
+              />
+              <img
+                id="rb_top"
+                :src="layerTopSrc"
+                alt=""
+                class="box-layer box-layer--top"
+              />
             </div>
           </div>
         </div>
@@ -148,13 +180,15 @@
 import { ref, computed, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 
 const emit = defineEmits(['close'])
+const { openOrderRequest } = useOrderRequest()
 
 // Параметры коробки
 const height = ref(25) // см
 const diameter = ref(20) // см (ширина)
 const material = ref('paper')
-const withLid = ref(false)
+const withLid = ref(true)
 const circulation = ref(300)
+const boxColor = ref('#5e3085')
 
 // Отдельное значение для поля ввода диаметра
 const diameterInput = ref(20)
@@ -301,35 +335,44 @@ onBeforeUnmount(() => {
 
 watch([stageWidthPx, stageHeightPx, needsZoom, needsMinorZoom], () => updateScale())
 
-const containerStyle = computed(() => ({
-  width: stageWidthPx.value + 'px',
-  height: stageHeightPx.value + 'px',
-  transform: `scale(${scale.value})`,
-  transformOrigin: 'center bottom',
+/** Размер сцены — только от слайдеров ширины/высоты */
+const stageStyle = computed(() => ({
+  width: `${stageWidthPx.value}px`,
+  height: `${stageHeightPx.value}px`,
+  backgroundColor: boxColor.value,
   visibility: isScaledReady.value ? 'visible' : 'hidden'
 }))
 
-// Высоты верхнего и нижнего слоёв фиксированы
-const bottomLayerHeightPx = 89
-const topLayerHeightPx = 286
+/** Зум вьюпорта — отдельно, не меняет раскладку слоёв */
+const zoomStyle = computed(() => ({
+  transform: `scale(${scale.value})`,
+  transformOrigin: 'center bottom'
+}))
 
-// Источники изображений: переключение между бархатом и дизайнерской бумагой
-const isDesign = computed(() => material.value === 'paper')
-const layerBackSrc = computed(() => isDesign.value ? '/assets/images/back_design.png' : '/assets/images/back_barhat.png')
-const layerBottomSrc = computed(() => isDesign.value ? '/assets/images/bottom_design.png' : '/assets/images/bottom_barhat.png')
+// Источники изображений слоёв (B/N/K — прозрачные, цвет под ними)
+const layerBackSrc = '/assets/images/B.png'
+const layerBottomSrc = '/assets/images/N.png'
+const layerTopColorMaskSrc = '/assets/images/K_CVETOCHEK.png'
 const layerTopSrc = computed(() => {
   if (!withLid.value) {
-    // без крышки — выбираем по ширине
     const even = Math.max(minDiameter, Math.min(maxDiameter, diameter.value))
     const size = even % 2 === 0 ? even : even - 1
     return `/assets/images/top_off_${size}.png`
   }
-  // с крышкой — зависящий от материала файл
-  return isDesign.value ? '/assets/images/top_on_design.png' : '/assets/images/top_on_barhat.png'
+  return '/assets/images/K.png'
 })
 
-// Крышка пока не влияет на набор картинок
-
+const topColorFillStyle = computed(() => ({
+  backgroundColor: boxColor.value,
+  WebkitMaskImage: `url(${layerTopColorMaskSrc})`,
+  maskImage: `url(${layerTopColorMaskSrc})`,
+  WebkitMaskSize: '100% 100%',
+  maskSize: '100% 100%',
+  WebkitMaskRepeat: 'no-repeat',
+  maskRepeat: 'no-repeat',
+  WebkitMaskPosition: 'center top',
+  maskPosition: 'center top'
+}))
 // Прогресс ползунков для активной области
 const heightProgress = computed(() => {
   const progress = ((height.value - minHeight) / (maxHeight - minHeight)) * 100
@@ -424,21 +467,10 @@ function handleOrder() {
   const materialName = material.value === 'paper' ? 'дизайнерской бумаги' : 'бархата'
   const lidText = withLid.value ? 'с крышкой' : 'без крышки'
   
-  const message = `Мне интересна шляпная коробка ${diameter.value}см в ширину / ${height.value}см в высоту, ${lidText}, из ${materialName} в количестве ${circulation.value}`
+  const message = `Мне интересна шляпная коробка ${diameter.value}см в ширину / ${height.value}см в высоту, ${lidText}, из ${materialName}, цвет ${boxColor.value}, в количестве ${circulation.value}`
   
-  // Устанавливаем флаг для скролла к форме
-  if (process.client) {
-    sessionStorage.setItem('floksbox_scroll_to_form', 'true')
-  }
-  
-  // Переходим на главную страницу с предзаполненным сообщением
-  const router = useRouter()
-  router.push({
-    path: '/',
-    query: { message: message }
-  })
-  
-  // Закрываем модальное окно
+  openOrderRequest(message)
+
   emit('close')
 }
 </script>
@@ -636,6 +668,45 @@ function handleOrder() {
   user-select: none;
 }
 
+.color-group {
+  margin-bottom: 25px;
+}
+
+.color-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.color-input {
+  width: 52px;
+  height: 52px;
+  padding: 4px;
+  border: 2px solid #e9d8f9;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.color-input::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.color-input::-webkit-color-swatch {
+  border: none;
+  border-radius: 8px;
+}
+
+.color-value {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #55376e;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 .material-group {
   display: flex;
   gap: 30px;
@@ -810,65 +881,62 @@ function handleOrder() {
   height: 400px;
   display: flex;
   justify-content: center;
-  align-items: flex-end; /* якорим сцену по дну контейнера */
-  overflow: hidden;      /* ⟵ добавлено */
+  align-items: flex-end;
+  overflow: hidden;
 }
 
-/* 3-слойный контейнер */
+/* Зум только здесь — не влияет на расчёт размеров слоёв */
+.layers-zoom {
+  position: relative;
+  flex-shrink: 0;
+  will-change: transform;
+}
+
+/* Один контейнер: PNG накладываются друг на друга */
 .layers-container {
   position: relative;
+  isolation: isolate;
+  --top-h: 286px;
+  --bottom-h: 87px;
 }
 
-.layer {
+.box-layer {
   position: absolute;
   left: 0;
-  right: 0;
   width: 100%;
-  overflow: hidden;
   box-sizing: border-box;
-}
-
-#rb_back {
-  top: 0;
-  bottom: 0;
-  z-index: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#rb_back img {
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
-  object-position: center;
+  pointer-events: none;
   display: block;
 }
 
-#rb_bottom {
+.box-layer--back {
+  top: 0;
+  height: 100%;
+  object-fit: fill;
+  object-position: center center;
+  z-index: 0;
+}
+
+.box-layer--bottom {
   bottom: 0;
-  width: 100%;
+  height: var(--bottom-h);
+  object-fit: fill;
+  object-position: center bottom;
   z-index: 1;
 }
 
-#rb_bottom img {
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
-  display: block;
-}
-
-#rb_top {
+.box-layer--top-fill {
   top: 0;
-  width: 100%;
+  height: var(--top-h);
   z-index: 2;
 }
 
-#rb_top img {
-  width: 100%;
-  height: 100%;
+.box-layer--top {
+  top: 0;
+  height: var(--top-h);
   object-fit: fill;
-  display: block;
+  object-position: center top;
+  z-index: 3;
 }
 
 @media (max-width: 768px) {
@@ -908,25 +976,21 @@ function handleOrder() {
     min-height: 400px;
     width: 100%;
     max-width: 100%;
-    overflow: visible;
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: flex-end;
   }
   
+  .layers-zoom,
   .layers-container {
     position: relative;
   }
-  
-  .layer {
+
+  .box-layer {
     position: absolute;
-  }
-  
-  .layer img {
     width: 100%;
-    height: 100%;
     object-fit: fill;
-    display: block;
   }
 }
 

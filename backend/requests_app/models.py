@@ -26,6 +26,12 @@ def product_image_path(instance, filename):
     return os.path.join('products', filename)
 
 
+def product_unfold_image_path(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = f'product_{instance.id or "new"}_unfold_{timezone.now().strftime("%Y%m%d_%H%M%S")}.{ext}'
+    return os.path.join('products', 'unfolds', filename)
+
+
 class Category(models.Model):
     """Модель категории товаров"""
     
@@ -85,6 +91,17 @@ class Product(models.Model):
         ],
         verbose_name='Изображение',
         help_text='Изображение товара (JPG, PNG, WebP, до 5MB)'
+    )
+    image_unfold = models.ImageField(
+        upload_to=product_unfold_image_path,
+        validators=[
+            validate_image_size,
+            FileExtensionValidator(['jpg', 'jpeg', 'png', 'webp'])
+        ],
+        blank=True,
+        null=True,
+        verbose_name='Развертка',
+        help_text='Схема развертки коробки (опционально)'
     )
     price = models.DecimalField(
         max_digits=10,
@@ -174,11 +191,26 @@ class Product(models.Model):
 class UserRequest(models.Model):
     """Модель для заявок пользователей"""
 
+    class Status(models.TextChoices):
+        NEW = 'new', 'Новая'
+        IN_PROGRESS = 'in_progress', 'В работе'
+        COMPLETED = 'completed', 'Завершена'
+        CANCELLED = 'cancelled', 'Отменена'
+
     name = models.CharField(max_length=100, verbose_name='Имя')
-    phone = models.CharField(max_length=20, verbose_name='Телефон')
+    phone = models.CharField(max_length=20, blank=True, default='', verbose_name='Телефон')
     email = models.EmailField(blank=True, null=True, verbose_name='Email')
     message = models.TextField(blank=True, null=True, verbose_name='Сообщение')
+    source = models.CharField(max_length=200, blank=True, default='', verbose_name='Источник')
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.NEW,
+        verbose_name='Статус',
+    )
+    manager_notes = models.TextField(blank=True, default='', verbose_name='Заметки менеджера')
     created_at = models.DateTimeField(default=timezone.now, verbose_name='Дата создания')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления')
     is_processed = models.BooleanField(default=False, verbose_name='Обработано')
 
     class Meta:
@@ -186,5 +218,14 @@ class UserRequest(models.Model):
         verbose_name_plural = 'Заявки'
         ordering = ['-created_at']
 
+    def save(self, *args, **kwargs):
+        self.is_processed = self.status in {self.Status.COMPLETED, self.Status.CANCELLED}
+        super().save(*args, **kwargs)
+
+    @property
+    def status_label(self):
+        return self.Status(self.status).label
+
     def __str__(self):
-        return f'{self.name} - {self.phone} ({self.created_at.strftime("%d.%m.%Y %H:%M")})'
+        contact = self.phone or self.email or 'без контакта'
+        return f'{self.name} - {contact} ({self.created_at.strftime("%d.%m.%Y %H:%M")})'

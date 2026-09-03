@@ -11,9 +11,6 @@
     <div class="product-info">
       <h3 class="product-name">{{ product.name }}</h3>
       <p class="product-dimensions" v-if="product.dimensions">{{ product.dimensions }}</p>
-      <div class="product-price" v-if="product.price">
-        {{ formatPrice(product.price) }} ₽
-      </div>
       <div class="product-category" v-if="product.category_name">
         {{ product.category_name }}
       </div>
@@ -49,19 +46,16 @@ const handleImageError = (event) => {
   event.target.src = '/assets/images/mainpage.png'
 }
 
-const formatPrice = (price) => {
-  return new Intl.NumberFormat('ru-RU').format(price)
-}
 </script>
 
 <style scoped>
 .product-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -69,33 +63,30 @@ const formatPrice = (price) => {
 
 .product-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: none;
 }
 
 .product-image-wrapper {
   position: relative;
   width: 100%;
   height: 200px;
-  overflow: hidden;
-  background: #f8f9fa;
+  overflow: visible;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 8px;
 }
 
 .product-image {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transition: transform 0.3s ease;
-}
-
-.product-card:hover .product-image {
-  transform: scale(1.05);
+  object-position: center;
 }
 
 .product-info {
-  padding: 12px;
+  padding: 12px 4px 0;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -118,13 +109,6 @@ const formatPrice = (price) => {
   font-size: 12px;
   color: #718096;
   margin: 0;
-}
-
-.product-price {
-  font-size: 16px;
-  font-weight: 700;
-  color: #1a365d;
-  margin-top: auto;
 }
 
 .product-category {
@@ -168,10 +152,6 @@ const formatPrice = (price) => {
   
   .product-name {
     font-size: 13px;
-  }
-  
-  .product-price {
-    font-size: 15px;
   }
   
   .details-button {

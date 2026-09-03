@@ -1,5 +1,5 @@
 <template>
-  <header class="header">
+  <header ref="headerRef" class="header">
     <!-- Фоновое видео -->
     <div class="header-background">
       <video 
@@ -36,7 +36,15 @@
           <li class="nav-item">
             <NuxtLink to="/" class="nav-link">Главная</NuxtLink>
           </li>
-          <li class="nav-item">
+          <li
+            v-if="showCatalogMegaMenu"
+            class="nav-item nav-item--dropdown"
+            @mouseenter="openCatalogDropdown"
+            @mouseleave="closeCatalogDropdown"
+          >
+            <NuxtLink to="/catalog" class="nav-link nav-link--catalog">Каталог</NuxtLink>
+          </li>
+          <li v-else class="nav-item">
             <NuxtLink to="/catalog" class="nav-link">Каталог</NuxtLink>
           </li>
           <li class="nav-item">
@@ -95,7 +103,24 @@
 
         <nav class="mobile-nav">
           <NuxtLink to="/" class="mobile-link" @click="closeMenu">Главная</NuxtLink>
-          <NuxtLink to="/catalog" class="mobile-link" @click="closeMenu">Каталог</NuxtLink>
+          <template v-if="showCatalogMegaMenu">
+            <button type="button" class="mobile-link mobile-link--toggle" @click="toggleMobileCatalog">
+              Каталог
+              <span class="mobile-toggle-icon" :class="{ open: isMobileCatalogOpen }">›</span>
+            </button>
+            <div v-if="isMobileCatalogOpen" class="mobile-catalog-submenu">
+              <NuxtLink
+                v-for="item in catalogMenuItems"
+                :key="item.route"
+                :to="item.route"
+                class="mobile-catalog-link"
+                @click="closeMenu"
+              >
+                {{ plainCatalogLabel(item.name) }}
+              </NuxtLink>
+            </div>
+          </template>
+          <NuxtLink v-else to="/catalog" class="mobile-link" @click="closeMenu">Каталог</NuxtLink>
           <NuxtLink to="/prices" class="mobile-link" @click="closeMenu">Цены</NuxtLink>
           <NuxtLink to="/promotions" class="mobile-link" @click="closeMenu">Доставка</NuxtLink>
           <NuxtLink to="/contacts" class="mobile-link" @click="closeMenu">Контакты</NuxtLink>
@@ -119,26 +144,142 @@
       </div>
     </div>
   </header>
+
+  <Teleport to="body">
+    <div
+      v-show="isCatalogDropdownOpen && showCatalogMegaMenu"
+      class="catalog-dropdown"
+      :style="{ top: `${dropdownTop}px` }"
+      @mouseenter="openCatalogDropdown"
+      @mouseleave="closeCatalogDropdown"
+    >
+      <div class="catalog-dropdown-panel">
+        <div class="catalog-dropdown-inner">
+          <NuxtLink
+            v-for="(item, index) in catalogMenuItems"
+            :key="item.route"
+            :to="item.route"
+            class="catalog-dropdown-item"
+            @mouseenter="setCatalogHover(index, true)"
+            @mouseleave="setCatalogHover(index, false)"
+          >
+            <span class="catalog-dropdown-icon-wrap">
+              <img
+                :src="catalogHoveredItems[index] ? item.iconOn : item.iconOff"
+                :alt="plainCatalogLabel(item.name)"
+                class="catalog-dropdown-icon"
+                :class="{
+                  'catalog-dropdown-icon--active': catalogHoveredItems[index],
+                  'catalog-dropdown-icon--svg': item.iconSvg,
+                }"
+              />
+            </span>
+            <span class="catalog-dropdown-label">{{ plainCatalogLabel(item.name) }}</span>
+          </NuxtLink>
+        </div>
+      </div>
+    </div>
+  </Teleport>
   
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { useCatalogMenuItems } from '../composables/useCatalogMenuItems'
+
+const route = useRoute()
+const { catalogMenuItems, plainCatalogLabel } = useCatalogMenuItems()
 
 const isMenuOpen = ref(false)
+const isMobileCatalogOpen = ref(false)
+const isCatalogDropdownOpen = ref(false)
+const isDesktop = ref(true)
+const catalogHoveredItems = ref(catalogMenuItems.map(() => false))
+const headerRef = ref(null)
+const dropdownTop = ref(0)
 const videoRef = ref(null)
 let checkVideoPlaybackInterval = null
+let catalogDropdownCloseTimer = null
+let desktopMediaQuery = null
+
+const isHomeOrCatalogPage = computed(() => route.path === '/' || route.path === '/catalog')
+
+const showCatalogMegaMenu = computed(() => isDesktop.value && !isHomeOrCatalogPage.value)
+
+const updateDropdownPosition = () => {
+  const headerEl = headerRef.value
+  if (!headerEl) return
+  dropdownTop.value = headerEl.getBoundingClientRect().bottom
+}
 
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
+  if (!isMenuOpen.value) {
+    isMobileCatalogOpen.value = false
+  }
 }
 
 const closeMenu = () => {
   isMenuOpen.value = false
+  isMobileCatalogOpen.value = false
 }
+
+const toggleMobileCatalog = () => {
+  isMobileCatalogOpen.value = !isMobileCatalogOpen.value
+}
+
+const openCatalogDropdown = () => {
+  if (!showCatalogMegaMenu.value) return
+  if (catalogDropdownCloseTimer) {
+    clearTimeout(catalogDropdownCloseTimer)
+    catalogDropdownCloseTimer = null
+  }
+  updateDropdownPosition()
+  isCatalogDropdownOpen.value = true
+}
+
+const closeCatalogDropdown = () => {
+  catalogDropdownCloseTimer = setTimeout(() => {
+    isCatalogDropdownOpen.value = false
+    catalogHoveredItems.value = catalogMenuItems.map(() => false)
+  }, 180)
+}
+
+const setCatalogHover = (index, isHovered) => {
+  catalogHoveredItems.value[index] = isHovered
+}
+
+const onViewportChange = () => {
+  if (isCatalogDropdownOpen.value) {
+    updateDropdownPosition()
+  }
+}
+
+const updateDesktopMode = () => {
+  if (!desktopMediaQuery) return
+  isDesktop.value = desktopMediaQuery.matches
+  if (!showCatalogMegaMenu.value) {
+    isCatalogDropdownOpen.value = false
+    isMobileCatalogOpen.value = false
+  }
+}
+
+watch(() => route.path, () => {
+  isCatalogDropdownOpen.value = false
+  isMobileCatalogOpen.value = false
+})
 
 // Принудительный запуск видео для iOS/Safari (агрессивный подход)
 onMounted(() => {
+  if (import.meta.client) {
+    desktopMediaQuery = window.matchMedia('(min-width: 1025px)')
+    updateDesktopMode()
+    desktopMediaQuery.addEventListener('change', updateDesktopMode)
+  }
+
+  window.addEventListener('resize', onViewportChange)
+  window.addEventListener('scroll', onViewportChange, { passive: true })
+
   const video = videoRef.value
   if (!video) return
 
@@ -252,9 +393,20 @@ onMounted(() => {
 
 // Очищаем интервал при размонтировании
 onUnmounted(() => {
+  if (desktopMediaQuery) {
+    desktopMediaQuery.removeEventListener('change', updateDesktopMode)
+    desktopMediaQuery = null
+  }
+  window.removeEventListener('resize', onViewportChange)
+  window.removeEventListener('scroll', onViewportChange)
+
   if (checkVideoPlaybackInterval) {
     clearInterval(checkVideoPlaybackInterval)
     checkVideoPlaybackInterval = null
+  }
+  if (catalogDropdownCloseTimer) {
+    clearTimeout(catalogDropdownCloseTimer)
+    catalogDropdownCloseTimer = null
   }
 })
 </script>
@@ -262,11 +414,12 @@ onUnmounted(() => {
 <style scoped>
 .header {
   position: relative;
-  padding: 20px 0;
-  min-height: 120px; /* минимальная высота для отображения видео */
-  z-index: 10;
+  padding: 11px 0;
+  min-height: 66px;
+  z-index: 5;
   width: 100%;
-  background: #ffffff;
+  background: transparent;
+  overflow: visible;
 }
 
 /* Фоновое видео */
@@ -278,14 +431,19 @@ onUnmounted(() => {
   height: 100%;
   z-index: -1;
   background: #ffffff;
+  overflow: hidden;
   
   .header-video {
     width: 100%;
     height: 100%;
+    min-width: 100%;
+    min-height: 100%;
     object-fit: cover;
+    object-position: center center;
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 1;
   }
   
@@ -301,26 +459,28 @@ onUnmounted(() => {
 }
 
 .header-content {
-  max-width: 1200px; /* единая ширина */
-  margin: 0 auto; /* центрирование */
-  padding: 30px 40px; /* увеличиваем padding для лучшего отображения видео */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 13px 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: relative;
-  z-index: 2;
-  gap: 20px;
+  z-index: 40;
+  gap: 12px;
 }
 
 .navigation {
   flex: 1;
   display: flex;
   justify-content: flex-start;
-  margin-left: 40px;
+  margin-left: 20px;
 }
 
 .contacts {
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
 }
 
 .desktop-contacts {
@@ -337,7 +497,7 @@ onUnmounted(() => {
 }
 
 .logo .logo-image {
-  height: 60px;
+  height: 46px;
   width: auto;
 }
 
@@ -345,8 +505,8 @@ onUnmounted(() => {
 .navigation .nav-list {
   display: flex;
   list-style: none;
-  gap: 12px; /* Немного увеличенные отступы между пунктами меню */
-  align-items: flex-end;
+  gap: 8px;
+  align-items: center;
   margin: 0;
   padding: 0;
 }
@@ -357,8 +517,8 @@ onUnmounted(() => {
 
 .navigation .nav-link {
   display: block;
-  padding: 8px 6px; /* Уменьшенные внутренние отступы */
-  color: #000000; /* черный цвет для видимости на светлом фоне */
+  padding: 4px 5px;
+  color: #000000;
   text-decoration: none;
   font-weight: 500;
   position: relative;
@@ -370,22 +530,126 @@ onUnmounted(() => {
   color: #47009f;
 }
 
+.nav-item--dropdown {
+  position: relative;
+}
+
+.nav-link--catalog::after {
+  content: '▾';
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 10px;
+  opacity: 0.7;
+  transform: translateY(-1px);
+}
+
+.catalog-dropdown {
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 10050;
+}
+
+.catalog-dropdown::before {
+  content: '';
+  position: absolute;
+  top: -16px;
+  left: 0;
+  right: 0;
+  height: 16px;
+}
+
+.catalog-dropdown-panel {
+  width: 100%;
+  background: #fff;
+  border-top: 1px solid rgba(71, 0, 159, 0.1);
+  border-bottom: 1px solid rgba(71, 0, 159, 0.08);
+  box-shadow: 0 16px 32px rgba(71, 0, 159, 0.14);
+}
+
+.catalog-dropdown-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 40px 12px;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 4px 12px;
+}
+
+.catalog-dropdown-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #000;
+  text-align: left;
+  min-height: 36px;
+  transition: background-color 0.2s ease;
+}
+
+.catalog-dropdown-item:hover {
+  background: rgba(71, 0, 159, 0.06);
+}
+
+.catalog-dropdown-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.catalog-dropdown-icon {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  transition: transform 0.2s ease, filter 0.2s ease, opacity 0.2s ease;
+  opacity: 0.82;
+  filter: saturate(0.7);
+}
+
+.catalog-dropdown-icon--active {
+  transform: scale(1.06);
+  opacity: 1;
+  filter: none;
+}
+
+.catalog-dropdown-icon--svg:not(.catalog-dropdown-icon--active) {
+  filter: grayscale(1) opacity(0.6);
+}
+
+.catalog-dropdown-icon--svg.catalog-dropdown-icon--active {
+  filter: none;
+}
+
+.catalog-dropdown-label {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  font-family: 'Days One', cursive;
+  font-size: 10px;
+  line-height: 1.2;
+  color: #222;
+  text-align: left;
+}
+
 /* Убираем левый отступ у первого элемента */
 .navigation .nav-item:first-child .nav-link {
   padding-left: 0;
 }
 
 /* Контакты */
-.contacts {
-  display: flex;
-  align-items: flex-end;
-}
-
 .contact-info {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 8px;
+  gap: 2px;
 }
 
 .phone-main {
@@ -394,10 +658,10 @@ onUnmounted(() => {
 }
 
 .phone-large {
-  color: #000000; /* черный цвет для видимости на светлом фоне */
+  color: #000000;
   text-decoration: none;
   font-weight: 700;
-  font-size: 24px;
+  font-size: 18px;
   font-family: 'Montserrat', sans-serif;
   transition: color 0.3s ease;
   letter-spacing: -0.5px;
@@ -415,7 +679,7 @@ onUnmounted(() => {
 }
 
 .hours-text {
-  font-size: 12px;
+  font-size: 10px;
   color: #666666; /* серый цвет для дополнительной информации */
   font-weight: 400;
   text-align: right;
@@ -424,7 +688,7 @@ onUnmounted(() => {
 
 .contact-icons {
   display: flex;
-  gap: 12px;
+  gap: 6px;
   justify-content: flex-end;
 }
 
@@ -432,8 +696,8 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: rgba(71, 0, 159, 0.1);
   text-decoration: none;
@@ -451,15 +715,15 @@ onUnmounted(() => {
 }
 
 .contact-icon-img {
-  width: 20px;
-  height: 20px;
+  width: 14px;
+  height: 14px;
   object-fit: contain;
 }
 
 .burger {
   display: none;
-  width: 42px;
-  height: 42px;
+  width: 34px;
+  height: 34px;
   border: none;
   background: rgba(255, 255, 255, 0.8);
   border-radius: 10px;
@@ -535,7 +799,7 @@ onUnmounted(() => {
 }
 
 .mobile-logo img {
-  height: 38px;
+  height: 30px;
   width: auto;
 }
 
@@ -551,6 +815,50 @@ onUnmounted(() => {
   color: #222;
   padding: 10px 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  text-decoration: none;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mobile-link--toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobile-toggle-icon {
+  display: inline-block;
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.mobile-toggle-icon.open {
+  transform: rotate(90deg);
+}
+
+.mobile-catalog-submenu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 0 8px 12px;
+}
+
+.mobile-catalog-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: #47009f;
+  text-decoration: none;
+  padding: 6px 0;
+}
+
+.mobile-catalog-link:hover {
+  text-decoration: underline;
 }
 
 .mobile-contacts {
@@ -581,12 +889,12 @@ onUnmounted(() => {
 @media (max-width: 768px) {
   .header-content {
     flex-direction: row;
-    gap: 14px;
-    padding: 16px 18px;
+    gap: 10px;
+    padding: 9px 18px;
   }
   
   .logo .logo-image {
-    height: 48px;
+    height: 37px;
   }
 }
 
@@ -596,28 +904,32 @@ onUnmounted(() => {
     display: none;
   }
 
+  .catalog-dropdown {
+    display: none;
+  }
+
   .burger {
     display: inline-flex;
   }
 
   .header-content {
-    padding: 18px 20px;
+    padding: 9px 20px;
   }
 }
 
 @media (max-width: 480px) {
   .header {
-    padding: 12px 0;
+    padding: 7px 0;
   }
 
   .header-content {
-    padding: 12px 14px;
-    gap: 10px;
+    padding: 7px 14px;
+    gap: 8px;
   }
 
   .burger {
-    width: 38px;
-    height: 38px;
+    width: 32px;
+    height: 32px;
   }
 
   .mobile-menu {

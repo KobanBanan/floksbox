@@ -6,18 +6,21 @@ from .models import UserRequest, Category, Product
 class UserRequestAdmin(admin.ModelAdmin):
     """Админка для заявок пользователей"""
 
-    list_display = ('name', 'phone', 'email', 'created_at', 'is_processed')
-    list_filter = ('is_processed', 'created_at')
-    search_fields = ('name', 'phone', 'email')
-    readonly_fields = ('created_at',)
+    list_display = ('name', 'phone', 'email', 'status', 'source', 'created_at', 'is_processed')
+    list_filter = ('status', 'is_processed', 'created_at')
+    search_fields = ('name', 'phone', 'email', 'message', 'source')
+    readonly_fields = ('created_at', 'updated_at')
     list_per_page = 20
 
     fieldsets = (
         ('Информация о заявке', {
-            'fields': ('name', 'phone', 'email', 'message')
+            'fields': ('name', 'phone', 'email', 'message', 'source')
+        }),
+        ('Работа менеджера', {
+            'fields': ('status', 'manager_notes', 'is_processed')
         }),
         ('Системная информация', {
-            'fields': ('created_at', 'is_processed'),
+            'fields': ('created_at', 'updated_at'),
             'classes': ('collapse',)
         }),
     )
@@ -28,16 +31,22 @@ class UserRequestAdmin(admin.ModelAdmin):
     actions = ['mark_as_processed', 'mark_as_unprocessed']
 
     def mark_as_processed(self, request, queryset):
-        updated = queryset.update(is_processed=True)
+        updated = queryset.update(
+            status=UserRequest.Status.COMPLETED,
+            is_processed=True,
+        )
         self.message_user(request, f'{updated} заявок отмечено как обработанные.')
 
-    mark_as_processed.short_description = 'Отметить как обработанные'
+    mark_as_processed.short_description = 'Отметить как завершённые'
 
     def mark_as_unprocessed(self, request, queryset):
-        updated = queryset.update(is_processed=False)
-        self.message_user(request, f'{updated} заявок отмечено как необработанные.')
+        updated = queryset.update(
+            status=UserRequest.Status.NEW,
+            is_processed=False,
+        )
+        self.message_user(request, f'{updated} заявок отмечено как новые.')
 
-    mark_as_unprocessed.short_description = 'Отметить как необработанные'
+    mark_as_unprocessed.short_description = 'Вернуть в статус «Новая»'
 
 
 @admin.register(Category)

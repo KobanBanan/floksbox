@@ -11,11 +11,24 @@
           <div class="product-image-section">
             <div class="product-image-wrapper">
               <img 
-                :src="product.image_url || '/assets/images/mainpage.png'" 
+                :src="activeImage || '/assets/images/mainpage.png'" 
                 :alt="product.name"
                 class="product-image"
                 @error="handleImageError"
               />
+            </div>
+            <div class="product-image-thumbs" v-if="productImages.length > 1">
+              <button
+                v-for="(img, index) in productImages"
+                :key="img"
+                type="button"
+                class="thumb-btn"
+                :class="{ active: activeImage === img }"
+                :aria-label="`Фото ${index + 1}`"
+                @click="activeImage = img"
+              >
+                <img :src="img" :alt="`${product.name} — фото ${index + 1}`" @error="handleImageError" />
+              </button>
             </div>
           </div>
           
@@ -37,7 +50,7 @@
               <p>{{ product.description }}</p>
             </div>
             
-            <div class="product-specifications">
+            <div class="product-specifications" v-if="product.category_name !== 'Четырехклапанные коробки'">
               <h3>Характеристики:</h3>
               <div class="specs-grid">
                 <div class="spec-item">
@@ -47,10 +60,6 @@
                 <div class="spec-item" v-if="product.volume > 0">
                   <span class="spec-label">Объем:</span>
                   <span class="spec-value">{{ formatVolume(product.volume) }} см³</span>
-                </div>
-                <div class="spec-item" v-if="product.price">
-                  <span class="spec-label">Цена за штуку:</span>
-                  <span class="spec-value price">{{ formatPrice(product.price) }} ₽</span>
                 </div>
               </div>
             </div>
@@ -117,6 +126,7 @@ import FooterNew from '~/components/FooterNew.vue'
 
 const route = useRoute()
 const router = useRouter()
+const { trackDetail } = useYandexEcommerce()
 
 // Используем относительные пути благодаря прокси
 const productId = route.params.id
@@ -126,6 +136,24 @@ const product = ref(null)
 const recommendedProducts = ref([])
 const pending = ref(true)
 const error = ref(false)
+const activeImage = ref(null)
+
+const productImages = computed(() => {
+  if (!product.value) return []
+  const images = []
+  if (product.value.image_url) images.push(product.value.image_url)
+  if (
+    product.value.image_unfold_url
+    && product.value.image_unfold_url !== product.value.image_url
+  ) {
+    images.push(product.value.image_unfold_url)
+  }
+  return images
+})
+
+watch(product, (p) => {
+  activeImage.value = p?.image_url || null
+}, { immediate: true })
 
 // Загрузка товара
 const loadProduct = async () => {
@@ -137,6 +165,7 @@ const loadProduct = async () => {
     const apiBase = config.public.apiBase
     const response = await $fetch(`${apiBase}/api/products/${productId}/`)
     product.value = response
+    trackDetail(response)
     
     // Обновляем meta-теги
     if (response) {
@@ -173,11 +202,6 @@ const loadRecommendedProducts = async () => {
   }
 }
 
-// Форматирование цены
-const formatPrice = (price) => {
-  return new Intl.NumberFormat('ru-RU').format(price)
-}
-
 // Форматирование объема
 const formatVolume = (volume) => {
   return new Intl.NumberFormat('ru-RU').format(Math.round(volume))
@@ -189,20 +213,11 @@ const handleImageError = (event) => {
 }
 
 // Открытие модального окна заказа
+const { openOrderRequest } = useOrderRequest()
+
 const openOrderModal = () => {
-  // Формируем сообщение для автозаполнения
-  const message = `Мне интересна позиция ${product.value.name}`
-  
-  // Устанавливаем флаг для скролла к форме
-  if (process.client) {
-    sessionStorage.setItem('floksbox_scroll_to_form', 'true')
-  }
-  
-  // Переходим на главную страницу с предзаполненным сообщением
-  router.push({
-    path: '/',
-    query: { message: message }
-  })
+  if (!product.value) return
+  openOrderRequest(`Мне интересна позиция ${product.value.name}`)
 }
 
 // Загрузка данных при монтировании
@@ -256,16 +271,52 @@ watch(() => route.params.id, async (newId) => {
 .product-image-wrapper {
   width: 100%;
   aspect-ratio: 1;
-  border-radius: 20px;
-  overflow: hidden;
-  background: #f8f9fa;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 0;
+  overflow: visible;
+  background: transparent;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
 }
 
 .product-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
+}
+
+.product-image-thumbs {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.thumb-btn {
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 6px;
+  background: #fff;
+  cursor: pointer;
+  width: 96px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.thumb-btn.active {
+  border-color: #2f6fed;
+}
+
+.thumb-btn img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  background: #fff;
 }
 
 .product-info-section {
@@ -304,6 +355,7 @@ watch(() => route.params.id, async (newId) => {
   font-size: 18px;
   line-height: 1.7;
   color: #4a5568;
+  white-space: pre-line;
 }
 
 .product-specifications h3 {
@@ -333,12 +385,6 @@ watch(() => route.params.id, async (newId) => {
 
 .spec-value {
   color: #2d3748;
-}
-
-.spec-value.price {
-  font-size: 24px;
-  font-weight: 700;
-  color: #1a365d;
 }
 
 .product-advantages {
@@ -402,9 +448,9 @@ watch(() => route.params.id, async (newId) => {
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 20px;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -476,14 +522,6 @@ watch(() => route.params.id, async (newId) => {
     gap: 8px;
   }
   
-  .products-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-  }
-  
-  .product-item {
-    height: 260px;
-  }
 }
 
 @media (max-width: 768px) {
@@ -515,8 +553,8 @@ watch(() => route.params.id, async (newId) => {
 
 @media (max-width: 480px) {
   .products-grid {
-    grid-template-columns: 1fr;
-    gap: 15px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
   
   .product-item {

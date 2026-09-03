@@ -5,7 +5,7 @@
     
     <!-- Компонент меню из главной страницы -->
     <div class="scroll-reveal scroll-reveal-fade-up menu-section">
-      <MenuGrid />
+      <MenuGrid catalog-layout />
     </div>
     
      <!-- Ссылка на FEFCO -->
@@ -60,12 +60,17 @@ useHead({
   flex-direction: column;
 }
 
-/* Добавляем отступ для меню */
+/* Компактный отступ под шапкой */
 .menu-section {
-  margin-top: 40px; /* Умеренный отступ сверху от шапки */
-  padding-top: 20px; /* Умеренный внутренний отступ сверху */
-  margin-bottom: 40px; /* Уменьшенный отступ снизу от меню */
-  padding-bottom: 20px; /* Уменьшенный внутренний отступ */
+  margin-top: 0;
+  padding-top: 0;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+}
+
+.catalog-page :deep(.menu-section--catalog) {
+  padding-top: 6px;
+  padding-bottom: 10px;
 }
 
 /* Стили для блока ссылки на FEFCO */
@@ -151,10 +156,15 @@ useHead({
 /* Адаптивность */
 @media (max-width: 768px) {
   .menu-section {
-    margin-top: 30px; /* Умеренный отступ сверху на планшетах */
-    padding-top: 15px;
-    margin-bottom: 30px; /* Уменьшенный отступ на планшетах */
+    margin-top: 0;
+    padding-top: 0;
+    margin-bottom: 30px;
     padding-bottom: 15px;
+  }
+
+  .catalog-page :deep(.menu-section--catalog) {
+    padding-top: 4px;
+    padding-bottom: 8px;
   }
   
   .fefco-link-section {
@@ -182,10 +192,15 @@ useHead({
 
 @media (max-width: 480px) {
   .menu-section {
-    margin-top: 20px; /* Умеренный отступ сверху на мобильных */
-    padding-top: 10px;
-    margin-bottom: 25px; /* Уменьшенный отступ на мобильных */
+    margin-top: 0;
+    padding-top: 0;
+    margin-bottom: 25px;
     padding-bottom: 10px;
+  }
+
+  .catalog-page :deep(.menu-section--catalog) {
+    padding-top: 4px;
+    padding-bottom: 6px;
   }
   
   .fefco-link-section {
