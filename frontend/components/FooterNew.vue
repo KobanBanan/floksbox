@@ -1,89 +1,87 @@
 <template>
   <footer class="footer-new">
     <div class="footer-content">
-      <div class="footer-left">
-        <div class="footer-links">
-          <h3 class="footer-title">Навигация</h3>
-          <ul class="links-list">
-            <li><NuxtLink to="/" class="footer-link">Главная</NuxtLink></li>
-            <li><NuxtLink to="/catalog" class="footer-link">Каталог</NuxtLink></li>
-            <li><NuxtLink to="/about" class="footer-link">О компании</NuxtLink></li>
-            <li><NuxtLink to="/delivery" class="footer-link">Доставка</NuxtLink></li>
-            <li><NuxtLink to="/contacts" class="footer-link">Контакты</NuxtLink></li>
-          </ul>
-        </div>
-
-        <div class="footer-services">
-          <h3 class="footer-title">Услуги</h3>
-          <ul class="links-list">
-            <li><NuxtLink to="/packaging" class="footer-link">Упаковка</NuxtLink></li>
-            <li><NuxtLink to="/design" class="footer-link">Дизайн</NuxtLink></li>
-            <li><NuxtLink to="/branding" class="footer-link">Брендинг</NuxtLink></li>
-            <li><NuxtLink to="/consultation" class="footer-link">Консультация</NuxtLink></li>
-          </ul>
-        </div>
+      <div class="footer-brand">
+        <NuxtLink to="/" class="logo-link" aria-label="Floksbox">
+          <img
+            src="/assets/logo/floksbox лого.png"
+            alt="Floksbox"
+            class="footer-logo"
+          />
+        </NuxtLink>
+        <p class="footer-tagline">Упакуем ваш бизнес</p>
+        <p class="footer-note">Производство упаковки из гофрокартона: от коробки до печати.</p>
       </div>
 
-      <div class="footer-right">
-        <div class="footer-brand">
-          <div class="logo-container">
-            <img
-              src="/assets/logo/floksbox лого.png"
-              alt="Floksbox Logo"
-              class="footer-logo"
-            />
-          </div>
+      <div class="footer-col footer-col--catalog">
+        <h3 class="footer-title">Каталог</h3>
+        <ul class="footer-catalog">
+          <li v-for="item in categories" :key="item.route">
+            <NuxtLink :to="item.route" class="footer-link">{{ item.name }}</NuxtLink>
+          </li>
+        </ul>
+      </div>
 
-          <p class="footer-tagline">
-            Упакуем ваш бизнес профессионально
-          </p>
+      <div class="footer-col">
+        <h3 class="footer-title">Компания</h3>
+        <ul class="links-list">
+          <li><NuxtLink to="/" class="footer-link">Главная</NuxtLink></li>
+          <li><NuxtLink to="/catalog" class="footer-link">Каталог</NuxtLink></li>
+          <li><NuxtLink to="/prices" class="footer-link">Цены</NuxtLink></li>
+          <li><NuxtLink to="/promotions" class="footer-link">Доставка</NuxtLink></li>
+          <li><NuxtLink to="/fefco" class="footer-link">Каталог FEFCO</NuxtLink></li>
+          <li><NuxtLink to="/contacts" class="footer-link">Контакты</NuxtLink></li>
+        </ul>
+      </div>
 
-          <div class="social-links">
-            <h4 class="social-title">Мы в соцсетях</h4>
-            <div class="social-icons">
-              <a href="mailto:info@floksbox.ru" class="social-link" aria-label="Email">
-                <img src="/assets/icons/p_email.png" alt="Email" class="social-icon" />
-              </a>
-              <a href="https://t.me/floksbox" target="_blank" class="social-link" aria-label="Telegram">
-                <img src="/assets/icons/p_tg.png" alt="Telegram" class="social-icon" />
-              </a>
-              <a href="https://wa.me/79602543323" target="_blank" class="social-link" aria-label="WhatsApp">
-                <img src="/assets/icons/p_wa.png" alt="WhatsApp" class="social-icon" />
-              </a>
-            </div>
-          </div>
+      <div class="footer-col footer-contacts">
+        <h3 class="footer-title">Контакты</h3>
+        <a class="contact-line" href="tel:+79602543323">+7 (960) 254-33-23</a>
+        <a class="contact-line" href="mailto:info@floksbox.ru">info@floksbox.ru</a>
+        <p class="contact-meta">г. Москва, ул. Промышленная, д. 123</p>
+        <p class="contact-meta">Пн–Вс: 9:00–19:00</p>
+        <div class="social-icons">
+          <a href="mailto:info@floksbox.ru" class="social-link" aria-label="Email">
+            <img src="/assets/icons/p_email.png" alt="" class="social-icon" />
+          </a>
+          <a href="https://t.me/floksbox" target="_blank" rel="noopener" class="social-link" aria-label="Telegram">
+            <img src="/assets/icons/p_tg.png" alt="" class="social-icon" />
+          </a>
+          <a href="https://wa.me/79602543323" target="_blank" rel="noopener" class="social-link" aria-label="WhatsApp">
+            <img src="/assets/icons/p_wa.png" alt="" class="social-icon" />
+          </a>
         </div>
       </div>
     </div>
 
     <div class="footer-bottom">
-      <div class="footer-bottom-content">
-        <p class="copyright">
-          © {{ currentYear }} Floksbox. Все права защищены.
-        </p>
-      </div>
+      <p class="copyright">© {{ currentYear }} Floksbox. Все права защищены.</p>
     </div>
   </footer>
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import { catalogMenuItems } from '../composables/useCatalogMenuItems'
 
 const currentYear = computed(() => new Date().getFullYear())
+
+const categories = catalogMenuItems
+  .filter((item) => item.route !== '/fefco')
+  .map((item) => ({
+    route: item.route,
+    name: item.name.replace(/<br\s*\/?>/gi, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim(),
+  }))
 </script>
 
 <style lang="scss" scoped>
-@use '~/assets/styles/variables.scss' as vars;
-
 .footer-new {
-  --footer-font-scale: 1;
   background: #e0ebff;
-  color: vars.$color-black;
-  padding: 30px 0 0;
+  color: #1c1c1c;
   margin-top: auto;
-  border-top: 1px solid #e5e7eb;
   position: relative;
   overflow: visible;
+  font-family: 'Montserrat', Arial, sans-serif;
 
   &::before {
     content: '';
@@ -102,231 +100,183 @@ const currentYear = computed(() => new Date().getFullYear())
 .footer-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 16px 5px;
+  padding: 36px 24px 28px;
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 5px;
-  align-items: flex-start;
+  grid-template-columns: 1.05fr 1.35fr 0.75fr 1.05fr;
+  gap: 32px 28px;
+  align-items: start;
 }
 
-.footer-left {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5px;
-}
-
-.footer-title {
-  font-size: calc(18px * var(--footer-font-scale));
-  font-weight: 700;
-  margin: 0 0 5px;
-  color: vars.$color-black;
-  text-transform: uppercase;
-  letter-spacing: 0.21px;
-}
-
-.links-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-
-  li {
-    margin: 0;
-    padding: 0;
-    line-height: 1.2;
-  }
-}
-
-.footer-link {
-  color: #666666;
-  text-decoration: none;
-  font-size: calc(14px * var(--footer-font-scale));
-  font-weight: 500;
-  line-height: 1.2;
-  transition: color vars.$transition-medium;
-  padding: 0;
-  margin: 0;
-  display: block;
-
-  &:hover {
-    color: vars.$color-primary;
-  }
-}
-
-.footer-right {
+.footer-brand {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 5px;
+  align-items: flex-start;
+  gap: 8px;
 }
 
-.logo-container {
-  margin-bottom: 5px;
+.logo-link {
+  display: inline-flex;
 }
 
 .footer-logo {
-  max-width: 90px;
+  width: 148px;
   height: auto;
 }
 
 .footer-tagline {
-  font-size: calc(16px * var(--footer-font-scale));
-  color: #666666;
-  margin: 0 0 5px;
-  font-style: italic;
-  max-width: 140px;
+  margin: 4px 0 0;
+  font-family: 'Days One', cursive;
+  font-size: 18px;
+  line-height: 1.25;
+  color: #5e3085;
+}
+
+.footer-note {
+  margin: 0;
+  max-width: 240px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #4d5566;
+}
+
+.footer-title {
+  margin: 0 0 12px;
+  font-family: 'Days One', cursive;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: #5e3085;
+}
+
+.links-list,
+.footer-catalog {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer-catalog {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 14px;
+}
+
+.links-list li {
+  margin: 0 0 6px;
+}
+
+.footer-link {
+  color: #2c3340;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
   line-height: 1.35;
 }
 
-.social-links {
-  width: 100%;
+.footer-link:hover {
+  color: #47009f;
 }
 
-.social-title {
-  font-size: calc(16px * var(--footer-font-scale));
-  font-weight: 600;
-  margin: 0 0 5px;
-  color: vars.$color-black;
+.footer-contacts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.contact-line {
+  color: #1c1c1c;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  line-height: 1.35;
+}
+
+.contact-line:hover {
+  color: #47009f;
+}
+
+.contact-meta {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #4d5566;
 }
 
 .social-icons {
   display: flex;
-  justify-content: center;
-  gap: 5px;
+  gap: 10px;
+  margin-top: 10px;
 }
 
 .social-link {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
-  height: 22px;
-  background: rgba(71, 0, 159, 0.1);
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
+  background: #fff;
+  border: 1px solid rgba(94, 48, 133, 0.18);
   text-decoration: none;
-  transition: all vars.$transition-medium;
-  border: 1px solid rgba(71, 0, 159, 0.2);
-  position: relative;
-  z-index: 2;
+}
 
-  &:hover {
-    background: rgba(71, 0, 159, 0.2);
-    transform: translateY(-1px);
-  }
-
-  &:nth-child(1):hover {
-    background: #4680c2;
-    border-color: #4680c2;
-  }
-
-  &:nth-child(2):hover {
-    background: #0088cc;
-    border-color: #0088cc;
-  }
-
-  &:nth-child(3):hover {
-    background: #25d366;
-    border-color: #25d366;
-  }
+.social-link:hover {
+  background: #f4ffe8;
+  border-color: #b8ff00;
 }
 
 .social-icon {
-  width: 10px;
-  height: 10px;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }
 
 .footer-bottom {
-  background: #e0ebff;
-  margin-top: 5px;
-  padding: 10px 0;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.footer-bottom-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  border-top: 1px solid rgba(94, 48, 133, 0.14);
+  padding: 14px 24px 18px;
 }
 
 .copyright {
-  color: #666666;
-  font-size: calc(14px * var(--footer-font-scale));
-  margin: 0;
+  max-width: 1200px;
+  margin: 0 auto;
   text-align: center;
+  color: #5c6575;
+  font-size: 13px;
 }
 
-@media (max-width: 968px) {
+@media (max-width: 992px) {
   .footer-content {
-    grid-template-columns: 1fr;
-    padding: 0 12px 5px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 28px 20px;
+    padding: 28px 18px 22px;
   }
 
-  .footer-right {
-    order: -1;
+  .footer-brand,
+  .footer-col--catalog {
+    grid-column: 1 / -1;
   }
 }
 
-@media (max-width: 768px) {
-  .footer-new {
-    padding-top: 20px;
-
-    &::before {
-      top: -40px;
-      height: 40px;
-    }
+@media (max-width: 640px) {
+  .footer-new::before {
+    top: -40px;
+    height: 40px;
   }
 
-  .footer-title {
-    font-size: calc(16px * var(--footer-font-scale));
-  }
-
-  .footer-tagline {
-    font-size: calc(14px * var(--footer-font-scale));
+  .footer-content {
+    padding: 22px 16px 18px;
+    gap: 22px 12px;
   }
 
   .footer-logo {
-    max-width: 70px;
+    width: 132px;
   }
 
-  .footer-bottom-content {
-    padding: 0 12px;
-  }
-}
-
-@media (max-width: 480px) {
-  .footer-content {
-    padding: 0 8px 5px;
-  }
-
-  .footer-bottom-content {
-    padding: 0 8px;
-  }
-
-  .footer-title {
-    font-size: calc(14px * var(--footer-font-scale));
-  }
-
-  .footer-link {
-    font-size: calc(13px * var(--footer-font-scale));
-  }
-
-  .footer-tagline {
-    font-size: calc(13px * var(--footer-font-scale));
-  }
-
-  .social-title {
-    font-size: calc(14px * var(--footer-font-scale));
-  }
-
-  .copyright {
-    font-size: calc(12px * var(--footer-font-scale));
-  }
-
-  .footer-logo {
-    max-width: 65px;
+  .footer-link,
+  .contact-line {
+    display: inline-flex;
+    padding: 3px 0;
   }
 }
 </style>

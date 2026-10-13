@@ -1677,6 +1677,7 @@ useHead({
     height: auto;
     --kat-max-height: min(200px, 32vh);
     padding-bottom: 8px;
+    pointer-events: none;
   }
   
   .products-grid {

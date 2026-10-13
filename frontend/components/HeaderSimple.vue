@@ -91,24 +91,25 @@
       </button>
     </div>
 
-    <!-- Мобильное меню -->
-    <div v-if="isMenuOpen" class="mobile-menu-overlay" @click.self="isMenuOpen = false">
-      <div class="mobile-menu">
-        <div class="mobile-menu__header">
-          <NuxtLink to="/" class="mobile-logo" @click="closeMenu">
-            <img src="/assets/logo/floksbox лого.png" alt="Floksbox" />
-          </NuxtLink>
-          <button class="close-btn" @click="closeMenu" aria-label="Закрыть меню">×</button>
-        </div>
+    <!-- Мобильное меню поверх страницы: картинка категории не должна его перекрывать -->
+    <Teleport to="body">
+      <div v-if="isMenuOpen" class="mobile-menu-overlay" @click.self="closeMenu">
+        <div class="mobile-menu">
+          <div class="mobile-menu__header">
+            <NuxtLink to="/" class="mobile-logo" @click="closeMenu">
+              <img src="/assets/logo/floksbox лого.png" alt="Floksbox" />
+            </NuxtLink>
+            <button class="close-btn" @click="closeMenu" aria-label="Закрыть меню">×</button>
+          </div>
 
-        <nav class="mobile-nav">
-          <NuxtLink to="/" class="mobile-link" @click="closeMenu">Главная</NuxtLink>
-          <template v-if="showCatalogMegaMenu">
+          <nav class="mobile-nav">
+            <NuxtLink to="/" class="mobile-link" @click="closeMenu">Главная</NuxtLink>
             <button type="button" class="mobile-link mobile-link--toggle" @click="toggleMobileCatalog">
               Каталог
               <span class="mobile-toggle-icon" :class="{ open: isMobileCatalogOpen }">›</span>
             </button>
             <div v-if="isMobileCatalogOpen" class="mobile-catalog-submenu">
+              <NuxtLink to="/catalog" class="mobile-catalog-link" @click="closeMenu">Весь каталог</NuxtLink>
               <NuxtLink
                 v-for="item in catalogMenuItems"
                 :key="item.route"
@@ -119,30 +120,29 @@
                 {{ plainCatalogLabel(item.name) }}
               </NuxtLink>
             </div>
-          </template>
-          <NuxtLink v-else to="/catalog" class="mobile-link" @click="closeMenu">Каталог</NuxtLink>
-          <NuxtLink to="/prices" class="mobile-link" @click="closeMenu">Цены</NuxtLink>
-          <NuxtLink to="/promotions" class="mobile-link" @click="closeMenu">Доставка</NuxtLink>
-          <NuxtLink to="/contacts" class="mobile-link" @click="closeMenu">Контакты</NuxtLink>
-        </nav>
+            <NuxtLink to="/prices" class="mobile-link" @click="closeMenu">Цены</NuxtLink>
+            <NuxtLink to="/promotions" class="mobile-link" @click="closeMenu">Доставка</NuxtLink>
+            <NuxtLink to="/contacts" class="mobile-link" @click="closeMenu">Контакты</NuxtLink>
+          </nav>
 
-        <div class="mobile-contacts">
-          <a href="tel:+79602543323" class="mobile-phone">+7(960)254 33 23</a>
-          <span class="mobile-hours">ежедневно с 9:00 до 19:00</span>
-          <div class="mobile-icons">
-            <a href="mailto:info@floksbox.ru" class="contact-icon" title="Email">
-              <img src="/assets/icons/p_email.png" alt="Email" class="contact-icon-img">
-            </a>
-            <a href="https://t.me/floksbox" class="contact-icon" title="Telegram" target="_blank">
-              <img src="/assets/icons/p_tg.png" alt="Telegram" class="contact-icon-img">
-            </a>
-            <a href="https://wa.me/79602543323" class="contact-icon" title="WhatsApp" target="_blank">
-              <img src="/assets/icons/p_wa.png" alt="WhatsApp" class="contact-icon-img">
-            </a>
+          <div class="mobile-contacts">
+            <a href="tel:+79602543323" class="mobile-phone">+7(960)254 33 23</a>
+            <span class="mobile-hours">ежедневно с 9:00 до 19:00</span>
+            <div class="mobile-icons">
+              <a href="mailto:info@floksbox.ru" class="contact-icon" title="Email">
+                <img src="/assets/icons/p_email.png" alt="Email" class="contact-icon-img">
+              </a>
+              <a href="https://t.me/floksbox" class="contact-icon" title="Telegram" target="_blank">
+                <img src="/assets/icons/p_tg.png" alt="Telegram" class="contact-icon-img">
+              </a>
+              <a href="https://wa.me/79602543323" class="contact-icon" title="WhatsApp" target="_blank">
+                <img src="/assets/icons/p_wa.png" alt="WhatsApp" class="contact-icon-img">
+              </a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Teleport>
   </header>
 
   <Teleport to="body">
@@ -773,9 +773,8 @@ onUnmounted(() => {
 .mobile-menu-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(6px);
-  z-index: 999;
+  background: rgba(20, 10, 30, 0.45);
+  z-index: 12000;
   display: flex;
   justify-content: flex-end;
 }
@@ -790,6 +789,7 @@ onUnmounted(() => {
   flex-direction: column;
   gap: 18px;
   border-left: 1px solid rgba(0, 0, 0, 0.05);
+  overflow-y: auto;
 }
 
 .mobile-menu__header {
@@ -801,6 +801,18 @@ onUnmounted(() => {
 .mobile-logo img {
   height: 30px;
   width: auto;
+}
+
+.close-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 10px;
+  background: #f3f0f7;
+  color: #222;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
 }
 
 .mobile-nav {
