@@ -29,9 +29,9 @@
         <img src="/assets/images/oblako.png" alt="Облако" class="cloud-image" />
       </div>
       
-      <!-- Слой 3: Полоса floksbox - diag.png (замощение по ширине) -->
+      <!-- Слой 3: полоса FloksBox на всю ширину, один раз -->
       <div class="diagonal-layer">
-        <div class="diagonal-strip" role="img" aria-label="Полоса FloksBox" />
+        <img class="diagonal-strip" src="/assets/images/diag.png" alt="" />
       </div>
 
       <!-- Боке: за полосой diag, всплывает снизу -->
@@ -626,7 +626,7 @@ useHead({
   justify-content: center;
   left: 0;
   right: 0;
-  --diag-strip-h: clamp(69px, 7.3vw, 105px);
+  --diag-strip-h: clamp(88px, 9vw, 132px);
   --hero-diag-reserve: var(--diag-strip-h);
   /* боке: от стыка с текстом до правого края hero */
   --bokeh-inset-left: 50%;
@@ -754,7 +754,8 @@ useHead({
   }
 }
 
-/* Слой 3: Диагональная полоса — паттерн на всю ширину */
+/* Слой 3: полоса на всю ширину. Пустой край файла под знаками обрезается,
+   сама полоса остаётся у низа баннера. */
 .diagonal-layer {
   position: absolute;
   bottom: 0;
@@ -762,15 +763,15 @@ useHead({
   width: 100%;
   z-index: 4;
   overflow: hidden;
+  pointer-events: none;
+  line-height: 0;
 }
 
 .diagonal-strip {
   width: 100%;
-  height: var(--diag-strip-h, 72px);
-  background-image: url('/assets/images/diag.png');
-  background-repeat: repeat-x;
-  background-size: auto 100%;
-  background-position: left bottom;
+  height: auto;
+  display: block;
+  margin-bottom: calc(100% * -16 / 2877);
 }
 
 /* Контейнер для контента с ограничением ширины */
@@ -1636,7 +1637,7 @@ useHead({
   .category-hero {
     min-height: 320px;
     height: auto;
-    --diag-strip-h: clamp(35px, 9vw, 48px);
+    --diag-strip-h: clamp(56px, 16vw, 84px);
     --hero-diag-reserve: var(--diag-strip-h);
     --bokeh-inset-left: 5%;
     --bokeh-inset-right: 11%;
@@ -1689,7 +1690,7 @@ useHead({
 @media (max-width: 768px) {
   .category-hero {
     min-height: 334px;
-    --diag-strip-h: clamp(32px, 8.5vw, 39px);
+    --diag-strip-h: clamp(52px, 18vw, 72px);
     --hero-diag-reserve: var(--diag-strip-h);
     --bokeh-inset-left: 4%;
     --bokeh-inset-right: 10%;
@@ -1784,7 +1785,7 @@ useHead({
 @media (max-width: 480px) {
   .category-hero {
     min-height: 347px;
-    --diag-strip-h: clamp(29px, 8vw, 35px);
+    --diag-strip-h: clamp(48px, 20vw, 64px);
     --hero-diag-reserve: var(--diag-strip-h);
     --bokeh-inset-left: 3%;
     --bokeh-inset-right: 8%;

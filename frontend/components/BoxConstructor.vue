@@ -157,7 +157,7 @@
                 class="box-layer box-layer--bottom"
               />
               <div
-                v-if="withLid"
+                v-if="withLid && material !== 'velvet'"
                 class="box-layer box-layer--top-fill"
                 :style="topColorFillStyle"
                 aria-hidden="true"
@@ -349,9 +349,13 @@ const zoomStyle = computed(() => ({
   transformOrigin: 'center bottom'
 }))
 
-// Источники изображений слоёв (B/N/K — прозрачные, цвет под ними)
-const layerBackSrc = '/assets/images/B.png'
-const layerBottomSrc = '/assets/images/N.png'
+// Бумага: B/N/K прозрачные, цвет под ними. Бархат: свои непрозрачные слои.
+const layerBackSrc = computed(() =>
+  material.value === 'velvet' ? '/assets/images/back_barhat.png' : '/assets/images/B.png'
+)
+const layerBottomSrc = computed(() =>
+  material.value === 'velvet' ? '/assets/images/bottom_barhat.png' : '/assets/images/N.png'
+)
 const layerTopColorMaskSrc = '/assets/images/K_CVETOCHEK.png'
 const layerTopSrc = computed(() => {
   if (!withLid.value) {
@@ -359,7 +363,7 @@ const layerTopSrc = computed(() => {
     const size = even % 2 === 0 ? even : even - 1
     return `/assets/images/top_off_${size}.png`
   }
-  return '/assets/images/K.png'
+  return material.value === 'velvet' ? '/assets/images/top_on_barhat.png' : '/assets/images/K.png'
 })
 
 const topColorFillStyle = computed(() => ({

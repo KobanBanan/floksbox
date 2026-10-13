@@ -1,0 +1,306 @@
+// Переходы между страницами каталога: облачная карточка, светлая вуаль бренда.
+// Не касается героя, меню и футера как отдельных слоёв — анимируется корень страницы.
+
+$catalog-ease: cubic-bezier(0.22, 1, 0.36, 1);
+$catalog-enter: 0.24s;
+$catalog-leave: 0.18s;
+
+.catalog-fx-enter-active {
+  position: relative;
+  z-index: 2;
+  animation: catalog-reveal $catalog-enter $catalog-ease both;
+}
+
+.catalog-fx-leave-active {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+  animation: catalog-depart $catalog-leave ease both;
+}
+
+.catalog-fx-enter-from {
+  opacity: 0;
+}
+
+html.catalog-nav-back .catalog-fx-enter-active {
+  animation-name: catalog-reveal-back;
+}
+
+html.catalog-nav-switch .catalog-fx-enter-active {
+  animation-name: catalog-reveal-switch;
+}
+
+html.catalog-nav-back .catalog-fx-leave-active {
+  animation-name: catalog-depart-back;
+}
+
+html.catalog-nav-switch .catalog-fx-leave-active {
+  animation-name: catalog-depart-switch;
+}
+
+@keyframes catalog-reveal {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes catalog-reveal-back {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -8px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes catalog-reveal-switch {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes catalog-depart {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes catalog-depart-back {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes catalog-depart-switch {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+// Короткое затухание, если система просит меньше движения.
+.catalog-fx-reduced-enter-active,
+.catalog-fx-reduced-leave-active {
+  transition: opacity 0.12s linear;
+}
+
+.catalog-fx-reduced-leave-active {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.catalog-fx-reduced-enter-active {
+  position: relative;
+  z-index: 2;
+}
+
+.catalog-fx-reduced-enter-from,
+.catalog-fx-reduced-leave-to {
+  opacity: 0;
+}
+
+// Мгновенная смена для страниц вне каталога: без сдвига и без вуали.
+.page-instant-enter-active,
+.page-instant-leave-active {
+  transition: none !important;
+  animation: none !important;
+}
+
+.page-instant-leave-active {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  overflow: hidden;
+}
+
+.catalog-wash {
+  display: none;
+}
+
+.catalog-wash__blob,
+.catalog-wash__sheen {
+  position: absolute;
+  pointer-events: none;
+}
+
+.catalog-wash__blob {
+  border-radius: 50%;
+  filter: blur(16px);
+  opacity: 0.9;
+}
+
+.catalog-wash__blob--green {
+  width: min(58vw, 760px);
+  height: min(42vw, 520px);
+  left: -8%;
+  top: 22%;
+  background: radial-gradient(circle, rgba(213, 255, 146, 0.95) 0%, rgba(184, 255, 0, 0.38) 46%, transparent 72%);
+  animation: catalog-blob-green 0.64s $catalog-ease both;
+}
+
+.catalog-wash__blob--blue {
+  width: min(48vw, 640px);
+  height: min(48vw, 640px);
+  right: -12%;
+  top: -14%;
+  background: radial-gradient(circle, rgba(0, 183, 255, 0.5) 0%, rgba(47, 107, 255, 0.16) 48%, transparent 72%);
+  animation: catalog-blob-blue 0.64s $catalog-ease both;
+}
+
+.catalog-wash__blob--lilac {
+  width: min(46vw, 620px);
+  height: min(34vw, 440px);
+  left: 28%;
+  bottom: -12%;
+  background: radial-gradient(circle, rgba(94, 48, 133, 0.22) 0%, rgba(71, 0, 159, 0.08) 46%, transparent 72%);
+  animation: catalog-blob-lilac 0.64s $catalog-ease both;
+}
+
+.catalog-wash__sheen {
+  top: -18%;
+  left: -45%;
+  width: 42%;
+  height: 140%;
+  background: linear-gradient(
+    102deg,
+    transparent 0%,
+    rgba(213, 255, 146, 0.05) 30%,
+    rgba(203, 255, 7, 0.42) 48%,
+    rgba(0, 183, 255, 0.22) 62%,
+    rgba(94, 48, 133, 0.1) 78%,
+    transparent 100%
+  );
+  filter: blur(6px);
+  animation: catalog-sheen 0.64s $catalog-ease both;
+}
+
+.catalog-wash.is-back .catalog-wash__sheen {
+  animation-name: catalog-sheen-back;
+}
+
+@keyframes catalog-wash-veil {
+  0% {
+    opacity: 0;
+  }
+
+  22% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes catalog-blob-green {
+  from {
+    transform: translate3d(0, 16px, 0) scale(0.92);
+  }
+
+  to {
+    transform: translate3d(8%, -10px, 0) scale(1.06);
+  }
+}
+
+@keyframes catalog-blob-blue {
+  from {
+    transform: translate3d(0, 0, 0) scale(0.9);
+  }
+
+  to {
+    transform: translate3d(-6%, 18px, 0) scale(1.08);
+  }
+}
+
+@keyframes catalog-blob-lilac {
+  from {
+    transform: translate3d(0, 20px, 0);
+  }
+
+  to {
+    transform: translate3d(0, -16px, 0);
+  }
+}
+
+@keyframes catalog-sheen {
+  from {
+    transform: translate3d(0, 0, 0) rotate(8deg);
+  }
+
+  to {
+    transform: translate3d(280%, 0, 0) rotate(8deg);
+  }
+}
+
+@keyframes catalog-sheen-back {
+  from {
+    transform: translate3d(280%, 0, 0) rotate(8deg);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0) rotate(8deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .catalog-fx-enter-active,
+  .catalog-fx-leave-active,
+  .catalog-fx-reduced-enter-active,
+  .catalog-fx-reduced-leave-active {
+    animation: none !important;
+    transition: opacity 0.12s linear !important;
+    clip-path: none !important;
+    filter: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  .catalog-fx-enter-from,
+  .catalog-fx-leave-to,
+  .catalog-fx-reduced-enter-from,
+  .catalog-fx-reduced-leave-to {
+    opacity: 0;
+    transform: none !important;
+    clip-path: none !important;
+  }
+
+  .catalog-wash {
+    display: none !important;
+    animation: none !important;
+  }
+}

@@ -1,6 +1,7 @@
 // Импорт переменных
 @use 'sass:color';
 @use './variables.scss' as vars;
+@use './catalog-transition.scss';
 
 // Подключение шрифта Days - используем Google Fonts как fallback
 // @font-face {
