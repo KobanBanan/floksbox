@@ -16,11 +16,7 @@
 body {
   font-family: 'Roboto', Arial, sans-serif;
   color: #000000;
-  background-image: url('/assets/footer/bg ok.png');
-  background-size: cover;
-  background-position: top;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background: #fff;
 }
 
 .app-layout {

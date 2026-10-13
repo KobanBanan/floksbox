@@ -216,7 +216,7 @@ export function useOrderRequestForm(prefilledMessageRef) {
       }
     } catch (error) {
       console.error('Error submitting form:', error)
-      errorMessage.value = error.message || 'Произошла ошибка при отправке заявки'
+      errorMessage.value = error?.data?.error || error.message || 'Произошла ошибка при отправке заявки'
       showError.value = true
     } finally {
       loading.value = false

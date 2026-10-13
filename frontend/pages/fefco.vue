@@ -52,7 +52,13 @@
             <div class="active-area">
               <!-- Название раздела -->
               <ScrollRevealWrapper type="fade-right">
-                <h2 class="section-title">{{ currentSection.title }}</h2>
+                <div class="section-heading">
+                  <h2 class="section-title">{{ currentSection.title }}</h2>
+                  <div class="item-number" :class="{ inactive: !selectedDrawing }">
+                    <span v-if="selectedDrawing">№{{ selectedDrawing }}</span>
+                    <span v-else class="no-selection">Номер чертежа</span>
+                  </div>
+                </div>
               </ScrollRevealWrapper>
               
               <!-- Область слайдера -->
@@ -78,8 +84,8 @@
                      
                      <!-- Навигация слайдера -->
                      <div v-if="selectedDrawing && currentImages.length > 1" class="slider-nav">
-                       <button @click="prevSlide" class="nav-btn prev">‹</button>
-                       <button @click="nextSlide" class="nav-btn next">›</button>
+                       <button @click="prevSlide" class="nav-btn prev btn-glow btn-glow--white" type="button" aria-label="Предыдущий слайд">‹</button>
+                       <button @click="nextSlide" class="nav-btn next btn-glow btn-glow--white" type="button" aria-label="Следующий слайд">›</button>
                      </div>
                      
                      <!-- Индикаторы -->
@@ -94,23 +100,19 @@
                  </div>
                </ScrollRevealWrapper>
               
-              <!-- Номер предмета -->
-               <ScrollRevealWrapper type="fade-up" :delay="2">
-                 <div class="item-number" :class="{ 'inactive': !selectedDrawing }">
-                   <span v-if="selectedDrawing">№{{ selectedDrawing }}</span>
-                   <span v-else class="no-selection">Номер чертежа</span>
-                 </div>
-               </ScrollRevealWrapper>
-              
               <!-- Кнопки заказа -->
               <ScrollRevealWrapper type="fade-up" :delay="3">
                 <div class="order-buttons">
-                  <button class="order-btn primary" @click="openOrderForm">
-                    Заказать у менеджера
-                  </button>
-                  <button class="order-btn secondary" @click="addToOrder" :disabled="!selectedDrawing">
-                    Добавить к обращению
-                  </button>
+                  <span class="order-btn-glow btn-glow">
+                    <button class="order-btn primary" type="button" @click="openOrderForm">
+                      Заказать у менеджера
+                    </button>
+                  </span>
+                  <span class="order-btn-glow btn-glow">
+                    <button class="order-btn secondary" type="button" @click="addToOrder" :disabled="!selectedDrawing">
+                      Добавить к обращению
+                    </button>
+                  </span>
                 </div>
               </ScrollRevealWrapper>
               
@@ -167,9 +169,11 @@
     </div>
     
     <!-- Полноэкранный режим -->
-    <div v-if="fullscreenImage" class="fullscreen-overlay" @click="closeFullscreen">
-      <img :src="fullscreenImage" :alt="`Чертеж ${selectedDrawing}`" />
-    </div>
+    <Teleport to="body">
+      <div v-if="fullscreenImage" class="fullscreen-overlay" @click="closeFullscreen">
+        <img :src="fullscreenImage" :alt="`Чертеж ${selectedDrawing}`" />
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -184,6 +188,7 @@ const selectedDrawing = ref(null)
 const currentSlide = ref(0)
 const fullscreenImage = ref(null)
 const { openOrderRequest } = useOrderRequest()
+const toast = useToast()
 const selectedItems = ref([]) // Для накопления выбранных позиций
 const currentPage = ref(1) // Текущая страница пагинации
 const itemsPerPage = 15 // Количество чертежей на странице
@@ -457,9 +462,14 @@ const closeFullscreen = () => {
 
 // Методы для работы с заказами
 const addToOrder = () => {
-  if (selectedDrawing.value && !selectedItems.value.includes(selectedDrawing.value)) {
-    selectedItems.value.push(selectedDrawing.value)
+  if (!selectedDrawing.value) return
+  const number = selectedDrawing.value
+  if (selectedItems.value.includes(number)) {
+    toast.info('Уже в обращении', `Чертёж №${number} уже добавлен.`)
+    return
   }
+  selectedItems.value.push(number)
+  toast.success('Добавлено', `Чертёж №${number} добавлен к обращению.`)
 }
 
 const openOrderForm = () => {
@@ -534,36 +544,36 @@ useHead({
 // Текстовая часть
 .text-section {
   background: #fff;
-  padding: 40px 0;
+  padding: 12px 0 4px;
   text-align: left;
-  margin-top: 40px; /* Отступ от хедера */
+  margin-top: 8px;
   
   h1 {
-    font-size: 1.8rem;
+    font-size: 1.25rem;
     color: #333;
-    margin-bottom: 15px;
+    margin-bottom: 6px;
     font-weight: 600;
-    line-height: 1.3;
+    line-height: 1.25;
   }
   
   p {
-    font-size: 1rem;
+    font-size: 0.92rem;
     color: #333;
     max-width: 800px;
-    margin: 0 0 15px 0;
-    line-height: 1.5;
+    margin: 0 0 4px 0;
+    line-height: 1.35;
   }
 }
 
 // Основная область контента
 .content-section {
-  padding: 60px 0 200px 0; /* Увеличенный отступ снизу для футера */
+  padding: 8px 0 28px;
   background: #fff;
 }
 
 .content-wrapper {
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 230px 1fr;
   gap: 0;
   align-items: start;
   position: relative;
@@ -577,8 +587,8 @@ useHead({
 
 .menu-container {
   background: #fff;
-  padding: 20px;
-  margin-bottom: 30px;
+  padding: 4px 8px;
+  margin-bottom: 0;
   border: none;
   box-shadow: none;
 }
@@ -586,7 +596,7 @@ useHead({
 .menu-item {
   display: flex;
   align-items: center;
-  padding: 8px;
+  padding: 2px 4px;
   margin-bottom: 0;
   border: none;
   border-radius: 0;
@@ -610,9 +620,9 @@ useHead({
 }
 
 .menu-icon {
-  width: 50px;
-  height: 50px;
-  margin-right: 15px;
+  width: 36px;
+  height: 36px;
+  margin-right: 8px;
   flex-shrink: 0;
   background: transparent;
   border-radius: 0;
@@ -623,8 +633,8 @@ useHead({
   box-shadow: none;
   
   img {
-    width: 50px;
-    height: 50px;
+    width: 36px;
+    height: 36px;
     object-fit: contain;
   }
 }
@@ -644,26 +654,35 @@ useHead({
 
 // Активная область
 .active-area {
-  padding-left: 60px;
-  
-  .section-title {
-    font-size: 1.5rem;
-    color: #333;
-    margin-bottom: 30px;
-    font-weight: 600;
-    text-transform: uppercase;
-  }
+  padding-left: 20px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-size: 1.15rem;
+  color: #333;
+  margin: 0;
+  font-weight: 600;
+  text-transform: uppercase;
+  line-height: 1.2;
 }
 
 // Слайдер
 .slider-area {
-  margin-bottom: 30px;
+  margin-bottom: 8px;
 }
 
 .slider-container {
   position: relative;
   width: 100%;
-  height: 400px;
+  height: 220px;
   border: 1px solid #e9ecef;
   border-radius: 0;
   overflow: hidden;
@@ -719,19 +738,28 @@ useHead({
 }
 
 .nav-btn {
-  width: 50px;
-  height: 50px;
+  width: 52px;
+  height: 52px;
   border: none;
-  background: rgba(94, 48, 133, 0.8);
-  color: white;
+  background: #fff;
+  color: #5e3085;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 700;
   pointer-events: auto;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    background: rgba(94, 48, 133, 1);
+  box-shadow: 0 6px 16px rgba(40, 16, 70, 0.16);
+  transition: transform 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: #fff;
+    outline: none;
+  }
+
+  &:active {
+    transform: scale(0.9);
   }
 }
 
@@ -759,10 +787,12 @@ useHead({
 
 // Номер предмета
 .item-number {
-  font-size: 1.5rem;
+  flex-shrink: 0;
+  font-size: 1.15rem;
   font-weight: 600;
   color: #5e3085;
-  margin-bottom: 20px;
+  margin: 0;
+  white-space: nowrap;
   
   &.inactive {
     color: #6c757d;
@@ -782,54 +812,56 @@ useHead({
 // Кнопки заказа
 .order-buttons {
   display: flex;
-  gap: 15px;
-  margin-bottom: 30px;
+  gap: 10px;
+  margin-bottom: 10px;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
+}
+
+.order-btn-glow {
+  display: inline-flex;
+  overflow: visible;
 }
 
 .order-btn {
   border: none;
-  padding: 15px 30px;
   border-radius: 6px;
-  font-size: 1.1rem;
+  min-height: 40px;
+  padding: 8px 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  
+  transition: background 0.3s ease, color 0.3s ease;
+
   &.primary {
     background: #5e3085;
-    color: white;
-    
-    &:hover {
-      background: #4a2a6b;
-      transform: translateY(-2px);
-    }
+    color: #fff;
   }
-  
+
   &.secondary {
     background: #d5ff92;
     color: #333;
-    
-    &:hover:not(:disabled) {
-      background: #c5ef82;
-      transform: translateY(-2px);
-    }
-    
-    &:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-      opacity: 0.6;
-    }
   }
+
+  &:disabled {
+    background: #fff;
+    color: #a3a3a3;
+    cursor: not-allowed;
+  }
+}
+
+.order-btn-glow:hover .order-btn:not(:disabled) {
+  background: #f4ffe8;
+  color: #243000;
 }
 
 // Область чертежей
 .drawings-area {
   h3 {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     color: #333;
-    margin-bottom: 20px;
+    margin-bottom: 8px;
     font-weight: 600;
   }
 }
@@ -875,11 +907,11 @@ useHead({
 
 .drawings-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 20px;
-  max-height: 400px;
-  overflow-y: auto;
-  padding-right: 10px;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  max-height: none;
+  overflow: visible;
+  padding-right: 0;
 }
 
 .drawing-wrapper {
@@ -890,7 +922,7 @@ useHead({
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 15px;
+  padding: 6px 4px;
   border: 2px solid #e9ecef;
   border-radius: 8px;
   cursor: pointer;
@@ -908,9 +940,9 @@ useHead({
 }
 
 .drawing-icon {
-  width: 60px;
-  height: 60px;
-  margin-bottom: 10px;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 2px;
   overflow: hidden;
   
   img {
@@ -975,21 +1007,22 @@ useHead({
 // Полноэкранный режим
 .fullscreen-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.82);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2000;
+  z-index: 12000;
   cursor: pointer;
   
   img {
     max-width: 90vw;
     max-height: 90vh;
     object-fit: contain;
+    background: transparent;
+    box-shadow: none;
   }
 }
 
@@ -1037,7 +1070,7 @@ useHead({
   }
   
   .content-section {
-    padding: 30px 0 120px 0; /* Отступ снизу для футера на мобильных */
+    padding: 8px 0 24px;
   }
   
   .drawings-grid {
@@ -1046,7 +1079,12 @@ useHead({
   }
   
   .slider-container {
-    height: 300px;
+    height: 180px;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+    gap: 8px;
   }
 }
 </style>

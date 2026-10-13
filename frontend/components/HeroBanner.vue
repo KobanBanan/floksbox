@@ -1,5 +1,5 @@
 <template>
-  <section class="hero-banner">
+  <section ref="heroRef" class="hero-banner">
     <div class="hero-container">
       <div
         v-for="(banner, index) in banners"
@@ -7,21 +7,41 @@
         class="hero-slide"
         :class="{ active: index === currentSlide }"
       >
-        <div class="banner-background" :style="{ backgroundImage: `url(${banner.fon})` }" @click="handleBannerClick"></div>
+        <div class="banner-bg-clip" @click="handleBannerClick">
+          <div class="banner-background" :style="{ backgroundImage: `url(${banner.fon})` }"></div>
+          <div class="banner-swell" aria-hidden="true">
+            <svg class="banner-swell__wave" viewBox="0 0 12960 1120" preserveAspectRatio="none">
+              <path :fill="banner.wave" d="M9720,320C8100,320,8100,0,6480,0S4860,320,3240,320,1620,0,0,0V1120H12960V0C11340,0,11340,320,9720,320Z">
+                <animate
+                  dur="7s"
+                  repeatCount="indefinite"
+                  attributeName="d"
+                  values="M9720,320C8100,320,8100,0,6480,0S4860,320,3240,320,1620,0,0,0V1120H12960V0C11340,0,11340,320,9720,320Z;
+                    M9720,0C8100,0,8100,319,6480,319S4860,0,3240,0,1620,320,0,320v800H12960V320C11340,320,11340,0,9720,0Z;
+                    M9720,320C8100,320,8100,0,6480,0S4860,320,3240,320,1620,0,0,0V1120H12960V0C11340,0,11340,320,9720,320Z"
+                />
+              </path>
+            </svg>
+          </div>
+        </div>
         
         <div class="banner-content" @click="handleBannerClick">
           <h1 class="banner-title" :class="{ 'banner-title-small': index === 1 }">{{ banner.title }}</h1>
           <p class="banner-description">{{ banner.description }}</p>
-          <a v-if="banner.cta !== 'Узнать подробности'" :href="banner.href" class="banner-button" :class="{ 'banner-button-lower': index === 1 }" @click.stop="handleButtonClick(banner)">{{ banner.cta }}</a>
+          <a v-if="banner.cta !== 'Узнать подробности'" :href="banner.href" class="banner-button btn-glow" :class="{ 'banner-button-lower': index === 1 }" @click.stop="handleButtonClick(banner)">{{ banner.cta }}</a>
         </div>
       </div>
 
       <img
-        :src="banners[currentSlide].char"
-        alt="Персонаж"
+        v-for="(banner, index) in banners"
+        :key="banner.char"
+        :src="banner.char"
+        alt=""
         class="banner-char"
-        :class="{ 'banner-char--slide-4': currentSlide === 3 }"
-        @click="handleBannerClick"
+        :class="{
+          'is-active': index === currentSlide,
+          'banner-char--slide-4': index === 3
+        }"
       />
     </div>
   </section>
@@ -38,7 +58,8 @@ const banners = [
     title: 'Упакуем ваш бизнес!',
     description: 'Работаем на клиента',
     cta: 'Узнать подробности',
-    href: '#'
+    href: '#',
+    wave: '#d7c8ff'
   },
   {
     fon: '/assets/hero/fon2.png',
@@ -47,7 +68,8 @@ const banners = [
     description: 'Упаковка для общепита',
     cta: 'Перейти',
     href: '#',
-    productName: 'коробка для пиццы'
+    productName: 'коробка для пиццы',
+    wave: '#ffb3c9'
   },
   {
     fon: '/assets/hero/fon4.png',
@@ -55,7 +77,8 @@ const banners = [
     title: 'Шляпные коробки',
     description: 'Создайте свою!',
     cta: 'Создать',
-    href: '/category/hat-boxes'
+    href: '/category/hat-boxes',
+    wave: '#f0d4ff'
   },
   {
     fon: '/assets/hero/fon6.jpg',
@@ -63,13 +86,16 @@ const banners = [
     title: 'Доставляем до\u00A0двери',
     description: 'По Москве, регионам и всей России!',
     cta: 'Узнать подробности',
-    href: '#'
+    href: '#',
+    wave: '#b7dcff'
   }
   
 ]
 
 const currentSlide = ref(0)
+const heroRef = ref(null)
 let slideInterval = null
+let heroObserver = null
 const router = useRouter()
 
 const nextSlide = () => {
@@ -79,7 +105,7 @@ const nextSlide = () => {
 const startSlideShow = () => {
   slideInterval = setInterval(() => {
     nextSlide()
-  }, 4000)
+  }, 5000)
 }
 
 const resetSlideShow = () => {
@@ -142,10 +168,16 @@ const handleButtonClick = async (bannerOrHref) => {
 
 onMounted(() => {
   startSlideShow()
+  if (!heroRef.value) return
+  heroObserver = new IntersectionObserver(([entry]) => {
+    heroRef.value?.classList.toggle('is-inview', entry.isIntersecting)
+  }, { threshold: 0.35 })
+  heroObserver.observe(heroRef.value)
 })
 
 onUnmounted(() => {
   if (slideInterval) clearInterval(slideInterval)
+  heroObserver?.disconnect()
 })
 </script>
 
@@ -177,7 +209,7 @@ onUnmounted(() => {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity 1s ease-in-out;
+  transition: opacity 1s ease;
   overflow: visible;
   pointer-events: none;
 }
@@ -188,15 +220,64 @@ onUnmounted(() => {
   pointer-events: auto;
 }
 
-.banner-background {
+.banner-bg-clip {
   position: absolute;
   inset: 0;
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.banner-background {
+  position: absolute;
+  top: -7%;
+  left: -10%;
+  width: 120%;
+  height: 114%;
   background-size: cover;
   background-position: center;
   filter: none;
-  border-radius: 50px;
-  width: 100%;
+  animation: hero-drift 16s ease-in-out infinite alternate;
+  animation-play-state: paused;
+}
+
+.hero-banner.is-inview .banner-background {
+  animation-play-state: running;
+}
+
+.banner-swell {
+  position: absolute;
   left: 0;
+  right: 0;
+  bottom: 0;
+  height: 78%;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.15;
+}
+
+.banner-swell__wave {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 200%;
+  height: 100%;
+  display: block;
+  animation: hero-swell 8s linear infinite;
+  animation-play-state: paused;
+}
+
+.hero-banner.is-inview .banner-swell__wave {
+  animation-play-state: running;
+}
+
+@keyframes hero-drift {
+  from { transform: translateX(0); }
+  to { transform: translateX(4%); }
+}
+
+@keyframes hero-swell {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
 }
 
 .banner-content {
@@ -264,6 +345,7 @@ onUnmounted(() => {
 }
 
 .banner-button {
+  display: inline-block;
   width: fit-content;
   background: #cbff07; /* ярко-зеленая кнопка */
   color: #0b3d2e;
@@ -278,7 +360,7 @@ onUnmounted(() => {
 
 .banner-button:hover {
   transform: translateY(-1px);
-  background: #a8d905;
+  background: #f4ffe8;
 }
 
 .banner-char {
@@ -292,6 +374,24 @@ onUnmounted(() => {
   z-index: 30;
   pointer-events: none;
   cursor: default;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.banner-char.is-active {
+  opacity: 1;
+  animation: hero-char-in 1s ease-out;
+}
+
+@keyframes hero-char-in {
+  from {
+    opacity: 0;
+    transform: translateX(-90px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .banner-char--slide-4 {
@@ -317,9 +417,7 @@ onUnmounted(() => {
   .hero-container {
     height: calc(405px * 0.7);
   }
-  .banner-background {
-    width: 100%;
-    left: 0;
+  .banner-bg-clip {
     border-radius: calc(50px * 0.7);
   }
   .banner-content {
@@ -364,9 +462,7 @@ onUnmounted(() => {
   .hero-container { 
     height: calc(405px * 0.6);
   }
-  .banner-background {
-    width: 100%;
-    left: 0;
+  .banner-bg-clip {
     border-radius: calc(50px * 0.6);
   }
   .banner-content { 
@@ -412,9 +508,7 @@ onUnmounted(() => {
   .hero-container { 
     height: calc(405px * 0.5);
   }
-  .banner-background {
-    width: 100%;
-    left: 0;
+  .banner-bg-clip {
     border-radius: calc(50px * 0.5);
   }
   .banner-content { 
@@ -442,6 +536,19 @@ onUnmounted(() => {
     font-size: calc(36px * 0.5); /* 18px */
     padding: calc(8px * 0.5) calc(16px * 0.5);
     border-radius: calc(24px * 0.5); /* 12px */
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner-background,
+  .banner-swell__wave {
+    animation: none;
+  }
+
+  .banner-char,
+  .banner-char.is-active {
+    transition: none;
+    animation: none;
   }
 }
 </style>

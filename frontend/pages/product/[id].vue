@@ -76,7 +76,7 @@
             </div>
             
             <div class="product-action">
-              <button class="order-button" @click="openOrderModal">
+              <button class="order-button btn-glow" @click="openOrderModal">
                 заказать у менеджера
               </button>
             </div>
@@ -422,19 +422,14 @@ watch(() => route.params.id, async (newId) => {
 }
 
 .order-button:hover {
-  background: #B8EF00;
+  background: #f4ffe8;
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(200, 255, 0, 0.3);
+  box-shadow: none;
 }
 
 .recommended-products {
   padding: 80px 0;
-  /* Match global site background */
-  background-image: url('/assets/footer/bg ok.png');
-  background-size: cover;
-  background-position: top;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background: #fff;
 }
 
 .section-title {

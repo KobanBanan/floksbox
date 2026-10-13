@@ -134,7 +134,7 @@
         
         
         <!-- Кнопка заказа -->
-        <button class="order-btn" @click="handleOrder">
+        <button class="order-btn btn-glow" @click="handleOrder">
           Оформить заказ у менеджера
         </button>
       </div>
@@ -863,9 +863,9 @@ function handleOrder() {
 }
 
 .order-btn:hover {
-  background: #c4f000;
+  background: #f4ffe8;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(208, 255, 10, 0.3);
+  box-shadow: none;
 }
 
 .constructor-right {

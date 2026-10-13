@@ -83,28 +83,12 @@
         <span v-if="errors.agreement" class="error-message">{{ errors.agreement }}</span>
       </div>
 
-      <button type="submit" class="submit-btn" :disabled="loading || !canSubmit">
-        {{ loading ? 'Отправляем...' : 'ОТПРАВИТЬ' }}
-      </button>
+      <span class="submit-btn-glow btn-glow">
+        <button type="submit" class="submit-btn" :disabled="loading || !canSubmit">
+          {{ loading ? 'Отправляем...' : 'ОТПРАВИТЬ' }}
+        </button>
+      </span>
     </form>
-
-    <div v-if="showSuccess" class="status-overlay" @click="handleCloseSuccess">
-      <div class="status-card" @click.stop>
-        <div class="success-icon">✓</div>
-        <h3>Заявка отправлена!</h3>
-        <p>Мы свяжемся с вами в ближайшее время.</p>
-        <button type="button" class="status-btn" @click="handleCloseSuccess">Закрыть</button>
-      </div>
-    </div>
-
-    <div v-if="showError" class="status-overlay" @click="closeError">
-      <div class="status-card error" @click.stop>
-        <div class="error-icon">✕</div>
-        <h3>Ошибка отправки</h3>
-        <p>{{ errorMessage }}</p>
-        <button type="button" class="status-btn" @click="closeError">Закрыть</button>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -156,12 +140,20 @@ watch(
   },
 )
 
-const handleCloseSuccess = () => {
+const toast = useToast()
+
+watch(showSuccess, (ok) => {
+  if (!ok) return
+  toast.success('Заявка отправлена', 'Мы свяжемся с вами в ближайшее время.')
   closeSuccess()
-  if (props.closeOnSuccess) {
-    emit('sent')
-  }
-}
+  if (props.closeOnSuccess) emit('sent')
+})
+
+watch(showError, (ok) => {
+  if (!ok) return
+  toast.error('Не отправилось', errorMessage.value || 'Произошла ошибка при отправке заявки')
+  closeError()
+})
 </script>
 
 <style scoped>
@@ -277,6 +269,26 @@ const handleCloseSuccess = () => {
   text-decoration: underline;
 }
 
+.submit-btn-glow {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  border-radius: 8px;
+}
+
+.submit-btn-glow:hover .submit-btn:not(:disabled) {
+  background: #f4ffe8 !important;
+  box-shadow: none;
+  transform: translateY(-1px);
+}
+
+.submit-btn-glow:hover .submit-btn:disabled {
+  background: #fff !important;
+  color: #a3a3a3 !important;
+  box-shadow: none;
+  opacity: 1;
+}
+
 .submit-btn {
   background: #b8ff00 !important;
   color: #333 !important;
@@ -292,86 +304,14 @@ const handleCloseSuccess = () => {
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 4px;
-}
-
-.submit-btn:hover:not(:disabled) {
-  background: #a8ef00 !important;
-  transform: translateY(-1px);
+  margin-top: 0;
 }
 
 .submit-btn:disabled {
-  opacity: 0.7;
+  background: #fff !important;
+  opacity: 1;
+  color: #a3a3a3 !important;
   cursor: not-allowed;
   transform: none;
-}
-
-.status-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10001;
-}
-
-.status-card {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
-  text-align: center;
-  max-width: 320px;
-  margin: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
-
-.status-card.error {
-  border-left: 5px solid #ff4444;
-}
-
-.success-icon,
-.error-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 12px;
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.success-icon {
-  background: #4caf50;
-  color: white;
-}
-
-.error-icon {
-  background: #ff4444;
-  color: white;
-}
-
-.status-card h3 {
-  font-family: 'Montserrat', sans-serif;
-  margin-bottom: 8px;
-}
-
-.status-card p {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 16px;
-}
-
-.status-btn {
-  background: #6b4c93;
-  color: white;
-  border: none;
-  padding: 10px 24px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-family: 'Montserrat', sans-serif;
 }
 </style>

@@ -1,399 +1,337 @@
 <template>
   <section class="map-section">
-    <div class="map-container">
-      <!-- Заголовок секции -->
-      <div class="map-header">
-        <div class="map-header-content">
-          <h2 class="map-title">Как нас найти</h2>
-          <p class="map-subtitle">Мы находимся в удобном месте с хорошей транспортной доступностью</p>
+    <div class="map-stage">
+      <iframe
+        class="map-frame"
+        src="https://yandex.ru/map-widget/v1/org/floksboks/182640389494/?ll=36.9965%2C55.593991&z=16"
+        title="Карта Floksbox"
+        allowfullscreen
+        loading="lazy"
+      ></iframe>
+
+      <aside class="contact-card">
+        <h2 class="contact-title">Как нас найти</h2>
+        <p class="contact-subtitle">Удобный заезд и хорошая транспортная доступность</p>
+
+        <div class="contact-items">
+          <a
+            class="contact-link"
+            href="https://yandex.ru/maps/org/floksboks/182640389494/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span class="fancy-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+              </svg>
+            </span>
+            <span class="contact-copy">
+              <span class="contact-label">Адрес</span>
+              <span class="contact-value">г. Москва, ул. Промышленная, д. 123</span>
+            </span>
+          </a>
+
+          <a class="contact-link" href="tel:+79602543323">
+            <span class="fancy-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+              </svg>
+            </span>
+            <span class="contact-copy">
+              <span class="contact-label">Телефон</span>
+              <span class="contact-value">+7 (960) 254-33-23</span>
+            </span>
+          </a>
+
+          <a class="contact-link" href="mailto:info@floksbox.ru">
+            <span class="fancy-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+              </svg>
+            </span>
+            <span class="contact-copy">
+              <span class="contact-label">Email</span>
+              <span class="contact-value">info@floksbox.ru</span>
+            </span>
+          </a>
+
+          <a
+            class="contact-link"
+            href="https://yandex.ru/maps/org/floksboks/182640389494/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span class="fancy-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+              </svg>
+            </span>
+            <span class="contact-copy">
+              <span class="contact-label">Время работы</span>
+              <span class="contact-value">Пн-Вс: 9:00 - 19:00</span>
+            </span>
+          </a>
         </div>
-      </div>
 
-      <!-- Контейнер с картой и контактной информацией -->
-      <div class="map-content">
-        <!-- Яндекс карта -->
-        <div class="map-wrapper">
-          <div class="yandex-map">
-            <iframe 
-              src="https://yandex.ru/map-widget/v1/org/floksboks/182640389494/?ll=37.009835%2C55.593991&z=16" 
-              width="100%" 
-              height="100%" 
-              frameborder="0" 
-              allowfullscreen="true"
-              loading="lazy"
-            ></iframe>
-          </div>
-        </div>
-
-        <!-- Контактная информация -->
-        <div class="contact-info">
-          <div class="contact-card">
-            <h3 class="contact-title">Контактная информация</h3>
-            
-            <div class="contact-items">
-              <div class="contact-item">
-                <div class="contact-icon">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                  </svg>
-                </div>
-                <div class="contact-details">
-                  <h4>Адрес</h4>
-                  <p>г. Москва, ул. Промышленная, д. 123</p>
-                </div>
-              </div>
-
-              <div class="contact-item">
-                <div class="contact-icon">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
-                  </svg>
-                </div>
-                <div class="contact-details">
-                  <h4>Телефон</h4>
-                  <p><a href="tel:+79602543323">+7 (960) 254-33-23</a></p>
-                </div>
-              </div>
-
-              <div class="contact-item">
-                <div class="contact-icon">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.89 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                  </svg>
-                </div>
-                <div class="contact-details">
-                  <h4>Email</h4>
-                  <p><a href="mailto:info@floksbox.ru">info@floksbox.ru</a></p>
-                </div>
-              </div>
-
-              <div class="contact-item">
-                <div class="contact-icon">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
-                  </svg>
-                </div>
-                <div class="contact-details">
-                  <h4>Время работы</h4>
-                  <p>Пн-Вс: 9:00 - 19:00</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Кнопка для построения маршрута -->
-            <div class="route-button">
-              <a href="https://yandex.ru/maps/?rtext=~55.593991,37.009835" target="_blank" class="btn-route">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M21.71 11.29l-9-9c-.39-.39-1.02-.39-1.41 0l-9 9c-.39.39-.39 1.02 0 1.41l9 9c.39.39 1.02.39 1.41 0l9-9c.39-.39.39-1.02 0-1.41zM14 14.5V12h-4v3H8l4-4 4 4h-2z"/>
-                </svg>
-                Построить маршрут
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
+        <a
+          class="route-btn"
+          href="https://yandex.ru/maps/?rtext=~55.593991,37.009835"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span class="fancy-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21.71 11.29l-9-9c-.39-.39-1.02-.39-1.41 0l-9 9c-.39.39-.39 1.02 0 1.41l9 9c.39.39 1.02.39 1.41 0l9-9c.39-.39.39-1.02 0-1.41zM14 14.5V12h-4v3H8l4-4 4 4h-2z"/>
+            </svg>
+          </span>
+          <span class="route-label">Построить маршрут</span>
+        </a>
+      </aside>
     </div>
   </section>
 </template>
 
 <script setup>
-// Компонент карты не требует дополнительной логики
 </script>
 
 <style lang="scss" scoped>
-@use 'sass:color';
-@use '~/assets/styles/variables.scss' as vars;
+$brand: #5e3085;
+$map-height: 400px; // было 500px, минус 20%
 
 .map-section {
-  background: transparent;
-  padding: 40px 0;
   position: relative;
-}
-
-.map-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 40px;
-}
-
-.map-header {
-  text-align: center;
-  margin-bottom: 50px;
-}
-
-.map-title {
-  font-size: 36px;
-  font-weight: 700;
-  color: vars.$color-black;
-  margin-bottom: 16px;
-  line-height: 1.2;
-}
-
-.map-subtitle {
-  font-size: 18px;
-  color: #666666;
-  max-width: 600px;
-  margin: 0 auto;
-  line-height: 1.5;
-}
-
-.map-content {
-  display: grid;
-  grid-template-columns: 1fr 400px;
-  gap: 40px;
-  align-items: start;
-}
-
-.map-wrapper {
-  border-radius: vars.$border-radius-large;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  background: rgba(248, 249, 250, 0.9);
-}
-
-.yandex-map {
+  z-index: 2;
   width: 100%;
-  height: 500px;
-  min-height: 400px;
-  
-  iframe {
-    border-radius: vars.$border-radius-large;
-  }
+  background: transparent;
 }
 
-.contact-info {
-  position: sticky;
-  top: 100px;
+.map-stage {
+  position: relative;
+  width: 100%;
+  height: $map-height;
+  overflow: hidden;
+}
+
+.map-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 
 .contact-card {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: vars.$border-radius-large;
-  padding: 32px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
+  position: absolute;
+  z-index: 2;
+  left: 40px;
+  top: calc(50% - 12px);
+  transform: translateY(-50%);
+  width: 400px;
+  max-height: calc(100% - 28px);
+  box-sizing: border-box;
+  padding: 14px 16px 12px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18px 40px rgba(20, 8, 40, 0.22);
+  overflow: auto;
 }
 
 .contact-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: vars.$color-black;
-  margin-bottom: 24px;
-  text-align: center;
+  margin: 0;
+  font-family: 'Days One', cursive;
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.15;
+  color: $brand;
+}
+
+.contact-subtitle {
+  margin: 2px 0 6px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+  color: #666;
 }
 
 .contact-items {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  margin-bottom: 32px;
+  gap: 4px;
 }
 
-.contact-item {
+.contact-link,
+.route-btn {
+  text-decoration: none;
+  color: inherit;
+}
+
+.contact-link {
   display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 16px;
-  border-radius: vars.$border-radius-medium;
-  transition: all vars.$transition-medium;
-  
-  &:hover {
-    background: rgba(71, 0, 159, 0.05);
-    transform: translateX(5px);
+  align-items: center;
+  gap: 12px;
+  padding: 4px 6px;
+  border-radius: 14px;
+  transition: background 0.3s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: rgba(94, 48, 133, 0.06);
+    outline: none;
   }
 }
 
-.contact-icon {
-  width: 48px;
-  height: 48px;
-  background: rgba(71, 0, 159, 0.1);
-  border-radius: 50%;
+.contact-copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.contact-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.contact-value {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+  color: #666;
+}
+
+// Эффект #14: круг заливается цветом, иконка переворачивается
+.fancy-icon {
+  position: relative;
+  z-index: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: vars.$color-primary;
   flex-shrink: 0;
-  
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff;
+  color: $brand;
+  box-shadow: 0 6px 14px rgba(94, 48, 133, 0.18);
+  overflow: hidden;
+  perspective: 400px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: $brand;
+    transform: scale(0);
+    transition: transform 0.45s ease;
+    z-index: 0;
+  }
+
   svg {
-    width: 24px;
-    height: 24px;
-  }
-}
-
-.contact-details {
-  flex: 1;
-  
-  h4 {
-    font-size: 16px;
-    font-weight: 600;
-    color: vars.$color-black;
-    margin-bottom: 4px;
-  }
-  
-  p {
-    font-size: 14px;
-    color: #666666;
-    margin: 0;
-    line-height: 1.4;
-    
-    a {
-      color: inherit;
-      text-decoration: none;
-      transition: color vars.$transition-medium;
-      
-      &:hover {
-        color: vars.$color-primary;
-      }
-    }
-  }
-}
-
-.route-button {
-  text-align: center;
-}
-
-.btn-route {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  background: vars.$color-primary;
-  color: vars.$color-white;
-  text-decoration: none;
-  border-radius: vars.$border-radius-medium;
-  font-weight: 600;
-  font-size: 14px;
-  transition: all vars.$transition-medium;
-  
-  &:hover {
-    background: color.scale(vars.$color-primary, $lightness: -10%);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(71, 0, 159, 0.3);
-  }
-  
-  svg {
+    position: relative;
+    z-index: 1;
     width: 18px;
     height: 18px;
+    transition: transform 0.55s ease, color 0.35s ease;
   }
 }
 
-// Адаптивность
-@media (max-width: 1024px) {
-  .map-content {
-    grid-template-columns: 1fr;
-    gap: 30px;
+.contact-link:hover .fancy-icon,
+.contact-link:focus-visible .fancy-icon,
+.route-btn:hover .fancy-icon,
+.route-btn:focus-visible .fancy-icon {
+  color: #fff;
+
+  &::before {
+    transform: scale(1);
   }
-  
-  .contact-info {
-    position: static;
+
+  svg {
+    transform: rotateY(360deg);
+  }
+}
+
+.route-btn {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 6px 14px 6px 6px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  background: #fff;
+  color: $brand;
+  border: 2px solid $brand;
+  overflow: hidden;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 140%;
+    height: 280%;
+    border-radius: 50%;
+    background: $brand;
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.45s ease;
+    z-index: 0;
+  }
+
+  .fancy-icon,
+  .route-label {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.route-btn:hover,
+.route-btn:focus-visible {
+  color: #fff;
+  outline: none;
+
+  &::before {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@media (max-width: 1024px) {
+  .map-stage {
+    height: 320px;
+  }
+
+  .contact-card {
+    left: 20px;
+    width: 340px;
   }
 }
 
 @media (max-width: 768px) {
-  .map-section {
-    padding: 30px 0;
+  .map-stage {
+    height: auto;
   }
-  
-  .map-container {
-    padding: 0 20px;
-  }
-  
-  .map-header {
-    margin-bottom: 40px;
-  }
-  
-  .map-title {
-    font-size: 28px;
-    margin-bottom: 12px;
-  }
-  
-  .map-subtitle {
-    font-size: 16px;
-  }
-  
-  .yandex-map {
-    height: 400px;
-  }
-  
-  .contact-card {
-    padding: 24px;
-  }
-  
-  .contact-title {
-    font-size: 20px;
-    margin-bottom: 20px;
-  }
-  
-  .contact-item {
-    padding: 12px;
-  }
-  
-  .contact-icon {
-    width: 40px;
-    height: 40px;
-    
-    svg {
-      width: 20px;
-      height: 20px;
-    }
-  }
-}
 
-@media (max-width: 480px) {
-  .map-section {
-    padding: 20px 0;
+  .map-frame {
+    position: relative;
+    height: 240px;
   }
-  
-  .map-container {
-    padding: 0 15px;
-  }
-  
-  .map-title {
-    font-size: 24px;
-  }
-  
-  .map-subtitle {
-    font-size: 14px;
-  }
-  
-  .yandex-map {
-    height: 300px;
-  }
-  
+
   .contact-card {
-    padding: 20px;
-  }
-  
-  .contact-title {
-    font-size: 18px;
-  }
-  
-  .contact-items {
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-  
-  .contact-item {
-    padding: 8px;
-    flex-direction: column;
-    text-align: center;
-    gap: 12px;
-  }
-  
-  .contact-details {
-    h4 {
-      font-size: 14px;
-    }
-    
-    p {
-      font-size: 13px;
-    }
-  }
-  
-  .btn-route {
-    font-size: 13px;
-    padding: 10px 20px;
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: auto;
+    max-height: none;
+    margin: 16px 16px 0;
   }
 }
 </style>
-

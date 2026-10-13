@@ -43,18 +43,7 @@
         <div class="text-layer">
           <div class="text-content">
             <h1 class="category-title">{{ categoryHeroTitle }}</h1>
-            <template v-if="categoryHeroParagraphs.length">
-              <p
-                v-for="(paragraph, index) in categoryHeroParagraphs"
-                :key="'hero-p-' + index"
-                class="category-description"
-              >
-                {{ paragraph }}
-              </p>
-            </template>
-            <p v-else class="category-description">
-              {{ categoryDescription }}
-            </p>
+            <NuxtLink to="/catalog" class="category-back btn-glow">Назад в каталог</NuxtLink>
           </div>
         </div>
         
@@ -143,7 +132,21 @@
         <p>Мы работаем над пополнением каталога</p>
       </div>
     </section>
-    
+
+    <section v-if="categoryHeroParagraphs.length || categoryDescription" class="category-lead">
+      <div class="category-lead-inner">
+        <template v-if="categoryHeroParagraphs.length">
+          <p
+            v-for="(paragraph, index) in categoryHeroParagraphs"
+            :key="'lead-p-' + index"
+            class="category-lead-text"
+          >
+            {{ paragraph }}
+          </p>
+        </template>
+        <p v-else class="category-lead-text">{{ categoryDescription }}</p>
+      </div>
+    </section>
     
     <!-- Футер сайта -->
     <FooterNew />
@@ -616,14 +619,14 @@ useHead({
   position: relative;
   width: 100vw;
   margin-left: calc(-50vw + 50%);
-  height: 450px;
+  height: 300px;
   overflow: visible;
   display: flex;
   align-items: center;
   justify-content: center;
   left: 0;
   right: 0;
-  --diag-strip-h: clamp(104px, 11vw, 158px);
+  --diag-strip-h: clamp(69px, 7.3vw, 105px);
   --hero-diag-reserve: var(--diag-strip-h);
   /* боке: от стыка с текстом до правого края hero */
   --bokeh-inset-left: 50%;
@@ -632,20 +635,20 @@ useHead({
 }
 
 .category-hero--half {
-  height: 50vh;
-  min-height: 280px;
-  max-height: 420px;
+  height: 300px;
+  min-height: 220px;
+  max-height: 300px;
 }
 
 .category-hero--half .text-layer {
   align-items: flex-start;
   padding-top: 24px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .category-hero--half .text-content {
-  max-height: 100%;
-  overflow: hidden;
+  max-height: none;
+  overflow: visible;
 }
 
 .category-hero--half .category-title {
@@ -795,7 +798,8 @@ useHead({
   justify-content: center;
   overflow: visible;
   pointer-events: auto;
-  --kat-max-height: 450px;
+  --kat-max-height: 300px;
+  padding-bottom: 18px;
 }
 
 .product-layer :deep(.kat-float) {
@@ -806,8 +810,8 @@ useHead({
 /* Десктоп: фиксированная сетка hero (не трогать мобильными правками) */
 @media (min-width: 993px) {
   .category-hero {
-    height: 450px;
-    min-height: 450px;
+    height: 300px;
+    min-height: 300px;
   }
 
   .content-container {
@@ -830,7 +834,8 @@ useHead({
     height: 100%;
     flex: none;
     min-height: 0;
-    --kat-max-height: 450px;
+    --kat-max-height: 300px;
+    padding-bottom: 18px;
   }
 }
 
@@ -855,23 +860,54 @@ useHead({
       font-size: 2.5rem;
       font-weight: 400;
       color: #5e3085;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.9rem;
       line-height: 1.2;
       text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
     }
-    
-    .category-description {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 1rem;
-      font-weight: 400;
-      color: #555;
-      line-height: 1.6;
-      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
-      /* Если текст длинный, он может опускаться на диагональную полосу */
-      z-index: 5; /* выше всех слоев */
-      position: relative;
-    }
   }
+}
+
+.category-back {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 10px 18px;
+  border-radius: 24px;
+  background: #b8ff00;
+  color: #243000;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.2;
+  text-decoration: none;
+  position: relative;
+  z-index: 2;
+}
+
+.category-back:hover {
+  background: #f4ffe8;
+}
+
+.category-lead {
+  padding: 28px 20px 72px;
+  background: #fff;
+}
+
+.category-lead-inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.category-lead-text {
+  margin: 0 0 12px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #555;
+}
+
+.category-lead-text:last-child {
+  margin-bottom: 0;
 }
 
 /* SEO-текст категории — сетка 2 колонки */
@@ -945,7 +981,7 @@ useHead({
 
   .category-hero--half {
     height: auto;
-    min-height: 300px;
+    min-height: 200px;
     max-height: none;
   }
 
@@ -960,7 +996,7 @@ useHead({
 
 /* Раздел товаров */
 .products-section {
-  padding: 80px 0 160px 0;
+  padding: 28px 0 80px 0;
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
@@ -1379,8 +1415,8 @@ useHead({
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(208, 255, 10, 0.4);
-    background: #c4f000;
+    box-shadow: none;
+    background: #fff;
   }
   
   &:active {
@@ -1578,7 +1614,7 @@ useHead({
 /* Адаптивность */
 @media (max-width: 1200px) {
   .category-hero {
-    height: 450px;
+    height: 300px;
   }
   
   .text-layer .text-content {
@@ -1592,15 +1628,15 @@ useHead({
   }
   
   .product-layer {
-    --kat-max-height: 420px;
+    --kat-max-height: 280px;
   }
 }
 
 @media (max-width: 992px) {
   .category-hero {
-    min-height: 480px;
+    min-height: 320px;
     height: auto;
-    --diag-strip-h: clamp(52px, 14vw, 72px);
+    --diag-strip-h: clamp(35px, 9vw, 48px);
     --hero-diag-reserve: var(--diag-strip-h);
     --bokeh-inset-left: 5%;
     --bokeh-inset-right: 11%;
@@ -1612,7 +1648,7 @@ useHead({
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
-    min-height: 480px;
+    min-height: 320px;
   }
   
   .text-layer {
@@ -1637,9 +1673,10 @@ useHead({
   .product-layer {
     width: 100%;
     flex: 1 1 56%;
-    min-height: 220px;
+    min-height: 150px;
     height: auto;
-    --kat-max-height: min(300px, 46vh);
+    --kat-max-height: min(200px, 32vh);
+    padding-bottom: 8px;
   }
   
   .products-grid {
@@ -1650,8 +1687,8 @@ useHead({
 
 @media (max-width: 768px) {
   .category-hero {
-    min-height: 500px;
-    --diag-strip-h: clamp(48px, 13vw, 58px);
+    min-height: 334px;
+    --diag-strip-h: clamp(32px, 8.5vw, 39px);
     --hero-diag-reserve: var(--diag-strip-h);
     --bokeh-inset-left: 4%;
     --bokeh-inset-right: 10%;
@@ -1663,7 +1700,7 @@ useHead({
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
-    min-height: 500px;
+    min-height: 334px;
   }
   
   .text-layer {
@@ -1688,9 +1725,10 @@ useHead({
   .product-layer {
     width: 100%;
     flex: 1 1 58%;
-    min-height: 240px;
+    min-height: 160px;
     height: auto;
-    --kat-max-height: min(320px, 50vh);
+    --kat-max-height: min(214px, 34vh);
+    padding-bottom: 8px;
   }
   
   .products-section {
@@ -1744,8 +1782,8 @@ useHead({
 
 @media (max-width: 480px) {
   .category-hero {
-    min-height: 520px;
-    --diag-strip-h: clamp(44px, 12vw, 52px);
+    min-height: 347px;
+    --diag-strip-h: clamp(29px, 8vw, 35px);
     --hero-diag-reserve: var(--diag-strip-h);
     --bokeh-inset-left: 3%;
     --bokeh-inset-right: 8%;
@@ -1757,7 +1795,7 @@ useHead({
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
-    min-height: 520px;
+    min-height: 347px;
   }
 
   .text-layer {
@@ -1782,9 +1820,10 @@ useHead({
   .product-layer {
     width: 100%;
     flex: 1 1 60%;
-    min-height: 260px;
+    min-height: 174px;
     height: auto;
-    --kat-max-height: min(340px, 52vh);
+    --kat-max-height: min(227px, 35vh);
+    padding-bottom: 6px;
   }
 
   .products-section {

@@ -28,11 +28,12 @@ body {
   color: vars.$color-black;
   line-height: 1.6;
   overflow-x: hidden !important; /* Брутфорс: блокируем горизонтальный скролл */
-  background-image: url('/assets/footer/bg ok.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background: #fff;
+}
+
+html.splash-open,
+html.splash-open body {
+  overflow: hidden !important;
 }
 
 // Утилитарные классы
@@ -300,6 +301,140 @@ a {
 @media (prefers-reduced-motion: reduce) {
   .scroll-reveal {
     opacity: 1;
+    animation: none !important;
+  }
+}
+
+// Волна подсветки по контуру. Зелёная кнопка без свечения,
+// при наведении заливка становится очень светло-зелёной и включается глоу.
+.btn-glow {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+}
+
+.btn-glow::before,
+.btn-glow::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.btn-glow::before {
+  top: -10px;
+  left: -10px;
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  background: linear-gradient(
+    45deg,
+    #5e3085,
+    #7a3cff,
+    #2f6bff,
+    #00b7ff,
+    #b8ff00,
+    #3dff7a,
+    #2450e8,
+    #47009f,
+    #5e3085
+  );
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.35s ease-in-out;
+}
+
+.btn-glow::after {
+  inset: 0;
+  z-index: -1;
+  background: inherit;
+  transition: background 0.3s ease;
+}
+
+.btn-glow:hover::before,
+.btn-glow:focus-visible::before {
+  opacity: 1;
+  animation: btn-glow-wave 9s linear infinite;
+}
+
+.btn-glow:hover::after,
+.btn-glow:focus-visible::after {
+  background: #f4ffe8;
+}
+
+// Пока форма не заполнена: белая кнопка и спокойная серая подсветка.
+// Цветная волна включается только у активной кнопки при наведении.
+.btn-glow:has(:disabled)::before {
+  top: -4px;
+  left: -4px;
+  width: calc(100% + 8px);
+  height: calc(100% + 8px);
+  background: linear-gradient(
+    45deg,
+    #ececec,
+    #d8d8d8,
+    #e4d8ef,
+    #c8c8c8,
+    #c4b3d4,
+    #f3f3f3,
+    #ebe0f2,
+    #d2d2d2,
+    #ececec
+  );
+  background-size: 400%;
+  opacity: 1;
+  filter: blur(7px);
+  animation: none;
+}
+
+.btn-glow:has(:disabled):hover::before,
+.btn-glow:has(:disabled):focus-within::before {
+  opacity: 1;
+  animation: btn-glow-wave 9s linear infinite;
+}
+
+.btn-glow:has(:disabled):hover::after,
+.btn-glow:has(:disabled):focus-within::after,
+.btn-glow:has(:disabled)::after {
+  background: #fff;
+}
+
+// Белая кнопка: заливка не меняется, на наведении только волна.
+// При нажатии заливка уходит и сквозь кнопку виден сам градиент.
+.btn-glow--white {
+  background: #fff;
+  color: #5e3085;
+}
+
+.btn-glow--white::after,
+.btn-glow--white:hover::after,
+.btn-glow--white:focus-visible::after {
+  background: #fff;
+}
+
+.btn-glow--white:active::before {
+  opacity: 1;
+  filter: blur(4px);
+  animation: btn-glow-wave 3.2s linear infinite;
+}
+
+.btn-glow--white:active::after {
+  background: transparent;
+}
+
+.btn-glow--white:active {
+  color: #2a1240;
+}
+
+@keyframes btn-glow-wave {
+  0% { background-position: 0 0; }
+  50% { background-position: 400% 0; }
+  100% { background-position: 0 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-glow::before {
     animation: none !important;
   }
 }

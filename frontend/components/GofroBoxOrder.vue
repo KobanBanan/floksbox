@@ -53,7 +53,7 @@
       </div>
     </div>
 
-    <button type="button" class="gofro-order__btn" @click="handleOrder">
+    <button type="button" class="gofro-order__btn btn-glow" @click="handleOrder">
       заказать у менеджера
     </button>
   </div>
@@ -209,8 +209,8 @@ function handleOrder() {
 }
 
 .gofro-order__btn:hover {
-  background: #c4f000;
-  box-shadow: 0 5px 15px rgba(208, 255, 10, 0.3);
+  background: #f4ffe8;
+  box-shadow: none;
 }
 
 @media (max-width: 768px) {
