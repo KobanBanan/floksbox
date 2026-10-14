@@ -1,5 +1,5 @@
 <template>
-  <div class="category-page">
+  <div class="category-page" :class="{ 'category-page--copy-below': categorySlug === 'gift-bags' }">
     <!-- Шапка сайта -->
     <HeaderSimple />
     
@@ -29,9 +29,9 @@
         <img src="/assets/images/oblako.png" alt="Облако" class="cloud-image" />
       </div>
       
-      <!-- Слой 3: полоса FloksBox на всю ширину, один раз -->
+      <!-- Слой 3: Полоса floksbox - diag.png, повтор по ширине -->
       <div class="diagonal-layer">
-        <img class="diagonal-strip" src="/assets/images/diag.png" alt="" />
+        <div class="diagonal-strip" role="img" aria-label="Полоса FloksBox" />
       </div>
 
       <!-- Боке: за полосой diag, всплывает снизу -->
@@ -49,7 +49,11 @@
         
         <!-- Слой 4: Картинка категории -->
         <div class="product-layer">
-          <KatFloatImage :src="categoryImage" :alt="categoryName" />
+          <KatFloatImage
+            :src="categoryImage"
+            :alt="categoryName"
+            :class="{ 'hat-sway-experiment': categorySlug === 'hat-boxes' }"
+          />
         </div>
       </div>
     </section>
@@ -268,9 +272,9 @@ const categoryConfig = {
     name: 'Подарочные пакеты',
     heroTitle: 'Подарочные пакеты с печатью',
     description:
-      'Стильная упаковка для подарков, розницы и корпоративных наборов. Крафт и ламинированная бумага.',
+      'Крафт и ламинированная бумага, печать логотипа, ручки на выбор.',
     heroParagraphs: [
-      'Стильная упаковка для подарков, розницы и корпоративных наборов. Крафт и ламинированная бумага, ручки на выбор — шнуры, ленты или затяжка. Нанесение логотипа под ваш тираж.'
+      'Крафт и ламинированная бумага, печать логотипа, ручки на выбор.'
     ],
     image: '/assets/images/kat5.png',
     richContent: {
@@ -278,12 +282,10 @@ const categoryConfig = {
         {
           title: 'Преимущества подарочных пакетов',
           items: [
-            'Презентабельный вид подарка с первого взгляда.',
-            'Прочная конструкция и надёжные ручки под вес содержимого.',
-            'Экологичные материалы: крафт и бумага с ламинацией.',
-            'Широкий выбор размеров и цветов под задачу.',
-            'Брендирование логотипом, слоганом и фирменной графикой.',
-            'Подходят для розницы, мероприятий и корпоративных подарков.'
+            'Презентабельный вид и прочные ручки.',
+            'Крафт и бумага с ламинацией.',
+            'Размеры и цвета под задачу.',
+            'Логотип и фирменная графика.'
           ]
         },
         {
@@ -300,11 +302,8 @@ const categoryConfig = {
           lead: 'Наносим логотип и графику на пакет и ручки:',
           items: [
             'шелкография',
-            'трафаретная печать',
-            'шелкотрансфер',
-            'DTF (полноцвет)',
+            'DTF и полноцвет',
             'УФ-печать',
-            'полноцветная печать',
             'тиснение'
           ],
           note: 'Подбор технологии зависит от материала, цветности макета и тиража.'
@@ -323,17 +322,16 @@ const categoryConfig = {
           title: 'Области применения',
           lead: 'Подарочные пакеты подходят для:',
           items: [
-            'розничных магазинов и бутиков',
-            'корпоративных подарков и welcome-наборов',
-            'мероприятий, выставок и промоакций',
-            'упаковки косметики, одежды и аксессуаров',
-            'праздничной и сезонной упаковки'
+            'магазины и бутики',
+            'корпоративные подарки',
+            'мероприятия и промо',
+            'косметика, одежда, аксессуары'
           ]
         },
         {
           fullWidth: true,
           paragraphs: [
-            'Изготавливаем подарочные пакеты стандартных и индивидуальных размеров из крафта и ламинированной бумаги. Поможем подобрать тип ручек и способ печати под ваш макет и тираж.'
+            'Пакеты стандартных и своих размеров. Подберём ручки и печать под макет и тираж.'
           ]
         }
       ]
@@ -615,6 +613,22 @@ useHead({
   overflow-y: visible;
 }
 
+.category-page--copy-below > .products-section {
+  order: 1;
+}
+
+.category-page--copy-below > .category-rich-section {
+  order: 2;
+}
+
+.category-page--copy-below > .category-lead {
+  order: 3;
+}
+
+.category-page--copy-below > .footer-new {
+  order: 4;
+}
+
 .category-hero {
   position: relative;
   width: 100vw;
@@ -626,7 +640,7 @@ useHead({
   justify-content: center;
   left: 0;
   right: 0;
-  --diag-strip-h: clamp(88px, 9vw, 132px);
+  --diag-strip-h: clamp(69px, 7.3vw, 105px);
   --hero-diag-reserve: var(--diag-strip-h);
   /* боке: от стыка с текстом до правого края hero */
   --bokeh-inset-left: 50%;
@@ -754,8 +768,7 @@ useHead({
   }
 }
 
-/* Слой 3: полоса на всю ширину. Пустой край файла под знаками обрезается,
-   сама полоса остаётся у низа баннера. */
+/* Слой 3: Диагональная полоса — паттерн на всю ширину */
 .diagonal-layer {
   position: absolute;
   bottom: 0;
@@ -764,14 +777,15 @@ useHead({
   z-index: 4;
   overflow: hidden;
   pointer-events: none;
-  line-height: 0;
 }
 
 .diagonal-strip {
   width: 100%;
-  height: auto;
-  display: block;
-  margin-bottom: calc(100% * -16 / 2877);
+  height: var(--diag-strip-h, 72px);
+  background-image: url('/assets/images/diag.png');
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+  background-position: left bottom;
 }
 
 /* Контейнер для контента с ограничением ширины */
@@ -806,6 +820,30 @@ useHead({
 .product-layer :deep(.kat-float) {
   position: relative;
   z-index: 1;
+}
+
+/* ЭКСПЕРИМЕНТ: покачивание шляпной коробки при наведении.
+   Чтобы вернуть как было, удалите класс hat-sway-experiment в шаблоне и этот блок. */
+.product-layer :deep(.kat-float.hat-sway-experiment:hover .kat-float__img) {
+  transform-origin: 50% 88%;
+  animation: hat-box-sway 1.15s ease-in-out infinite;
+}
+
+@keyframes hat-box-sway {
+  0%,
+  100% {
+    transform: rotate(-2.6deg);
+  }
+
+  50% {
+    transform: rotate(2.6deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-layer :deep(.kat-float.hat-sway-experiment:hover .kat-float__img) {
+    animation: none;
+  }
 }
 
 /* Десктоп: фиксированная сетка hero (не трогать мобильными правками) */
@@ -1637,7 +1675,7 @@ useHead({
   .category-hero {
     min-height: 320px;
     height: auto;
-    --diag-strip-h: clamp(56px, 16vw, 84px);
+    --diag-strip-h: clamp(35px, 9vw, 48px);
     --hero-diag-reserve: var(--diag-strip-h);
     --bokeh-inset-left: 5%;
     --bokeh-inset-right: 11%;
@@ -1690,7 +1728,7 @@ useHead({
 @media (max-width: 768px) {
   .category-hero {
     min-height: 334px;
-    --diag-strip-h: clamp(52px, 18vw, 72px);
+    --diag-strip-h: clamp(32px, 8.5vw, 39px);
     --hero-diag-reserve: var(--diag-strip-h);
     --bokeh-inset-left: 4%;
     --bokeh-inset-right: 10%;
@@ -1785,7 +1823,7 @@ useHead({
 @media (max-width: 480px) {
   .category-hero {
     min-height: 347px;
-    --diag-strip-h: clamp(48px, 20vw, 64px);
+    --diag-strip-h: clamp(29px, 8vw, 35px);
     --hero-diag-reserve: var(--diag-strip-h);
     --bokeh-inset-left: 3%;
     --bokeh-inset-right: 8%;

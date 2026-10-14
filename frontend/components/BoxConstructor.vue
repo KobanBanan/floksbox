@@ -145,6 +145,13 @@
           <div class="layers-zoom" :style="zoomStyle">
             <div class="layers-container" :style="stageStyle">
               <img
+                v-if="material === 'velvet'"
+                id="rb_velvet"
+                :src="velvetTextureSrc"
+                alt=""
+                class="box-layer box-layer--velvet"
+              />
+              <img
                 id="rb_back"
                 :src="layerBackSrc"
                 alt=""
@@ -157,7 +164,7 @@
                 class="box-layer box-layer--bottom"
               />
               <div
-                v-if="withLid && material !== 'velvet'"
+                v-if="withLid"
                 class="box-layer box-layer--top-fill"
                 :style="topColorFillStyle"
                 aria-hidden="true"
@@ -349,13 +356,11 @@ const zoomStyle = computed(() => ({
   transformOrigin: 'center bottom'
 }))
 
-// Бумага: B/N/K прозрачные, цвет под ними. Бархат: свои непрозрачные слои.
-const layerBackSrc = computed(() =>
-  material.value === 'velvet' ? '/assets/images/back_barhat.png' : '/assets/images/B.png'
-)
-const layerBottomSrc = computed(() =>
-  material.value === 'velvet' ? '/assets/images/bottom_barhat.png' : '/assets/images/N.png'
-)
+// Цвет — фон сцены, как у бумаги. Бархат — дополнительная полупрозрачная текстура
+// в теле цилиндра, под бумажными слоями B/N/K и под маской цвета крышки.
+const velvetTextureSrc = '/assets/images/back_barhat.png'
+const layerBackSrc = '/assets/images/B.png'
+const layerBottomSrc = '/assets/images/N.png'
 const layerTopColorMaskSrc = '/assets/images/K_CVETOCHEK.png'
 const layerTopSrc = computed(() => {
   if (!withLid.value) {
@@ -363,7 +368,7 @@ const layerTopSrc = computed(() => {
     const size = even % 2 === 0 ? even : even - 1
     return `/assets/images/top_off_${size}.png`
   }
-  return material.value === 'velvet' ? '/assets/images/top_on_barhat.png' : '/assets/images/K.png'
+  return '/assets/images/K.png'
 })
 
 const topColorFillStyle = computed(() => ({
@@ -913,7 +918,7 @@ function handleOrder() {
   display: block;
 }
 
-.box-layer--back {
+.box-layer--velvet {
   top: 0;
   height: 100%;
   object-fit: fill;
@@ -921,18 +926,26 @@ function handleOrder() {
   z-index: 0;
 }
 
+.box-layer--back {
+  top: 0;
+  height: 100%;
+  object-fit: fill;
+  object-position: center center;
+  z-index: 1;
+}
+
 .box-layer--bottom {
   bottom: 0;
   height: var(--bottom-h);
   object-fit: fill;
   object-position: center bottom;
-  z-index: 1;
+  z-index: 2;
 }
 
 .box-layer--top-fill {
   top: 0;
   height: var(--top-h);
-  z-index: 2;
+  z-index: 3;
 }
 
 .box-layer--top {
@@ -940,7 +953,7 @@ function handleOrder() {
   height: var(--top-h);
   object-fit: fill;
   object-position: center top;
-  z-index: 3;
+  z-index: 4;
 }
 
 @media (max-width: 768px) {
