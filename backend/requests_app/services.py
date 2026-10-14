@@ -1,113 +1,107 @@
-import asyncio
 import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from telegram import Bot
-from django.conf import settings
 import logging
+from email.header import Header
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.utils import formatdate, make_msgid
+
+from decouple import config as env
+from django.conf import settings
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_RECIPIENTS = ('info@floksbox.ru', 'a.kim@floksbox.ru')
+
 
 class NotificationService:
-    """Сервис для отправки уведомлений в Telegram и Email"""
+    """Письмо менеджерам о новой заявке с сайта."""
 
     @staticmethod
-    async def send_telegram_notification(user_request):
-        """Отправка уведомления в Telegram"""
-        try:
-            bot_token = settings.TELEGRAM_CONFIG['bot_token']
-            chat_id = settings.TELEGRAM_CONFIG['chat_id']
-
-            if not bot_token or not chat_id or bot_token == "YOUR_TELEGRAM_BOT_TOKEN":
-                logger.warning("Telegram bot token или chat_id не настроены")
-                return False
-
-            bot = Bot(token=bot_token)
-
-            message = (
-                f"🔔 Новая заявка #{user_request.id} с сайта FloksBox\n\n"
-                f"👤 Имя: {user_request.name}\n"
-                f"📞 Телефон: {user_request.phone or 'Не указан'}\n"
-                f"📧 Email: {user_request.email or 'Не указан'}\n"
-                f"💬 Сообщение: {user_request.message or 'Не указано'}\n"
-                f"📍 Источник: {user_request.source or 'Сайт'}\n\n"
-                f"📅 {user_request.created_at.strftime('%d.%m.%Y %H:%M')}\n"
-                f"Откройте CRM: /crm/orders/{user_request.id}"
-            )
-
-            await bot.send_message(chat_id=chat_id, text=message)
-            logger.info(f"Telegram уведомление отправлено для заявки {user_request.id}")
-            return True
-
-        except Exception as e:
-            logger.error(f"Ошибка отправки в Telegram: {e}")
-            return False
+    def _email_settings():
+        email_config = getattr(settings, 'EMAIL_CONFIG', {}) or {}
+        host = env('EMAIL_SMTP_HOST', default=email_config.get('smtp_server') or 'smtp.yandex.ru')
+        port = env('EMAIL_SMTP_PORT', default=email_config.get('smtp_port') or 465, cast=int)
+        user = env('EMAIL_SMTP_USER', default=email_config.get('email') or 'info@floksbox.ru')
+        password = env('EMAIL_SMTP_PASSWORD', default='') or email_config.get('password') or ''
+        use_ssl = env('EMAIL_SMTP_USE_SSL', default='', cast=str).strip().lower()
+        if use_ssl in {'1', 'true', 'yes'}:
+            use_ssl = True
+        elif use_ssl in {'0', 'false', 'no'}:
+            use_ssl = False
+        else:
+            use_ssl = bool(email_config.get('use_ssl', port == 465))
+        recipients = email_config.get('recipients') or DEFAULT_RECIPIENTS
+        recipients = [item.strip() for item in recipients if item and item.strip()]
+        return {
+            'host': host,
+            'port': port,
+            'user': user,
+            'password': password,
+            'use_ssl': use_ssl,
+            'recipients': recipients or list(DEFAULT_RECIPIENTS),
+        }
 
     @staticmethod
     def send_email_notification(user_request):
-        """Отправка уведомления на Email"""
+        """Отправка заявки на почту менеджеров."""
         try:
-            email_config = settings.EMAIL_CONFIG
-
-            if not email_config['email'] or email_config['email'] == "your-email@gmail.com":
-                logger.warning("Email настройки не настроены")
+            email_config = NotificationService._email_settings()
+            if not email_config['password']:
+                logger.error('SMTP-пароль не задан, письмо по заявке %s не отправлено', user_request.id)
                 return False
 
+            created_at = timezone.localtime(user_request.created_at)
+            subject = f'Новая заявка с сайта Floksbox от {user_request.name}'
+            body = (
+                'Поступила новая заявка с сайта Floksbox.\n\n'
+                f'Номер заявки: {user_request.id}\n'
+                f'Имя: {user_request.name}\n'
+                f'Телефон: {user_request.phone or "Не указан"}\n'
+                f'Email: {user_request.email or "Не указан"}\n'
+                f'Страница: {user_request.source or "Сайт"}\n'
+                f'Дата: {created_at.strftime("%d.%m.%Y %H:%M")}\n\n'
+                'Сообщение:\n'
+                f'{user_request.message or "Не указано"}\n'
+            )
+
             msg = MIMEMultipart()
-            msg['From'] = email_config['email']
-            msg['To'] = email_config['recipient']
-            msg['Subject'] = f"Новая заявка с сайта FloksBox от {user_request.name}"
-
-            body = f"""
-                    Поступила новая заявка с сайта FloksBox:
-                    
-                    Имя: {user_request.name}
-                    Телефон: {user_request.phone}
-                    Email: {user_request.email or 'Не указан'}
-                    Сообщение: {user_request.message or 'Не указано'}
-                    
-                    Дата создания: {user_request.created_at.strftime('%d.%m.%Y %H:%M')}
-                    
-                    ---
-                    Это автоматическое уведомление с сайта FloksBox."""
-
+            msg['From'] = email_config['user']
+            msg['To'] = ', '.join(email_config['recipients'])
+            msg['Subject'] = Header(subject, 'utf-8')
+            msg['Date'] = formatdate(localtime=True)
+            msg['Message-ID'] = make_msgid(domain='floksbox.ru')
+            if user_request.email:
+                msg['Reply-To'] = user_request.email
             msg.attach(MIMEText(body, 'plain', 'utf-8'))
 
-            server = smtplib.SMTP(email_config['smtp_server'], email_config['smtp_port'])
-            server.starttls()
-            server.login(email_config['email'], email_config['password'])
-            text = msg.as_string()
-            server.sendmail(email_config['email'], email_config['recipient'], text)
-            server.quit()
+            if email_config['use_ssl']:
+                server = smtplib.SMTP_SSL(email_config['host'], email_config['port'], timeout=20)
+            else:
+                server = smtplib.SMTP(email_config['host'], email_config['port'], timeout=20)
+                server.ehlo()
+                if email_config['port'] == 587:
+                    server.starttls()
+                    server.ehlo()
+            try:
+                server.login(email_config['user'], email_config['password'])
+                server.sendmail(email_config['user'], email_config['recipients'], msg.as_string())
+            finally:
+                server.quit()
 
-            logger.info(f"Email уведомление отправлено для заявки {user_request.id}")
+            logger.info(
+                'Письмо по заявке %s отправлено: %s',
+                user_request.id,
+                ', '.join(email_config['recipients']),
+            )
             return True
-
-        except Exception as e:
-            logger.error(f"Ошибка отправки Email: {e}")
+        except Exception as exc:
+            logger.error('Ошибка отправки письма по заявке %s: %s', getattr(user_request, 'id', '?'), exc)
             return False
 
     @staticmethod
     def send_notifications(user_request):
-        """Отправка уведомлений в Telegram и Email"""
-        results = {
-            'telegram': False,
-            'email': False
+        """Отправка заявки на почту."""
+        return {
+            'email': NotificationService.send_email_notification(user_request),
         }
-
-        # Отправка в Telegram (асинхронно)
-        try:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            results['telegram'] = loop.run_until_complete(
-                NotificationService.send_telegram_notification(user_request)
-            )
-            loop.close()
-        except Exception as e:
-            logger.error(f"Ошибка при отправке в Telegram: {e}")
-
-        # Отправка Email
-        results['email'] = NotificationService.send_email_notification(user_request)
-
-        return results

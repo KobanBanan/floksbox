@@ -38,11 +38,11 @@ def sent_request(request):
     try:
         # Получаем данные из запроса
         data = request.data
-        name = data.get('name', '').strip()
-        phone = data.get('phone', '').strip()
-        email = data.get('email', '').strip()
-        message = data.get('message', '').strip()
-        source = data.get('source', '').strip()
+        name = (data.get('name') or '').strip()
+        phone = (data.get('phone') or '').strip()
+        email = (data.get('email') or '').strip()
+        message = (data.get('message') or '').strip()
+        source = (data.get('source') or '').strip()
 
         # Валидация обязательных полей
         if not name:
@@ -51,10 +51,10 @@ def sent_request(request):
                 'error': 'Поле "Имя" обязательно для заполнения'
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        if not phone and not email:
+        if not phone and not email and not message:
             return Response({
                 'success': False,
-                'error': 'Укажите телефон или email для связи'
+                'error': 'Укажите телефон, email или другой способ связи'
             }, status=status.HTTP_400_BAD_REQUEST)
 
         # Создаем заявку
@@ -66,16 +66,20 @@ def sent_request(request):
             source=source,
         )
 
-        # Отправляем уведомления
-        notification_results = NotificationService.send_notifications(user_request)
-
         logger.info(f"Создана заявка {user_request.id} от {name}")
+
+        notification_results = NotificationService.send_notifications(user_request)
+        if not notification_results.get('email'):
+            return Response({
+                'success': False,
+                'error': 'Заявка сохранена, но письмо менеджеру не отправилось. Напишите на info@floksbox.ru.',
+                'request_id': user_request.id,
+            }, status=status.HTTP_502_BAD_GATEWAY)
 
         return Response({
             'success': True,
             'message': 'Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.',
             'request_id': user_request.id,
-            'notifications': notification_results
         }, status=status.HTTP_201_CREATED)
 
     except Exception as e:
