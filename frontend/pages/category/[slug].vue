@@ -1,5 +1,10 @@
 <template>
-  <div class="category-page" :class="{ 'category-page--copy-below': categorySlug === 'gift-bags' }">
+  <div
+    class="category-page"
+    :class="{
+      'category-page--copy-below': categorySlug === 'gift-bags' || categorySlug === 'four-flap-boxes'
+    }"
+  >
     <!-- Шапка сайта -->
     <HeaderSimple />
     
@@ -31,7 +36,13 @@
       
       <!-- Слой 3: Полоса floksbox - diag.png, повтор по ширине -->
       <div class="diagonal-layer">
-        <div class="diagonal-strip" role="img" aria-label="Полоса FloksBox" />
+        <img
+          class="diagonal-strip"
+          src="/assets/images/diag.png"
+          alt=""
+          width="2877"
+          height="212"
+        />
       </div>
 
       <!-- Боке: за полосой diag, всплывает снизу -->
@@ -43,6 +54,9 @@
         <div class="text-layer">
           <div class="text-content">
             <h1 class="category-title">{{ categoryHeroTitle }}</h1>
+            <p v-if="categoryHeroLead" class="category-hero-lead">
+              {{ categoryHeroLead }}
+            </p>
             <NuxtLink to="/catalog" class="category-back btn-glow">Назад в каталог</NuxtLink>
           </div>
         </div>
@@ -91,14 +105,14 @@
     <!-- Конструктор для круглых коробок -->
     <section v-if="categorySlug === 'hat-boxes'" class="constructor-page-section">
       <div class="constructor-page-container">
-        <h2 class="constructor-page-title">Конструктор круглых коробок</h2>
-        <p class="constructor-page-subtitle">Создайте коробку по вашим размерам</p>
         <BoxConstructor />
       </div>
     </section>
 
-    <!-- Раздел с товарами -->
-    <section class="products-section">
+    <HatPhotoFilm v-if="categorySlug === 'hat-boxes'" />
+
+    <!-- Раздел с товарами. У шляпных коробок пока только конструктор. -->
+    <section v-if="categorySlug !== 'hat-boxes' || products.length" class="products-section">
       
       <div v-if="loading" class="loading-container">
         <div class="spinner"></div>
@@ -126,7 +140,7 @@
           </div>
           <div class="product-info">
             <h3>{{ product.name }}</h3>
-            <small v-if="product.dimensions && categorySlug !== 'four-flap-boxes' && categorySlug !== 'gift-bags' && categorySlug !== 'flexo-corrugated'">{{ product.dimensions }}</small>
+            <small v-if="product.show_size && product.dimensions">{{ product.dimensions }}</small>
           </div>
         </div>
       </div>
@@ -137,7 +151,10 @@
       </div>
     </section>
 
-    <section v-if="categoryHeroParagraphs.length || categoryDescription" class="category-lead">
+    <section
+      v-if="categoryHeroParagraphs.length > 1"
+      class="category-lead"
+    >
       <div class="category-lead-inner">
         <template v-if="categoryHeroParagraphs.length">
           <p
@@ -265,7 +282,7 @@ const categoryConfig = {
   },
   'offset-printing': {
     name: 'Офсетная печать',
-    description: 'Высококачественная офсетная печать на упаковке. Яркие цвета, четкие изображения и стойкость к внешним воздействиям.',
+    description: 'Визитки, листовки, буклеты, каталоги и плакаты. Полноцветный офсет, ровная бумага и точная цветопередача.',
     image: '/assets/images/kat4.png'
   },
   'gift-bags': {
@@ -344,7 +361,7 @@ const categoryConfig = {
   },
   'designer-packaging': {
     name: 'Дизайнерская упаковка',
-    description: 'Эксклюзивная дизайнерская упаковка, созданная специально для вашего бренда. Уникальный дизайн и премиальные материалы.',
+    description: 'Коробки в дизайнерской бумаге: магнит, ручки, слиток, ложемент, две бутылки и форма под продукт.',
     image: '/assets/images/kat7.png'
   },
   'laminated-corrugated': {
@@ -374,6 +391,10 @@ const categoryHeroTitle = computed(
   () => currentCategory.value.heroTitle || currentCategory.value.name
 )
 const categoryHeroParagraphs = computed(() => currentCategory.value.heroParagraphs || [])
+const categoryHeroLead = computed(() => {
+  if (categoryHeroParagraphs.value.length) return categoryHeroParagraphs.value[0]
+  return currentCategory.value.description || ''
+})
 const categoryDescription = computed(() => currentCategory.value.description)
 const categoryImage = computed(() => currentCategory.value.image)
 const categoryRichBlocks = computed(() => currentCategory.value.richContent?.blocks || [])
@@ -631,8 +652,8 @@ useHead({
 
 .category-hero {
   position: relative;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
+  width: 100%;
+  margin-left: 0;
   height: 300px;
   overflow: visible;
   display: flex;
@@ -640,8 +661,6 @@ useHead({
   justify-content: center;
   left: 0;
   right: 0;
-  --diag-strip-h: clamp(69px, 7.3vw, 105px);
-  --hero-diag-reserve: var(--diag-strip-h);
   /* боке: от стыка с текстом до правого края hero */
   --bokeh-inset-left: 50%;
   --bokeh-inset-right: 9%;
@@ -652,6 +671,12 @@ useHead({
   height: 300px;
   min-height: 220px;
   max-height: 300px;
+}
+
+.category-hero:has(.category-hero-lead) {
+  height: auto;
+  min-height: 0;
+  max-height: none;
 }
 
 .category-hero--half .text-layer {
@@ -777,15 +802,14 @@ useHead({
   z-index: 4;
   overflow: hidden;
   pointer-events: none;
+  line-height: 0;
 }
 
 .diagonal-strip {
+  display: block;
   width: 100%;
-  height: var(--diag-strip-h, 72px);
-  background-image: url('/assets/images/diag.png');
-  background-repeat: repeat-x;
-  background-size: auto 100%;
-  background-position: left bottom;
+  height: auto;
+  max-width: none;
 }
 
 /* Контейнер для контента с ограничением ширины */
@@ -851,6 +875,31 @@ useHead({
   .category-hero {
     height: 300px;
     min-height: 300px;
+  }
+
+  .category-hero:has(.category-hero-lead) {
+    height: auto;
+    min-height: 0;
+    max-height: none;
+  }
+
+  .category-hero:has(.category-hero-lead) .content-container {
+    height: auto;
+    min-height: 0;
+    align-items: flex-end;
+    padding-bottom: calc(4.4vw + 16px);
+  }
+
+  .category-hero:has(.category-hero-lead) .text-layer {
+    height: auto;
+    padding-top: 28px;
+    padding-bottom: 0;
+  }
+
+  .category-hero:has(.category-hero-lead) .product-layer {
+    height: auto;
+    align-self: flex-end;
+    padding-bottom: 0;
   }
 
   .content-container {
@@ -927,6 +976,18 @@ useHead({
   background: #f4ffe8;
 }
 
+.category-hero-lead {
+  margin: 0 0 16px;
+  max-width: 440px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14.5px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: #2a2a2a;
+  position: relative;
+  z-index: 2;
+}
+
 .category-lead {
   padding: 28px 20px 72px;
   background: #fff;
@@ -953,6 +1014,10 @@ useHead({
 .category-rich-section {
   padding: 36px 20px 28px;
   background: rgba(255, 255, 255, 0.92);
+}
+
+.category-rich-section:not(:has(~ .category-lead)) {
+  padding-bottom: 120px;
 }
 
 .category-rich-grid {
@@ -1075,29 +1140,6 @@ useHead({
     width: 100%;
     max-width: 100%;
   }
-}
-
-.constructor-page-title {
-  font-family: 'Days One', cursive;
-  font-size: 2.5rem;
-  font-weight: 400;
-  color: #5e3085;
-  text-align: center;
-  margin-bottom: 15px;
-  text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
-}
-
-.constructor-page-subtitle {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1.2rem;
-  font-weight: 400;
-  color: #666;
-  text-align: center;
-  margin-bottom: 50px;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-  line-height: 1.6;
 }
 
 /* Стили конструктора */
@@ -1675,8 +1717,6 @@ useHead({
   .category-hero {
     min-height: 320px;
     height: auto;
-    --diag-strip-h: clamp(35px, 9vw, 48px);
-    --hero-diag-reserve: var(--diag-strip-h);
     --bokeh-inset-left: 5%;
     --bokeh-inset-right: 11%;
     --bokeh-inset-top: 34%;
@@ -1720,16 +1760,19 @@ useHead({
   }
   
   .products-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 20px;
+  }
+
+  .product-card {
+    min-width: 0;
+    max-width: 100%;
   }
 }
 
 @media (max-width: 768px) {
   .category-hero {
     min-height: 334px;
-    --diag-strip-h: clamp(32px, 8.5vw, 39px);
-    --hero-diag-reserve: var(--diag-strip-h);
     --bokeh-inset-left: 4%;
     --bokeh-inset-right: 10%;
     --bokeh-inset-top: 36%;
@@ -1778,9 +1821,43 @@ useHead({
   }
   
   .products-grid {
-    padding: 0;
+    padding: 0 12px;
     width: 100%;
     max-width: 100%;
+    box-sizing: border-box;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .product-card {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .product-info {
+    min-width: 0;
+    width: 100%;
+    padding: 8px 6px 0;
+    box-sizing: border-box;
+  }
+
+  .products-grid--quadpack .product-info h3,
+  .product-info h3 {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    font-size: 0.78rem;
+    line-height: 1.25;
+    min-height: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+  }
+
+  .product-image-container {
+    height: 132px;
+    overflow: hidden;
   }
   
   /* Адаптивные стили для конструктора на странице */
@@ -1794,15 +1871,6 @@ useHead({
     padding: 0;
     width: 100%;
     max-width: 100%;
-  }
-  
-  .constructor-page-title {
-    font-size: 2rem;
-  }
-  
-  .constructor-page-subtitle {
-    font-size: 1rem;
-    margin-bottom: 40px;
   }
   
   .constructor-content {
@@ -1823,8 +1891,6 @@ useHead({
 @media (max-width: 480px) {
   .category-hero {
     min-height: 347px;
-    --diag-strip-h: clamp(29px, 8vw, 35px);
-    --hero-diag-reserve: var(--diag-strip-h);
     --bokeh-inset-left: 3%;
     --bokeh-inset-right: 8%;
     --bokeh-inset-top: 38%;
@@ -1873,15 +1939,26 @@ useHead({
   }
   
   .products-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
     padding: 0 12px;
     width: 100%;
     max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .products-grid {
+    gap: 14px 8px;
+    padding: 0 10px;
+  }
+
+  .products-grid--quadpack .product-info h3,
+  .product-info h3 {
+    font-size: 0.72rem;
   }
 
   .product-image-container {
-    height: 180px;
+    height: 112px;
   }
   
   /* Дополнительные адаптивные стили для конструктора на маленьких экранах */
@@ -1895,15 +1972,6 @@ useHead({
     padding: 0;
     width: 100%;
     max-width: 100%;
-  }
-  
-  .constructor-page-title {
-    font-size: 1.8rem;
-  }
-  
-  .constructor-page-subtitle {
-    font-size: 0.9rem;
-    margin-bottom: 30px;
   }
   
   .constructor-left {

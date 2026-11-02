@@ -29,6 +29,17 @@
         placeholder="Поиск по имени, телефону, email..."
         @input="debouncedLoad"
       />
+      <button
+        v-for="item in markFilters"
+        :key="item.value"
+        type="button"
+        class="crm-mark"
+        :class="{ active: activeMark === item.value }"
+        @click="setMark(item.value)"
+      >
+        {{ item.label }}
+        <span v-if="item.value !== ''">{{ marks[item.countKey] || 0 }}</span>
+      </button>
       <button type="button" @click="loadOrders">Обновить</button>
     </section>
 
@@ -40,11 +51,23 @@
         v-for="order in orders"
         :key="order.id"
         class="crm-card"
+        :class="{ 'crm-card--marked': order.is_marked }"
         @click="openOrder(order.id)"
       >
         <div class="crm-card-top">
           <strong>#{{ order.id }} · {{ order.name }}</strong>
-          <span class="crm-badge" :class="`crm-badge--${order.status}`">{{ order.status_label }}</span>
+          <div class="crm-card-actions" @click.stop>
+            <button
+              type="button"
+              class="crm-flag"
+              :class="{ on: order.is_marked }"
+              @click="toggleMark(order)"
+            >
+              {{ order.is_marked ? 'Помечено' : 'Пометить' }}
+            </button>
+            <button type="button" class="crm-delete" @click="removeOrder(order)">Удалить</button>
+            <span class="crm-badge" :class="`crm-badge--${order.status}`">{{ order.status_label }}</span>
+          </div>
         </div>
         <p class="crm-card-contact">
           {{ order.phone || 'Телефон не указан' }}
@@ -67,13 +90,15 @@ definePageMeta({
 })
 
 const router = useRouter()
-const { user, logout, fetchOrders } = useCrm()
+const { user, logout, fetchOrders, updateOrder, deleteOrder } = useCrm()
 
 const orders = ref([])
 const stats = ref({})
+const marks = ref({ marked: 0, unmarked: 0 })
 const loading = ref(true)
 const search = ref('')
 const activeStatus = ref('')
+const activeMark = ref('')
 
 const statusFilters = [
   { value: '', label: 'Все' },
@@ -81,6 +106,12 @@ const statusFilters = [
   { value: 'in_progress', label: 'В работе' },
   { value: 'completed', label: 'Завершены' },
   { value: 'cancelled', label: 'Отменены' },
+]
+
+const markFilters = [
+  { value: '', label: 'Все', countKey: '' },
+  { value: '1', label: 'Помеченные', countKey: 'marked' },
+  { value: '0', label: 'Непомеченные', countKey: 'unmarked' },
 ]
 
 let debounceTimer
@@ -91,9 +122,11 @@ const loadOrders = async () => {
     const response = await fetchOrders({
       status: activeStatus.value || undefined,
       search: search.value.trim() || undefined,
+      marked: activeMark.value || undefined,
     })
     orders.value = response.results || []
     stats.value = response.stats || {}
+    marks.value = response.marks || { marked: 0, unmarked: 0 }
   } catch (error) {
     console.error(error)
     orders.value = []
@@ -110,6 +143,33 @@ const debouncedLoad = () => {
 const setStatus = (status) => {
   activeStatus.value = status
   loadOrders()
+}
+
+const setMark = (value) => {
+  activeMark.value = value
+  loadOrders()
+}
+
+const toggleMark = async (order) => {
+  const next = !order.is_marked
+  order.is_marked = next
+  try {
+    await updateOrder(order.id, { is_marked: next })
+    await loadOrders()
+  } catch (error) {
+    order.is_marked = !next
+    console.error(error)
+  }
+}
+
+const removeOrder = async (order) => {
+  if (!confirm(`Удалить заявку #${order.id}?`)) return
+  try {
+    await deleteOrder(order.id)
+    await loadOrders()
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 const openOrder = (id) => {
@@ -235,6 +295,54 @@ useHead({ title: 'Заявки — Floksbox CRM' })
   color: #fff;
   font: inherit;
   cursor: pointer;
+}
+
+.crm-mark {
+  background: #fff !important;
+  color: #5e3085 !important;
+  border: 1px solid #d8cfe6 !important;
+}
+
+.crm-mark.active {
+  background: #5e3085 !important;
+  color: #fff !important;
+}
+
+.crm-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.crm-flag,
+.crm-delete {
+  border-radius: 999px;
+  padding: 4px 10px;
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.crm-flag {
+  border: 1px solid #d8cfe6;
+  background: #fff;
+  color: #5e3085;
+}
+
+.crm-flag.on {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  color: #92400e;
+}
+
+.crm-delete {
+  border: 1px solid #fecaca;
+  background: #fff;
+  color: #b91c1c;
+}
+
+.crm-card--marked {
+  box-shadow: inset 3px 0 0 #f59e0b, 0 8px 24px rgba(94, 48, 133, 0.06);
 }
 
 .crm-state {

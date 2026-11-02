@@ -12,6 +12,7 @@
         webkit-playsinline
         x-webkit-airplay="allow"
         preload="auto"
+        tabindex="-1"
         disablePictureInPicture
         controlsList="nodownload nofullscreen noremoteplayback"
       >
@@ -290,6 +291,8 @@ onMounted(() => {
   video.muted = true
   video.playsInline = true
   video.defaultMuted = true
+  video.controls = false
+  video.disablePictureInPicture = true
   
   // Принудительно загружаем видео
   video.load()
@@ -434,10 +437,12 @@ onUnmounted(() => {
   overflow: hidden;
   
   .header-video {
-    width: 100%;
-    height: 100%;
-    min-width: 100%;
-    min-height: 100%;
+    /* Чуть больше контейнера: Chrome оставляет чёрную кромку видео по правому
+       и нижнему краю, она вспыхивает при движении курсора. Лишнее обрезает overflow. */
+    width: calc(100% + 8px);
+    height: calc(100% + 8px);
+    min-width: calc(100% + 8px);
+    min-height: calc(100% + 8px);
     object-fit: cover;
     object-position: center center;
     position: absolute;
@@ -445,6 +450,27 @@ onUnmounted(() => {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1;
+    background: #fff;
+    border: 0;
+    outline: none;
+    box-shadow: none;
+    pointer-events: none;
+
+    &:focus,
+    &:focus-visible {
+      outline: none;
+    }
+
+    &::-webkit-media-controls,
+    &::-webkit-media-controls-enclosure,
+    &::-webkit-media-controls-panel,
+    &::-webkit-media-controls-overlay-play-button,
+    &::-webkit-media-controls-start-playback-button {
+      display: none !important;
+      opacity: 0 !important;
+      pointer-events: none;
+      appearance: none;
+    }
   }
   
   .video-fallback {

@@ -141,7 +141,15 @@
       
       <!-- Визуализация коробки: один контейнер, PNG слоями -->
       <div class="constructor-right">
-        <div class="box-visualization" ref="viewportRef">
+        <div
+          class="box-visualization"
+          :class="{ 'is-tilting': isTilting }"
+          ref="viewportRef"
+          @pointerdown="onTiltPointerDown"
+          @pointermove="onTiltPointerMove"
+          @pointerup="onTiltPointerUp"
+          @pointercancel="onTiltPointerUp"
+        >
           <div class="layers-zoom" :style="zoomStyle">
             <div class="layers-container" :style="stageStyle">
               <img
@@ -342,12 +350,48 @@ onBeforeUnmount(() => {
 
 watch([stageWidthPx, stageHeightPx, needsZoom, needsMinorZoom], () => updateScale())
 
+const tiltX = ref(0)
+const isTilting = ref(false)
+let tiltPointerId = null
+let tiltStartY = 0
+const maxTilt = 18
+
+function onTiltPointerDown(event) {
+  if (event.button != null && event.button !== 0) return
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  isTilting.value = true
+  tiltPointerId = event.pointerId
+  tiltStartY = event.clientY
+  if (event.currentTarget.setPointerCapture) {
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId)
+    } catch {
+      /* захват нужен только для реального указателя */
+    }
+  }
+}
+
+function onTiltPointerMove(event) {
+  if (!isTilting.value || event.pointerId !== tiltPointerId) return
+  const delta = tiltStartY - event.clientY
+  tiltX.value = Math.max(-maxTilt, Math.min(maxTilt, delta * 0.12))
+}
+
+function onTiltPointerUp(event) {
+  if (tiltPointerId == null || event.pointerId !== tiltPointerId) return
+  isTilting.value = false
+  tiltPointerId = null
+  tiltX.value = 0
+}
+
 /** Размер сцены — только от слайдеров ширины/высоты */
 const stageStyle = computed(() => ({
   width: `${stageWidthPx.value}px`,
   height: `${stageHeightPx.value}px`,
   backgroundColor: boxColor.value,
-  visibility: isScaledReady.value ? 'visible' : 'hidden'
+  visibility: isScaledReady.value ? 'visible' : 'hidden',
+  transform: `rotateX(${tiltX.value}deg)`,
+  transition: isTilting.value ? 'none' : 'transform 0.55s cubic-bezier(0.22, 1, 0.36, 1)'
 }))
 
 /** Зум вьюпорта — отдельно, не меняет раскладку слоёв */
@@ -892,6 +936,14 @@ function handleOrder() {
   justify-content: center;
   align-items: flex-end;
   overflow: hidden;
+  perspective: 880px;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.box-visualization.is-tilting {
+  cursor: grabbing;
 }
 
 /* Зум только здесь — не влияет на расчёт размеров слоёв */
@@ -899,6 +951,7 @@ function handleOrder() {
   position: relative;
   flex-shrink: 0;
   will-change: transform;
+  transform-style: preserve-3d;
 }
 
 /* Один контейнер: PNG накладываются друг на друга */
@@ -907,6 +960,8 @@ function handleOrder() {
   isolation: isolate;
   --top-h: 286px;
   --bottom-h: 87px;
+  transform-style: preserve-3d;
+  transform-origin: center 58%;
 }
 
 .box-layer {

@@ -1,0 +1,45 @@
+{% extends "desk/base.html" %}
+{% block title %}{% if category %}{{ category.name }}{% else %}Каталог{% endif %}{% endblock %}
+{% block main %}
+  {% if category %}
+    <div class="toolbar">
+      <h2>{{ category.name }}</h2>
+      <button type="button" class="add" id="add-product">Добавить товар</button>
+    </div>
+    {% for product in products %}
+      <a class="line" href="/desk/product/{{ product.id }}/">
+        {% if product.image %}
+          <img class="thumb" src="{{ product.image.url }}" alt="">
+        {% else %}
+          <span class="noimg"></span>
+        {% endif %}
+        <span>
+          <strong>{{ product.name }}</strong>
+          <small>{{ product.id }}-{{ product.name|slice:":3"|upper }}{% if not product.is_active %} · не на сайте{% endif %}</small>
+        </span>
+      </a>
+    {% empty %}
+      <p class="empty">В этом разделе нет товаров</p>
+    {% endfor %}
+  {% else %}
+    <p class="empty">Разделов нет</p>
+  {% endif %}
+{% endblock %}
+{% block script %}
+  <script>
+    const token = document.querySelector("[name=csrfmiddlewaretoken]").value;
+    const addButton = document.getElementById("add-product");
+    if (addButton) {
+      addButton.addEventListener("click", async () => {
+        const response = await fetch("/desk/product/new/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-CSRFToken": token },
+          body: JSON.stringify({ category: {% if category %}{{ category.id }}{% else %}null{% endif %} }),
+        });
+        const data = await response.json();
+        if (data.ok) location.href = data.next;
+        else alert(data.error || "Не удалось добавить");
+      });
+    }
+  </script>
+{% endblock %}

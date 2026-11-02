@@ -245,6 +245,19 @@ useHead({
 }
 
 @media (max-width: 768px) {
+  .homepage {
+    overflow-x: clip;
+    max-width: 100%;
+  }
+
+  .homepage :deep(.hero-reveal-wrap),
+  .homepage :deep(.hero-banner),
+  .homepage :deep(.hero-container),
+  .homepage :deep(.hero-slide) {
+    overflow: hidden;
+    max-width: 100%;
+  }
+
   .form-notification {
     top: 10px;
     right: 10px;

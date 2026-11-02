@@ -1,0 +1,189 @@
+{% extends "desk/base.html" %}
+{% block title %}{{ product.name }}{% endblock %}
+{% block main %}
+  <p><a class="back" href="/desk/?category={{ category.id }}">← {{ category.name }}</a></p>
+  <div class="toolbar">
+    <h2>{{ product.name }}</h2>
+    <button type="button" class="remove" id="remove-product">Удалить</button>
+  </div>
+
+  <div class="panel" id="photos" data-id="{{ product.id }}">
+    <p class="note">Первая картинка стоит в каталоге, остальные листаются на странице товара.</p>
+    <div class="photos">
+      {% for photo in product.desk_photos %}
+        <div class="shot" data-slot="{{ photo.slot }}">
+          <img src="{{ photo.url }}" alt="">
+          <button type="button" class="x" title="Убрать фото">×</button>
+        </div>
+      {% endfor %}
+      <label class="drop">
+        <span>+</span>
+        <input type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" multiple>
+      </label>
+    </div>
+    <p class="status" id="photo-status"></p>
+  </div>
+
+  <form class="panel" method="post">
+    {% csrf_token %}
+    <p class="note">Артикул на сайте: {{ product.id }}-{{ product.name|slice:":3"|upper }}. Он собирается из номера и первых трёх букв названия.</p>
+    <label>
+      <span>Название</span>
+      <input type="text" name="name" value="{{ product.name }}" maxlength="200" required>
+    </label>
+    <label>
+      <span>Текст</span>
+      <textarea name="description">{{ product.description }}</textarea>
+    </label>
+    <label>
+      <span>Раздел</span>
+      <select name="category">
+        {% for item in categories %}
+          <option value="{{ item.id }}" {% if product.category_id == item.id %}selected{% endif %}>{{ item.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label class="flag">
+      <input type="checkbox" name="is_active" value="1" {% if product.is_active %}checked{% endif %}>
+      На сайте
+    </label>
+    <label class="flag">
+      <input type="checkbox" id="show-size" name="show_size" value="1" {% if product.show_size %}checked{% endif %}>
+      Показывать размер
+    </label>
+    <div class="sizes" {% if not product.show_size %}hidden{% endif %}>
+      <label>
+        <span>Высота, см</span>
+        <input type="text" name="height" value="{{ product.height }}" inputmode="decimal">
+      </label>
+      <label>
+        <span>Ширина, см</span>
+        <input type="text" name="width" value="{{ product.width }}" inputmode="decimal">
+      </label>
+      <label>
+        <span>Глубина, см</span>
+        <input type="text" name="depth" value="{{ product.depth }}" inputmode="decimal">
+      </label>
+    </div>
+    {% if product.show_size %}
+      <p class="note">На сайте будет {{ product.dimensions }}, объём {{ product.volume|floatformat:0 }} см³.</p>
+    {% endif %}
+    <button class="save" type="submit">Сохранить</button>
+    {% if saved %}<p class="status">Сохранено</p>{% endif %}
+    {% if error %}<p class="status bad">{{ error }}</p>{% endif %}
+  </form>
+{% endblock %}
+{% block script %}
+  <script>
+    const token = document.querySelector("[name=csrfmiddlewaretoken]").value;
+    const panel = document.getElementById("photos");
+    const status = document.getElementById("photo-status");
+    const showSize = document.getElementById("show-size");
+    const sizes = document.querySelector(".sizes");
+
+    showSize.addEventListener("change", () => {
+      sizes.hidden = !showSize.checked;
+    });
+
+    function setStatus(text, bad) {
+      status.textContent = text;
+      status.classList.toggle("bad", !!bad);
+    }
+
+    function addShot(photo) {
+      const shot = document.createElement("div");
+      shot.className = "shot";
+      shot.dataset.slot = photo.slot;
+      const img = document.createElement("img");
+      img.src = photo.url + "?t=" + Date.now();
+      img.alt = "";
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "x";
+      button.title = "Убрать фото";
+      button.textContent = "×";
+      shot.append(img, button);
+      panel.querySelector(".drop").before(shot);
+    }
+
+    function paintPhotos(photos) {
+      panel.querySelectorAll(".shot").forEach((shot) => shot.remove());
+      photos.forEach(addShot);
+    }
+
+    function isImage(file) {
+      if (!file) return false;
+      if (file.type && file.type.startsWith("image/")) return true;
+      return /\.(jpe?g|png|webp)$/i.test(file.name || "");
+    }
+
+    async function upload(files) {
+      const list = [...(files || [])].filter(isImage);
+      if (!list.length) return;
+      const body = new FormData();
+      list.forEach((file) => body.append("image", file));
+      setStatus("Загрузка...");
+      const response = await fetch("/desk/product/" + panel.dataset.id + "/image/", {
+        method: "POST",
+        headers: { "X-CSRFToken": token },
+        body,
+      });
+      const data = await response.json();
+      if (!data.ok) {
+        setStatus(data.error || "Картинка не подошла", true);
+        return;
+      }
+      (data.photos || []).forEach(addShot);
+      setStatus(list.length > 1 ? "Картинки добавлены" : "Картинка добавлена");
+    }
+
+    const drop = panel.querySelector(".drop");
+    ["dragenter", "dragover"].forEach((name) => {
+      drop.addEventListener(name, (event) => {
+        event.preventDefault();
+        drop.classList.add("over");
+      });
+    });
+    ["dragleave", "drop"].forEach((name) => {
+      drop.addEventListener(name, () => drop.classList.remove("over"));
+    });
+    drop.addEventListener("drop", (event) => {
+      event.preventDefault();
+      upload(event.dataTransfer.files);
+    });
+    drop.querySelector("input").addEventListener("change", (event) => {
+      upload(event.target.files);
+      event.target.value = "";
+    });
+    window.addEventListener("dragover", (event) => event.preventDefault());
+    window.addEventListener("drop", (event) => event.preventDefault());
+    panel.addEventListener("click", async (event) => {
+      const button = event.target.closest(".x");
+      if (!button) return;
+      const shot = button.closest(".shot");
+      const response = await fetch("/desk/product/" + panel.dataset.id + "/image/remove/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-CSRFToken": token },
+        body: JSON.stringify({ slot: shot.dataset.slot }),
+      });
+      const data = await response.json();
+      if (!data.ok) {
+        setStatus(data.error || "Не удалось убрать фото", true);
+        return;
+      }
+      paintPhotos(data.photos || []);
+      setStatus("Фото убрано");
+    });
+
+    document.getElementById("remove-product").addEventListener("click", async () => {
+      if (!confirm("Удалить «{{ product.name|escapejs }}»?")) return;
+      const response = await fetch("/desk/product/{{ product.id }}/delete/", {
+        method: "POST",
+        headers: { "X-CSRFToken": token },
+      });
+      const data = await response.json();
+      if (data.ok) location.href = "/desk/?category={{ category.id }}";
+      else setStatus(data.error || "Не удалось удалить", true);
+    });
+  </script>
+{% endblock %}

@@ -161,7 +161,7 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """Фильтрация queryset с дополнительными параметрами"""
-        queryset = Product.objects.select_related('category')
+        queryset = Product.objects.select_related('category').prefetch_related('photos')
 
         # Фильтр только активных товаров
         active_only = self.request.query_params.get('active_only', None)

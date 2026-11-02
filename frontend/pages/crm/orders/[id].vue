@@ -61,9 +61,13 @@
         <p v-if="saveError" class="crm-error">{{ saveError }}</p>
         <p v-if="saveSuccess" class="crm-success">Сохранено</p>
 
+        <button type="button" class="crm-flag" :class="{ on: order.is_marked }" @click="toggleMark">
+          {{ order.is_marked ? 'Снять пометку' : 'Пометить' }}
+        </button>
         <button type="button" :disabled="saving" @click="saveOrder">
           {{ saving ? 'Сохранение...' : 'Сохранить' }}
         </button>
+        <button type="button" class="crm-delete" @click="removeOrder">Удалить заявку</button>
       </aside>
     </section>
   </div>
@@ -77,7 +81,7 @@ definePageMeta({
 
 const route = useRoute()
 const router = useRouter()
-const { fetchOrder, updateOrder } = useCrm()
+const { fetchOrder, updateOrder, deleteOrder } = useCrm()
 
 const order = ref(null)
 const loading = ref(true)
@@ -123,6 +127,28 @@ const saveOrder = async () => {
     saveError.value = error?.data?.error || 'Не удалось сохранить изменения'
   } finally {
     saving.value = false
+  }
+}
+
+const toggleMark = async () => {
+  if (!order.value) return
+  saveError.value = ''
+  try {
+    const updated = await updateOrder(route.params.id, { is_marked: !order.value.is_marked })
+    order.value = updated
+  } catch (error) {
+    saveError.value = error?.data?.error || 'Не удалось изменить пометку'
+  }
+}
+
+const removeOrder = async () => {
+  if (!order.value) return
+  if (!confirm(`Удалить заявку #${order.value.id}?`)) return
+  try {
+    await deleteOrder(route.params.id)
+    await router.push('/crm')
+  } catch (error) {
+    saveError.value = error?.data?.error || 'Не удалось удалить заявку'
   }
 }
 
@@ -254,6 +280,24 @@ useHead({
 
 .crm-sidebar button:disabled {
   opacity: 0.7;
+}
+
+.crm-flag {
+  background: #fff !important;
+  color: #5e3085 !important;
+  border: 1px solid #d8cfe6 !important;
+}
+
+.crm-flag.on {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  border-color: #f59e0b !important;
+}
+
+.crm-delete {
+  background: #fff !important;
+  color: #b91c1c !important;
+  border: 1px solid #fecaca !important;
 }
 
 .crm-state {

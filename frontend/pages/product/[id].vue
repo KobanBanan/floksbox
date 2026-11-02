@@ -50,7 +50,7 @@
               <p>{{ product.description }}</p>
             </div>
             
-            <div class="product-specifications" v-if="product.category_name !== 'Четырехклапанные коробки'">
+            <div class="product-specifications" v-if="product.show_size">
               <h3>Характеристики:</h3>
               <div class="specs-grid">
                 <div class="spec-item">
@@ -140,6 +140,7 @@ const activeImage = ref(null)
 
 const productImages = computed(() => {
   if (!product.value) return []
+  if (product.value.gallery_urls?.length) return product.value.gallery_urls
   const images = []
   if (product.value.image_url) images.push(product.value.image_url)
   if (
@@ -152,7 +153,7 @@ const productImages = computed(() => {
 })
 
 watch(product, (p) => {
-  activeImage.value = p?.image_url || null
+  activeImage.value = p?.gallery_urls?.[0] || p?.image_url || null
 }, { immediate: true })
 
 // Загрузка товара

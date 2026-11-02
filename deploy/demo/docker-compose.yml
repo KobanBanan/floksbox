@@ -1,0 +1,30 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: floksbox-backend
+    working_dir: /app
+    volumes:
+      - backend_db_data:/data
+      - ./backend/media:/app/media
+    env_file:
+      - .env
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend-runtime
+      dockerfile: Dockerfile
+    container_name: floksbox-frontend
+    ports:
+      - "80:3000"
+    environment:
+      NITRO_HOST: 0.0.0.0
+      NITRO_PORT: "3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  backend_db_data:

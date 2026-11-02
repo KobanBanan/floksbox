@@ -196,6 +196,13 @@ const closeViewer = () => {
 
   .stories-list {
     gap: 15px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  .story-item {
+    flex-shrink: 0;
   }
   
   .story-item {

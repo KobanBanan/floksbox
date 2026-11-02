@@ -50,17 +50,32 @@ const clearDirClass = () => {
   )
 }
 
+const revealStuckPage = () => {
+  document.querySelectorAll('.catalog-fx-leave-active, .catalog-fx-reduced-leave-active').forEach((el) => {
+    el.style.setProperty('animation', 'none', 'important')
+    el.style.setProperty('display', 'none', 'important')
+    el.style.setProperty('pointer-events', 'none', 'important')
+  })
+  document.querySelectorAll('.catalog-fx-enter-active, .catalog-fx-enter-from, .catalog-fx-reduced-enter-active').forEach((el) => {
+    el.classList.remove('catalog-fx-enter-from')
+    el.style.setProperty('animation', 'none', 'important')
+    el.style.setProperty('opacity', '1', 'important')
+    el.style.setProperty('transform', 'none', 'important')
+  })
+}
+
 const releaseMotion = () => {
   if (!import.meta.client) {
     washOn.value = false
     return
   }
-  const busy = document.querySelector('.catalog-fx-enter-active, .catalog-fx-leave-active')
-  if (busy && releaseTries < 8) {
+  const busy = document.querySelector('.catalog-fx-enter-active, .catalog-fx-leave-active, .catalog-fx-reduced-leave-active, .catalog-fx-reduced-enter-active')
+  if (busy && releaseTries < 2) {
     releaseTries += 1
-    scheduleRelease(generation, 90)
+    scheduleRelease(generation, 180)
     return
   }
+  if (busy) revealStuckPage()
   releaseTries = 0
   washOn.value = false
   clearDirClass()
@@ -86,7 +101,7 @@ const armCatalogMotion = (direction) => {
   document.documentElement.classList.add(`catalog-nav-${direction}`)
   document.documentElement.style.scrollBehavior = 'auto'
   window.scrollTo(0, 0)
-  scheduleRelease(token, 280)
+  scheduleRelease(token, 520)
 }
 
 if (import.meta.client) {

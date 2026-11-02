@@ -408,6 +408,11 @@ const navigateToCategory = (route) => {
 }
 
 @media (max-width: 992px) {
+  .menu-section {
+    width: 100%;
+    margin-left: 0;
+    overflow: hidden;
+  }
   .menu-grid {
     width: 95%;
     grid-template-columns: repeat(3, 1fr);

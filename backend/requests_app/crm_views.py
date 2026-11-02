@@ -65,10 +65,15 @@ def crm_me(request):
 def crm_orders(request):
     status_filter = (request.query_params.get('status') or '').strip()
     search = (request.query_params.get('search') or '').strip()
+    marked = (request.query_params.get('marked') or '').strip().lower()
 
     queryset = UserRequest.objects.all()
     if status_filter:
         queryset = queryset.filter(status=status_filter)
+    if marked in {'1', 'true', 'yes'}:
+        queryset = queryset.filter(is_marked=True)
+    elif marked in {'0', 'false', 'no'}:
+        queryset = queryset.filter(is_marked=False)
     if search:
         queryset = queryset.filter(
             Q(name__icontains=search)
@@ -83,16 +88,21 @@ def crm_orders(request):
     }
     for value, _ in UserRequest.Status.choices:
         stats.setdefault(value, 0)
+    mark_counts = UserRequest.objects.aggregate(
+        marked=Count('id', filter=Q(is_marked=True)),
+        unmarked=Count('id', filter=Q(is_marked=False)),
+    )
 
     serializer = CrmOrderListSerializer(queryset[:200], many=True)
     return Response({
         'results': serializer.data,
         'stats': stats,
+        'marks': mark_counts,
         'total': queryset.count(),
     })
 
 
-@api_view(['GET', 'PATCH'])
+@api_view(['GET', 'PATCH', 'DELETE'])
 @permission_classes([IsAuthenticated])
 def crm_order_detail(request, order_id):
     try:
@@ -102,6 +112,10 @@ def crm_order_detail(request, order_id):
 
     if request.method == 'GET':
         return Response(CrmOrderDetailSerializer(order).data)
+
+    if request.method == 'DELETE':
+        order.delete()
+        return Response({'success': True})
 
     serializer = CrmOrderUpdateSerializer(order, data=request.data, partial=True)
     serializer.is_valid(raise_exception=True)

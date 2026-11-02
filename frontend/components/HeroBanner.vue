@@ -67,8 +67,7 @@ const banners = [
     title: 'Эта\u00A0Упаковка\nСкажет\u00A0за\nВас!',
     description: 'Упаковка для общепита',
     cta: 'Перейти',
-    href: '#',
-    productName: 'коробка для пиццы',
+    href: '/category/complex-cutting',
     wave: '#ffb3c9'
   },
   {
@@ -449,6 +448,23 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
+  .hero-banner,
+  .hero-container,
+  .hero-slide {
+    overflow: hidden;
+    max-width: 100%;
+  }
+  .banner-background {
+    left: 0;
+    width: 100%;
+    animation: none;
+  }
+  .banner-char {
+    max-width: 46%;
+    height: auto;
+    max-height: 100%;
+    right: 6px;
+  }
   .hero-container {
     --hero-gutter: 18px;
     max-width: calc(1200px - var(--hero-gutter) * 2);
@@ -466,26 +482,32 @@ onUnmounted(() => {
     border-radius: calc(50px * 0.6);
   }
   .banner-content { 
-    width: 55%;
-    max-width: calc(600px * 0.6);
-    padding: calc(40px * 0.6) calc(210px * 0.6) calc(20px * 0.6) calc(44px * 0.6);
+    width: 58%;
+    max-width: none;
+    padding: 14px 8px 12px 16px;
+    box-sizing: border-box;
   }
   .banner-char { 
-    right: calc(40px * 0.6);
-    height: calc(486px * 0.6);
+    right: 0;
+    height: auto;
+    max-height: 92%;
+    max-width: 44%;
     bottom: 0;
   }
   .banner-char--slide-4 {
     right: calc(20px * 0.6);
   }
   .banner-title { 
-    font-size: calc(56px * 0.6);
+    font-size: 28px;
+    max-width: 100%;
   }
   .banner-title-small {
-    font-size: calc(44px * 0.6);
+    font-size: 22px;
+    max-width: 100%;
   }
   .banner-description { 
-    font-size: calc(27px * 0.6); /* 16.2px */
+    font-size: 15px;
+    max-width: 100%;
   }
   .banner-button { 
     font-size: calc(36px * 0.6); /* 21.6px */
@@ -512,25 +534,30 @@ onUnmounted(() => {
     border-radius: calc(50px * 0.5);
   }
   .banner-content { 
-    width: 55%;
-    max-width: calc(600px * 0.5);
-    padding: calc(40px * 0.5) calc(210px * 0.5) calc(20px * 0.5) calc(44px * 0.5);
+    width: 60%;
+    max-width: none;
+    padding: 12px 6px 10px 14px;
   }
   .banner-char { 
-    height: calc(486px * 0.5);
-    right: calc(40px * 0.5);
+    height: auto;
+    max-height: 90%;
+    max-width: 42%;
+    right: 0;
   }
   .banner-char--slide-4 {
     right: calc(20px * 0.5);
   }
   .banner-title { 
-    font-size: calc(56px * 0.5);
+    font-size: 26px;
+    max-width: 100%;
   }
   .banner-title-small {
-    font-size: calc(44px * 0.5);
+    font-size: 20px;
+    max-width: 100%;
   }
   .banner-description { 
-    font-size: calc(27px * 0.5); /* 13.5px */
+    font-size: 14px;
+    max-width: 100%;
   }
   .banner-button { 
     font-size: calc(36px * 0.5); /* 18px */

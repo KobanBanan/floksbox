@@ -32,24 +32,36 @@ class ProductSerializer(serializers.ModelSerializer):
     """Сериализатор для товаров"""
     
     category_name = serializers.CharField(source='category.name', read_only=True)
-    dimensions = serializers.CharField(read_only=True)
-    volume = serializers.FloatField(read_only=True)
+    dimensions = serializers.SerializerMethodField()
+    volume = serializers.SerializerMethodField()
+    show_size = serializers.BooleanField(read_only=True)
     image_url = serializers.SerializerMethodField()
     image_unfold_url = serializers.SerializerMethodField()
+    gallery_urls = serializers.SerializerMethodField()
     
     class Meta:
         model = Product
         fields = [
-            'id', 'name', 'description', 'image', 'image_url', 'image_unfold_url', 'price',
-            'height', 'width', 'depth', 'dimensions', 'volume',
+            'id', 'name', 'description', 'image', 'image_url', 'image_unfold_url', 'gallery_urls', 'price',
+            'height', 'width', 'depth', 'dimensions', 'volume', 'show_size',
             'category', 'category_name', 'is_active',
             'created_at', 'updated_at'
         ]
         read_only_fields = [
             'id', 'created_at', 'updated_at', 'dimensions', 'volume',
-            'image_url', 'image_unfold_url',
+            'image_url', 'image_unfold_url', 'gallery_urls',
         ]
     
+    def get_dimensions(self, obj):
+        if not obj.show_size:
+            return None
+        return obj.dimensions
+
+    def get_volume(self, obj):
+        if not obj.show_size:
+            return 0
+        return obj.volume
+
     def get_image_url(self, obj):
         """Возвращает относительный URL изображения (от /media), чтобы хост подставлял ngrok"""
         if obj.image:
@@ -60,6 +72,17 @@ class ProductSerializer(serializers.ModelSerializer):
         if obj.image_unfold:
             return obj.image_unfold.url
         return None
+
+    def get_gallery_urls(self, obj):
+        urls = []
+        if obj.image:
+            urls.append(obj.image.url)
+        if obj.image_unfold and obj.image_unfold.url not in urls:
+            urls.append(obj.image_unfold.url)
+        for photo in obj.photos.all():
+            if photo.image and photo.image.url not in urls:
+                urls.append(photo.image.url)
+        return urls
     
     def validate_image(self, value):
         """Дополнительная валидация изображения"""
@@ -81,14 +104,20 @@ class ProductListSerializer(serializers.ModelSerializer):
     
     category_name = serializers.CharField(source='category.name', read_only=True)
     image_url = serializers.SerializerMethodField()
-    dimensions = serializers.CharField(read_only=True)
+    dimensions = serializers.SerializerMethodField()
+    show_size = serializers.BooleanField(read_only=True)
     
     class Meta:
         model = Product
         fields = [
-            'id', 'name', 'description', 'image_url', 'price', 'dimensions',
+            'id', 'name', 'description', 'image_url', 'price', 'dimensions', 'show_size',
             'category', 'category_name', 'is_active'
         ]
+
+    def get_dimensions(self, obj):
+        if not obj.show_size:
+            return None
+        return obj.dimensions
     
     def get_image_url(self, obj):
         """Возвращает относительный URL изображения (от /media), чтобы хост подставлял ngrok"""
@@ -133,7 +162,7 @@ class CrmOrderListSerializer(serializers.ModelSerializer):
         model = UserRequest
         fields = [
             'id', 'name', 'phone', 'email', 'message', 'source',
-            'status', 'status_label', 'created_at', 'updated_at',
+            'status', 'status_label', 'created_at', 'updated_at', 'is_marked',
         ]
 
 
@@ -145,14 +174,14 @@ class CrmOrderDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'phone', 'email', 'message', 'source',
             'status', 'status_label', 'manager_notes',
-            'created_at', 'updated_at', 'is_processed',
+            'created_at', 'updated_at', 'is_processed', 'is_marked',
         ]
 
 
 class CrmOrderUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserRequest
-        fields = ['status', 'manager_notes']
+        fields = ['status', 'manager_notes', 'is_marked']
 
     def validate_status(self, value):
         valid = {choice[0] for choice in UserRequest.Status.choices}

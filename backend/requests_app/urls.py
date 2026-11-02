@@ -2,6 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
 from . import crm_views
+from . import desk_views
 
 # Создаем роутер для ViewSets
 router = DefaultRouter()
@@ -16,6 +17,14 @@ urlpatterns = [
     path('sent_request/', views.sent_request, name='sent_request'),
     path('api/sent_request/', views.sent_request, name='sent_request_api'),
     path('health/', views.health_check, name='health_check'),
+
+    path('desk/', desk_views.desk, name='desk'),
+    path('desk/product/new/', desk_views.desk_create, name='desk_create'),
+    path('desk/product/<int:product_id>/delete/', desk_views.desk_delete, name='desk_delete'),
+    path('desk/product/<int:product_id>/image/remove/', desk_views.desk_image_remove, name='desk_image_remove'),
+    path('desk/product/<int:product_id>/image/', desk_views.desk_image, name='desk_image'),
+    path('desk/product/<int:product_id>/<slug:part>/', desk_views.desk_part, name='desk_part'),
+    path('desk/product/<int:product_id>/', desk_views.desk_edit, name='desk_edit'),
 
     # CRM API
     path('api/crm/login/', crm_views.crm_login, name='crm_login'),

@@ -103,16 +103,12 @@
               <!-- Кнопки заказа -->
               <ScrollRevealWrapper type="fade-up" :delay="3">
                 <div class="order-buttons">
-                  <span class="order-btn-glow btn-glow">
-                    <button class="order-btn primary" type="button" @click="openOrderForm">
-                      Заказать у менеджера
-                    </button>
-                  </span>
-                  <span class="order-btn-glow btn-glow">
-                    <button class="order-btn secondary" type="button" @click="addToOrder" :disabled="!selectedDrawing">
-                      Добавить к обращению
-                    </button>
-                  </span>
+                  <button class="order-btn primary" type="button" @click="openOrderForm">
+                    Заказать у менеджера
+                  </button>
+                  <button class="order-btn secondary" type="button" @click="addToOrder" :disabled="!selectedDrawing">
+                    Добавить к обращению
+                  </button>
                 </div>
               </ScrollRevealWrapper>
               
@@ -120,7 +116,7 @@
                <ScrollRevealWrapper type="fade-up" :delay="4">
                  <div class="drawings-area">
                    <h3>Доступные чертежи ({{ availableDrawings.length }} всего)</h3>
-                   <div class="drawings-grid">
+                   <div class="drawings-grid" ref="drawingsGridRef">
                      <ScrollRevealWrapper 
                        v-for="(drawing, index) in paginatedDrawings" 
                        :key="drawing"
@@ -137,10 +133,8 @@
                          <span class="drawing-number">{{ drawing }}</span>
                        </div>
                      </ScrollRevealWrapper>
-                   </div>
-                   
-                   <!-- Пагинация -->
-                   <div v-if="totalPages > 1" class="pagination">
+
+                     <div v-if="totalPages > 1" class="pagination">
                      <div class="pagination-info">
                        Страница {{ currentPage }} из {{ totalPages }}
                      </div>
@@ -154,6 +148,7 @@
                        >
                        </span>
                      </div>
+                   </div>
                    </div>
                  </div>
                </ScrollRevealWrapper>
@@ -191,7 +186,9 @@ const { openOrderRequest } = useOrderRequest()
 const toast = useToast()
 const selectedItems = ref([]) // Для накопления выбранных позиций
 const currentPage = ref(1) // Текущая страница пагинации
-const itemsPerPage = 15 // Количество чертежей на странице
+const itemsPerPage = ref(15)
+const drawingsGridRef = ref(null)
+let pageSizeObserver = null
 const sliderRef = ref(null)
 let scrollTimer = null
 let slideInterval = null
@@ -317,14 +314,36 @@ const availableDrawings = computed(() => {
   return drawingsBySection[selectedSection.value] || []
 })
 
+// Сколько карточек влезает: полные ряды по ширине сетки и по высоте экрана
+function updateItemsPerPage() {
+  const grid = drawingsGridRef.value
+  if (!grid) return
+
+  const narrow = window.matchMedia('(max-width: 768px)').matches
+  const cardWidth = narrow ? 84 : 92
+  const gap = 8
+  const columns = Math.max(1, Math.floor((grid.clientWidth + gap) / (cardWidth + gap)))
+  const sample = grid.querySelector('.drawing-item')
+  const rowHeight = (sample?.getBoundingClientRect().height || 78) + gap
+  const gridTop = grid.getBoundingClientRect().top + window.scrollY
+  const available = window.innerHeight - gridTop - 8
+  const rows = Math.max(2, Math.floor(Math.max(rowHeight, available) / rowHeight))
+  const next = columns * rows
+
+  if (itemsPerPage.value === next) return
+  itemsPerPage.value = next
+  const pages = Math.max(1, Math.ceil((drawingsBySection[selectedSection.value] || []).length / next))
+  if (currentPage.value > pages) currentPage.value = pages
+}
+
 // Пагинация
 const totalPages = computed(() => {
-  return Math.ceil(availableDrawings.value.length / itemsPerPage)
+  return Math.max(1, Math.ceil(availableDrawings.value.length / itemsPerPage.value))
 })
 
 const paginatedDrawings = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage
-  const end = start + itemsPerPage
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  const end = start + itemsPerPage.value
   return availableDrawings.value.slice(start, end)
 })
 
@@ -488,7 +507,7 @@ const orderMessage = computed(() => {
 
 
 
-onMounted(() => {
+onMounted(async () => {
   // Автоматически выбираем первый чертеж из текущего раздела
   if (availableDrawings.value.length > 0) {
     const first = availableDrawings.value[0]
@@ -496,9 +515,20 @@ onMounted(() => {
     selectDrawing(initial)
   }
   startAutoSlide()
+  await nextTick()
+  updateItemsPerPage()
+  requestAnimationFrame(updateItemsPerPage)
+  pageSizeObserver = new ResizeObserver(() => updateItemsPerPage())
+  if (drawingsGridRef.value) pageSizeObserver.observe(drawingsGridRef.value)
+  window.addEventListener('resize', updateItemsPerPage)
 })
 
 onUnmounted(() => {
+  if (pageSizeObserver) {
+    pageSizeObserver.disconnect()
+    pageSizeObserver = null
+  }
+  window.removeEventListener('resize', updateItemsPerPage)
   stopAutoSlide()
   if (resumeTimer) {
     clearTimeout(resumeTimer)
@@ -567,7 +597,7 @@ useHead({
 
 // Основная область контента
 .content-section {
-  padding: 8px 0 28px;
+  padding: 8px 0 100px;
   background: #fff;
 }
 
@@ -682,7 +712,7 @@ useHead({
 .slider-container {
   position: relative;
   width: 100%;
-  height: 220px;
+  height: 330px;
   border: 1px solid #e9ecef;
   border-radius: 0;
   overflow: hidden;
@@ -815,12 +845,7 @@ useHead({
   gap: 10px;
   margin-bottom: 10px;
   flex-wrap: wrap;
-  justify-content: flex-start;
-}
-
-.order-btn-glow {
-  display: inline-flex;
-  overflow: visible;
+  justify-content: flex-end;
 }
 
 .order-btn {
@@ -837,11 +862,19 @@ useHead({
   &.primary {
     background: #5e3085;
     color: #fff;
+
+    &:hover:not(:disabled) {
+      background: #4a2670;
+    }
   }
 
   &.secondary {
     background: #d5ff92;
     color: #333;
+
+    &:hover:not(:disabled) {
+      background: #c6f56f;
+    }
   }
 
   &:disabled {
@@ -849,11 +882,6 @@ useHead({
     color: #a3a3a3;
     cursor: not-allowed;
   }
-}
-
-.order-btn-glow:hover .order-btn:not(:disabled) {
-  background: #f4ffe8;
-  color: #243000;
 }
 
 // Область чертежей
@@ -868,7 +896,8 @@ useHead({
 
 // Пагинация
 .pagination {
-  margin-top: 30px;
+  grid-column: 1 / -1;
+  margin-top: 22px;
   text-align: center;
 }
 
@@ -895,19 +924,18 @@ useHead({
   
   &:hover {
     background: #5e3085;
-    transform: scale(1.2);
   }
   
   &.active {
     background: #5e3085;
-    transform: scale(1.3);
   }
 }
 
 
 .drawings-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(auto-fill, 92px);
+  justify-content: start;
   gap: 8px;
   max-height: none;
   overflow: visible;
@@ -1070,16 +1098,16 @@ useHead({
   }
   
   .content-section {
-    padding: 8px 0 24px;
+    padding: 8px 0 88px;
   }
   
   .drawings-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
+    grid-template-columns: repeat(auto-fill, 84px);
+    gap: 8px;
   }
   
   .slider-container {
-    height: 180px;
+    height: 240px;
   }
 
   .section-heading {

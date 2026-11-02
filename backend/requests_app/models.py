@@ -89,6 +89,8 @@ class Product(models.Model):
             validate_image_size,
             FileExtensionValidator(['jpg', 'jpeg', 'png', 'webp'])
         ],
+        blank=True,
+        null=True,
         verbose_name='Изображение',
         help_text='Изображение товара (JPG, PNG, WebP, до 5MB)'
     )
@@ -160,6 +162,11 @@ class Product(models.Model):
         verbose_name='Активен',
         help_text='Отображается ли товар на сайте'
     )
+    show_size = models.BooleanField(
+        default=True,
+        verbose_name='Показывать размер',
+        help_text='Размер и объём на странице товара'
+    )
     
     class Meta:
         verbose_name = 'Товар'
@@ -172,7 +179,7 @@ class Product(models.Model):
     
     def __str__(self):
         return f'{self.name} ({self.category.name if self.category else "Без категории"})'
-    
+
     @property
     def dimensions(self):
         """Возвращает размеры товара в виде строки"""
@@ -186,6 +193,40 @@ class Product(models.Model):
         if self.height and self.width and self.depth:
             return float(self.height * self.width * self.depth)
         return 0.0
+
+
+def product_gallery_path(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = f'product_{instance.product_id}_gallery_{timezone.now().strftime("%Y%m%d_%H%M%S%f")}.{ext}'
+    return os.path.join('products', 'gallery', filename)
+
+
+class ProductPhoto(models.Model):
+    """Дополнительное фото товара для карусели на странице."""
+
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='photos',
+        verbose_name='Товар',
+    )
+    image = models.ImageField(
+        upload_to=product_gallery_path,
+        validators=[
+            validate_image_size,
+            FileExtensionValidator(['jpg', 'jpeg', 'png', 'webp']),
+        ],
+        verbose_name='Изображение',
+    )
+    position = models.PositiveIntegerField(default=0, verbose_name='Порядок')
+
+    class Meta:
+        verbose_name = 'Фото товара'
+        verbose_name_plural = 'Фото товара'
+        ordering = ['position', 'id']
+
+    def __str__(self):
+        return f'{self.product_id} #{self.position}'
 
 
 class UserRequest(models.Model):
@@ -212,6 +253,7 @@ class UserRequest(models.Model):
     created_at = models.DateTimeField(default=timezone.now, verbose_name='Дата создания')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления')
     is_processed = models.BooleanField(default=False, verbose_name='Обработано')
+    is_marked = models.BooleanField(default=False, verbose_name='Помечено')
 
     class Meta:
         verbose_name = 'Заявка'

@@ -104,6 +104,12 @@ export function useCrm() {
     })
   }
 
+  const deleteOrder = async (id) => {
+    return crmFetch(`/api/crm/orders/${id}/`, {
+      method: 'DELETE',
+    })
+  }
+
   return {
     token,
     user,
@@ -113,6 +119,7 @@ export function useCrm() {
     fetchOrders,
     fetchOrder,
     updateOrder,
+    deleteOrder,
     clearSession,
     loadToken,
   }

@@ -8,7 +8,7 @@ const publicApiBase = process.env.NUXT_PUBLIC_API_BASE ?? ''
 const publicMediaBase = process.env.NUXT_PUBLIC_MEDIA_BASE ?? ''
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   
   // CSS конфигурация
   css: ['~/assets/styles/main.scss'],

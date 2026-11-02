@@ -168,6 +168,8 @@ useHead({
   }
   
   .fefco-link-section {
+    width: 100%;
+    margin-left: 0;
     margin-bottom: 40px;
   }
   
